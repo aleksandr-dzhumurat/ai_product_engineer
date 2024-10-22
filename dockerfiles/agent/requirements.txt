@@ -1,0 +1,30 @@
+
+git+https://github.com/google/adk-python.git@main
+openai
+langfuse
+
+# FastAPI for backend API
+fastapi
+uvicorn
+
+# Streamlit for frontend
+streamlit
+
+# HTTP client for API calls
+requests
+
+# Data handling
+pydantic
+pydantic-settings
+python-dotenv
+PyYAML
+orjson
+beautifulsoup4
+structlog==23.2.0
+langchain
+pytest
+pytest-asyncio
+langchain_community
+langchain-openai
+typing-extensions
+googlemaps

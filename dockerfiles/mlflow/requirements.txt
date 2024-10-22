@@ -1,0 +1,7 @@
+numpy
+scipy
+# scikit-learn==1.2.2
+mlflow[pipelines]==2.12.2
+minio
+boto3
+hyperopt
