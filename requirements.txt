@@ -1,1 +1,5 @@
 jupyter
+numpy
+catboost
+seaborn==0.13.2
+plotly
