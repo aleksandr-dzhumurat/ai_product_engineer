@@ -1,4 +1,3 @@
-
 import os
 
 from catboost import Pool, CatBoostClassifier
@@ -20,12 +19,11 @@ def get_valuable_columns(input_df):
     return col_subset
 
 if __name__ == '__main__':
-    print(os.environ['DATA_DIR'])
-
+    print('Train started')
     root_data_dir = os.environ['DATA_DIR']
-    os.listdir(os.environ['DATA_DIR'])
     train_data_dir = os.path.join(root_data_dir, 'bidmachine_task_data')
     train_df = pd.read_csv(os.path.join(train_data_dir, 'train_data.csv'), nrows=1000)
+    print(train_df.shape[0])
     columns_subset = get_valuable_columns(train_df)
     cat_candidates = ['request_context_device_type', 'dsp', 'ssp', 'hour']
     features = {
