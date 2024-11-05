@@ -19,4 +19,3 @@ def extract_zip(root_dataset_dir: str):
 if __name__ == '__main__':
     root_dataset_dir = os.environ['ROOT_DATA_DIR']
     extract_zip(root_dataset_dir)
-

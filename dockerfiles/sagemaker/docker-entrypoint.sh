@@ -7,6 +7,9 @@ case "$1" in
   train)
     PYTHONPATH=$(pwd)/code python3 code/train.py
     ;;
+  param_search)
+    PYTHONPATH=$(pwd)/code python3 code/parameters_tuning.py
+    ;;
   serve)
     uvicorn src.main:app --host $FASTAPI_HOST --port $FASTAPI_PORT --reload
     ;;
