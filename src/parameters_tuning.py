@@ -14,7 +14,8 @@ from catboost import Pool
 from bidmachine.utils import get_model, get_valuable_columns
 
 
-mlflow.set_tracking_uri(os.environ['MLFLOW_URL'])
+mlflow.set_tracking_uri("http://mlflow_container_ui:8000")
+print('MLFlow connected successfully')
 experiment_name = "catboost-params"
 try:
     mlflow.create_experiment(experiment_name, artifact_location="s3://mlflow")
@@ -22,7 +23,7 @@ except mlflow.exceptions.RestException as e:
     print(e)
 mlflow.set_experiment(experiment_name)
 
-def run_optimization(train_pool, num_trials: int):
+def run_optimization(train_pool, y_true, num_trials: int):
     def objective(params):
         with mlflow.start_run():
             mlflow.log_params(params)
@@ -31,14 +32,14 @@ def run_optimization(train_pool, num_trials: int):
             predicted_scores = model.predict_proba(train_pool)
             preds = predicted_scores[:, 1]
             metric = roc_auc_score(y_true, preds)
-            mlflow.log_metric("mean_reciprocal_rank", metric)
+            mlflow.log_metric("roc_auc", metric)
         return {'loss': metric, 'status': STATUS_OK}
 
     search_space = {
-        'iterations': hp.quniform('iterations', 20, 100, 15),
-        'alpha': hp.quniform('alpha', 1, 15, 2),
-        'factors': hp.quniform('factors', 30, 60, 10),
-        'regularization': hp.uniform('regularization', 0.01, 0.1)
+        'iterations': hp.quniform('iterations', 100, 500, 50),
+        'learning_rate': hp.uniform('learning_rate', 0.01, 0.3),
+        'depth': hp.quniform('depth', 4, 10, 1),
+        'l2_leaf_reg': hp.uniform('l2_leaf_reg', 1, 10)
     }
 
     rstate = np.random.default_rng(42)  # for reproducible results
@@ -56,7 +57,7 @@ if __name__ == '__main__':
     print('Reading datasets...')
     root_data_dir = os.environ['DATA_DIR']
     train_data_dir = os.path.join(root_data_dir, 'bidmachine_task_data')
-    train_df = pd.read_csv(os.path.join(train_data_dir, 'train_data.csv'), nrows=1000)
+    train_df = pd.read_csv(os.path.join(train_data_dir, 'test_data.csv'), nrows=1000)
     print(train_df.shape[0])
     columns_subset = get_valuable_columns(train_df)
     cat_candidates = ['request_context_device_type', 'dsp', 'ssp', 'hour']
@@ -70,4 +71,5 @@ if __name__ == '__main__':
     train_pool = Pool(data=X, label=y, cat_features=features['cat'])
     if train_pool is not None:
         print('training model...')
-        run_optimization(train_pool, num_trials=12)
+        y_true = y
+        run_optimization(train_pool, y_true, num_trials=12)

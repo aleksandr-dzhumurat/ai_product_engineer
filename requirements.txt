@@ -7,3 +7,7 @@ plotly
 # fastapi==0.95.2
 # uvicorn==0.17.6
 mlflow-skinny==2.16.2
+scikit-learn
+hyperopt
+boto3==1.35
+load_dotenv=1.0.1

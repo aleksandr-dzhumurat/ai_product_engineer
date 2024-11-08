@@ -12,7 +12,6 @@ def get_model(model_params=None):
     model = CatBoostClassifier(**model_params)
     return model
 
-
 def get_valuable_columns(input_df):
     col_subset = []
     for col in input_df.columns:
