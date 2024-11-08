@@ -27,6 +27,7 @@ run-param-tuning:
 	-v "${CURRENT_DIR}/data:/srv/data" \
 	-v "${CURRENT_DIR}/src:/opt/ml/model" \
 	-v "${CURRENT_DIR}/src:/opt/ml/code" \
+	--network ml_for_products_prj_network \
 	sagemaker:latest param_search
 
 run-mlflow:
