@@ -164,3 +164,4 @@ cython_debug/
 data
 .ipynb_checkpoints
 catboost_info/
+jupyter_notebooks/catboost_info/

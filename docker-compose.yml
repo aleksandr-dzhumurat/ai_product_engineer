@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  mlflow:
+    build:
+      context: ./dockerfiles/mlflow
+    depends_on:
+      - minio
+    env_file:
+      - .env
+    volumes:
+      - ./data/mlflow:/srv/mlflow
+      - ./dockerfiles/mlflow/src:/srv/src
+    container_name: mlflow_container_ui
+    ports:
+      - 8000:8000
+    networks:
+      - prj_network
+    command: >
+      serve
+  minio:
+    build:
+      context: ./dockerfiles/minio
+    env_file:
+      - .env
+    volumes:
+      - ./data/minio:/data
+    networks:
+      prj_network:
+        aliases:
+          - backtier_s3
+    container_name: backtier_s3
+    ports:
+      - 9001:9001
+      - 9000:9000
+networks:
+  prj_network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1450
