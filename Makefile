@@ -4,10 +4,13 @@ export
 
 prepare-dirs:
 	mkdir -p ${CURRENT_DIR}/data/minio || true && \
-    mkdir -p ${CURRENT_DIR}/data/mlflow || true
+    mkdir -p ${CURRENT_DIR}/data/mlflow || true && \
+    mkdir -p ${CURRENT_DIR}/data/zinc_data || true
 
 run-jupyter:
 	DATA_DIR=${CURRENT_DIR}/data \
+	PYTHONPATH=${CURRENT_DIR}/src \
+	CONFIG_DIR=${CURRENT_DIR}/configs \
 	jupyter notebook jupyter_notebooks --ip 0.0.0.0 --port 8899 --NotebookApp.token='' --NotebookApp.password='' --allow-root --no-browser 
 
 build-sagemaker:

@@ -15,7 +15,7 @@ services:
     ports:
       - 8000:8000
     networks:
-      - prj_network
+      - backtier_network
     command: >
       serve
   minio:
@@ -26,15 +26,28 @@ services:
     volumes:
       - ./data/minio:/data
     networks:
-      prj_network:
+      backtier_network:
         aliases:
           - backtier_s3
     container_name: backtier_s3
     ports:
       - 9001:9001
       - 9000:9000
+  search:
+    image: public.ecr.aws/zinclabs/zincsearch:0.4.10
+    container_name: zincsearch
+    environment:
+      - ZINC_DATA_PATH=/data
+      - ZINC_FIRST_ADMIN_USER=admin
+      - ZINC_FIRST_ADMIN_PASSWORD=admin
+    volumes:
+      - ./data/zinc_data:/data
+    ports:
+      - "4080:4080"
+    networks:
+      - backtier_network
 networks:
-  prj_network:
+  backtier_network:
     driver: bridge
     driver_opts:
       com.docker.network.driver.mtu: 1450
