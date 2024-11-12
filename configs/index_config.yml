@@ -1,0 +1,31 @@
+elastic_index_settings:
+  mappings:
+    properties:
+      category:
+        aggregatable: true
+        index: true
+        sortable: true
+        type: keyword
+      content:
+        highlightable: true
+        index: true
+        store: true
+        type: text
+      content_len:
+        aggregatable: false
+        index: true
+        sortable: true
+        type: integer
+      doc_id:
+        highlightable: true
+        index: true
+        store: true
+        type: text
+  name: index11
+  settings:
+    analysis:
+      analyzer:
+        default:
+          type: standard
+  shard_num: 1
+  storage_type: disk

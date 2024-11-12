@@ -43,3 +43,9 @@ Homework 1: prepare predict.py
 
 
 
+# Lesson 2
+
+run search
+```
+docker-compose up search
+```

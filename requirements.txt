@@ -4,10 +4,13 @@ catboost
 seaborn==0.13.2
 plotly
 # serve
-# fastapi==0.95.2
-# uvicorn==0.17.6
+fastapi==0.95.2
+uvicorn==0.17.6
+# experiments
 mlflow-skinny==2.16.2
-scikit-learn
 hyperopt
 boto3==1.35
-load_dotenv=1.0.1
+# retrieval
+python-dotenv==1.0.1
+scikit-learn==1.5
+PyYAML==6.0.1
