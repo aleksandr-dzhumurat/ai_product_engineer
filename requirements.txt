@@ -17,3 +17,6 @@ PyYAML==6.0.1
 # data processing
 polars==1.15.0
 pyarrow==18.1.0
+# bot
+python-telegram-bot
+openai

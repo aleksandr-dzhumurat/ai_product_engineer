@@ -49,3 +49,27 @@ run search
 ```
 docker-compose up search
 ```
+
+
+
+API
+
+```shell
+make build-api
+```
+
+```shell
+make run-api
+```
+
+```shell
+http://0.0.0.0:8000/docs
+```
+
+Build bot
+
+```shell
+build-tg
+```
+
+t.me/mai_2024_crash_course_bot

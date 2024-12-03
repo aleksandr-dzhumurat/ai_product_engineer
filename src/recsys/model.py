@@ -1,4 +1,3 @@
-
 from catboost import CatBoostClassifier, Pool
 
 def get_model(params = None):

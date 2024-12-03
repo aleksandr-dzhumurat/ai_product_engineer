@@ -16,6 +16,12 @@ run-jupyter:
 build-sagemaker:
 	docker build -f ${CURRENT_DIR}/dockerfiles/sagemaker/Dockerfile -t sagemaker:latest .
 
+build-api:
+	docker build -f ${CURRENT_DIR}/dockerfiles/api/Dockerfile -t api:latest .
+
+build-tg:
+	docker build -f ${CURRENT_DIR}/dockerfiles/tg_backend/Dockerfile -t tg_bot:latest .
+
 run-sagemaker-train:
 	docker run -it --rm \
 	--env-file ${CURRENT_DIR}/.env  \
@@ -35,3 +41,9 @@ run-param-tuning:
 
 run-mlflow:
 	docker-compose --env-file .env up mlflow
+
+run-api:
+	docker-compose --env-file .env up api
+
+run-tg:
+	docker-compose --env-file .env up tg_bot

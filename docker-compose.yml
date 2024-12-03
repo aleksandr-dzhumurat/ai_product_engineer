@@ -46,6 +46,44 @@ services:
       - "4080:4080"
     networks:
       - backtier_network
+  api:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/api/Dockerfile
+    depends_on:
+      - search
+    env_file:
+      - .env
+    volumes:
+      - ./data:/data
+      - ./src:/srv/ml_tools
+      - ./configs:/srv/configs
+      - ./dockerfiles/api/src:/srv/src
+    ports:
+      - "8000:8000"
+    networks:
+      backtier_network:
+        aliases:
+          - api
+    container_name: api
+  tg_bot:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/tg_backend/Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - ./data:/data
+      - ./src:/srv/ml_tools
+      - ./configs:/srv/configs
+      - ./dockerfiles/tg_backend/src:/srv/src
+    depends_on:
+      - api
+    networks:
+      backtier_network:
+        aliases:
+          - tg_bot
+    container_name: tg_bot
 networks:
   backtier_network:
     driver: bridge

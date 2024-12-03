@@ -1,0 +1,9 @@
+catboost==1.2.5
+requests
+numpy==1.26.4
+pandas==2.2.2
+PyYAML==6.0.1
+fastapi
+uvicorn[standard]
+pydantic
+pytest
