@@ -22,7 +22,8 @@ class SearchResult(BaseModel):
 async def search_items(request: SearchRequest):
     # Placeholder search logic based on the request
     index_name = index_config['name']
-    results = pretty(search(index_name, 'cough')['hits']['hits'])
+    # 'cough'
+    results = pretty(search(index_name, request.text)['hits']['hits'])
     return results
 
 @app.get("/ping")
@@ -31,7 +32,6 @@ async def ping():
     Health check endpoint.
     """
     return {"message": "pong"}
-
 
 
 if __name__ == "__main__":

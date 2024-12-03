@@ -43,7 +43,7 @@ def dialog_router(human_query: str):
     import re
     answer = f'Hello, bro? Do you wanna search: {human_query}'
     payload = {
-        "text": "cough"  # Replace with the actual query text
+        "text": human_query
     }
     response = requests.post(SEARCH_URL, json=payload)
     answer = [{'content': re.sub(r"<.*?>", "", i['content'])} for i in response.json()]
@@ -61,7 +61,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
     response = [
-        "Send me a phrase and I will perform a search fpr you!"
+        "Send me a phrase and I will perform a search for you!"
     ]
     for i in response:
         await update.message.reply_text(i)
