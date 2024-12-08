@@ -51,6 +51,7 @@ def load_bulk_documents(index_name, documents):
 def clean_text(txt):
     cleaned_text = re.sub(r'\n+', ' ', txt)
     cleaned_text = re.sub(r'\t+', ' ', cleaned_text)
+    cleaned_text = re.sub(r"<.*?>", "", cleaned_text)
     return cleaned_text
 
 def save_json_gzip(input_path, output_path):
@@ -77,7 +78,7 @@ def read_raw_data(file_path, limit: int = None, fields = None):
         print(f'Dataset num items: {len(res)} from {file_path}')
         return res
 
-def search(index_name, query=None, fields_list=None, category='health', debug=False):
+def search(index_name, query=None, fields_list=None, category='health', debug=False, limit=10):
     if fields_list is None:
         fields_list = ['content']
     if query is not None:
@@ -100,7 +101,7 @@ def search(index_name, query=None, fields_list=None, category='health', debug=Fa
                     ]
                 }
             },
-            "size": 10
+            "size": limit
         }
     else:
         search_query = {
@@ -118,18 +119,18 @@ def search(index_name, query=None, fields_list=None, category='health', debug=Fa
                     ]
                 }
             },
-            "size": 10
+            "size": limit
         }
     response = request_elastic(f'es/{index_name}/_search', debug=debug, data=search_query, method='post')
     return response
 
-def pretty(search_results):
+def pretty(search_results, include_fields=None):
     """
         print(pretty(res))
     """
     result_docs = []
-
-    include_fields = ['content']
+    if include_fields is None:
+        include_fields = ['content']
     for hit in search_results:
-        result_docs.append({k: v for k, v in  hit['_source'].items() if k in include_fields})
+        result_docs.append({k: f'{clean_text(v)[:150]}...' for k, v in  hit['_source'].items() if k in include_fields})
     return result_docs
