@@ -42,6 +42,9 @@ run-param-tuning:
 run-mlflow:
 	docker-compose --env-file .env up mlflow
 
+run-search:
+	docker-compose --env-file .env up search
+
 run-api:
 	docker-compose --env-file .env up api
 
