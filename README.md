@@ -1,11 +1,5 @@
 # ml_for_products
 
-Extact data
-
-```shell
-ROOT_DATA_DIR=$(pwd)/data python3 src/bidmachine/prepare_data.py
-```
-
 Install deps
 
 ```bash
@@ -29,6 +23,19 @@ run jupyter
 ```
 make run-jupyter
 ```
+
+# Data preparation
+
+Step 1: download data to the local machine or copy to our google drive: [ML for priducts](https://drive.google.com/drive/folders/1FMLKfNZZyFgzOhWjOiyeN3XvCsjT5-ET?usp=drive_link)
+
+
+Extact data
+
+```shell
+ROOT_DATA_DIR=$(pwd)/data python3 src/bidmachine/prepare_data.py
+```
+
+# Lectures
 
 Lesson 1: train.py
 
