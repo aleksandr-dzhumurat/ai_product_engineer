@@ -11,6 +11,7 @@ run-jupyter:
 	DATA_DIR=${CURRENT_DIR}/data \
 	PYTHONPATH=${CURRENT_DIR}/src \
 	CONFIG_DIR=${CURRENT_DIR}/configs \
+	RUN_ENV=LOCAL \
 	jupyter notebook jupyter_notebooks --ip 0.0.0.0 --port 8899 --NotebookApp.token='' --NotebookApp.password='' --allow-root --no-browser 
 
 build-sagemaker:

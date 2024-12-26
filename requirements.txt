@@ -16,12 +16,10 @@ scikit-learn==1.5
 PyYAML==6.0.1
 # data processing
 polars==1.15.0
-<<<<<<< Updated upstream
 pyarrow==18.1.0
 # bot
 python-telegram-bot==21.8
 openai==1.57.0
 backoff==2.2.1
-=======
 pyarrow==18.1.0
->>>>>>> Stashed changes
+dlt[duckdb]
