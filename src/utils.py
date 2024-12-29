@@ -6,12 +6,15 @@ import os
 
 import yaml
 import requests
-from dotenv import load_dotenv
 
-print('.env loaded: ', load_dotenv(dotenv_path='./../.env'))
-ZINCSEARCH_URL = os.environ["ZINCSEARCH_URL"]
-USERNAME=os.environ['ZINCSEARCH_USERNAME']
-PASSWORD=os.environ['ZINCSEARCH_PASSWORD']
+
+run_env = os.getenv('RUN_ENV', 'COLLAB')
+if run_env == 'LOCAL':
+    from dotenv import load_dotenv
+    print('.env loaded: ', load_dotenv(dotenv_path='./../.env'))
+ZINCSEARCH_URL = os.getenv("ZINCSEARCH_URL")
+USERNAME=os.getenv('ZINCSEARCH_USERNAME')
+PASSWORD=os.getenv('ZINCSEARCH_PASSWORD')
 
 def request_elastic(api_endpoint, debug=False, method='get', data=None):
     url = f"{ZINCSEARCH_URL}/{api_endpoint}"
@@ -165,13 +168,11 @@ def csv_reader(file_name, sink_file_name):
                 )
 
 def main_function():
+    home_dir = '/usr/share/data_store/raw_data'
+    # file_name = 'csv_example.csv'
+    file_name = 'win_users_events2.csv'
+    #file_name = 'null.csv'
+    sink_file_name = 'events.csv'
 
-
-home_dir = '/usr/share/data_store/raw_data'
-# file_name = 'csv_example.csv'
-file_name = 'win_users_events2.csv'
-#file_name = 'null.csv'
-sink_file_name = 'events.csv'
-
-csv_reader(os.path.join(home_dir, file_name), os.path.join(home_dir, sink_file_name))
+    csv_reader(os.path.join(home_dir, file_name), os.path.join(home_dir, sink_file_name))
 
