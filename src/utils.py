@@ -2,11 +2,12 @@ import json
 import gzip
 import os
 import re
-import os
+from dataclasses import dataclass
 
 import yaml
 import requests
-
+import numpy as np
+import pandas as pd
 
 run_env = os.getenv('RUN_ENV', 'COLLAB')
 if run_env == 'LOCAL':
@@ -15,6 +16,26 @@ if run_env == 'LOCAL':
 ZINCSEARCH_URL = os.getenv("ZINCSEARCH_URL")
 USERNAME=os.getenv('ZINCSEARCH_USERNAME')
 PASSWORD=os.getenv('ZINCSEARCH_PASSWORD')
+
+
+@dataclass
+class Dataset:
+    data: np.array
+    target: np.array
+    DESCR: str
+
+def load_sales(root_data_dir):
+  file_path = os.path.join(root_data_dir, 'sales_timeseries_dataset.csv.gz')
+  df = pd.read_csv(file_path, compression='gzip')
+  feature_cols = [
+        'QTy', 'NetSales_Previous_Day',
+       'Avg_Sale_Previous_Week', 'Sales_This_Day_Last_Week',
+       'Sales_This_Day_Week_Before_Last',
+       'Diff_Sales_This_Day_Last_Week_And_Week_Before_Last'
+  ]
+  target_col = 'NetSales'
+  sales = Dataset(data=df[feature_cols].values, target=df[target_col].values, DESCR=', '.join(feature_cols))
+  return sales
 
 def request_elastic(api_endpoint, debug=False, method='get', data=None):
     url = f"{ZINCSEARCH_URL}/{api_endpoint}"
