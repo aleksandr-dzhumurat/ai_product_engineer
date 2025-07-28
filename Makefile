@@ -5,7 +5,8 @@ export
 prepare-dirs:
 	mkdir -p ${CURRENT_DIR}/data/minio || true && \
     mkdir -p ${CURRENT_DIR}/data/mlflow || true && \
-    mkdir -p ${CURRENT_DIR}/data/zinc_data || true
+    mkdir -p ${CURRENT_DIR}/data/zinc_data || true && \
+    mkdir -p ${CURRENT_DIR}/data/pipelines-data || true
 
 run-jupyter:
 	DATA_DIR=${CURRENT_DIR}/data \

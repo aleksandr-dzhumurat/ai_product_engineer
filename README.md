@@ -79,4 +79,16 @@ Build bot
 build-tg
 ```
 
-t.me/mai_2024_crash_course_bot
+# UV (update packages)
+
+```shell
+cd python-env & \
+	uv pip install -r ../requirements.txt  \
+	uv pip freeze > temp_requirements.txt \
+	uv add $(cat temp_requirements.txt | tr '\n' ' ')
+	cd ..
+```
+
+# Dagster
+
+Follow [instructions](https://docs.dagster.io/getting-started/quickstart)
