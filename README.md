@@ -81,6 +81,13 @@ build-tg
 
 # UV (update packages)
 
+create env
+```
+uv venv --python 3.13;
+source .venv/bin/activate;
+uv pip install -r requirements.txt
+```
+
 ```shell
 cd python-env & \
 	uv pip install -r ../requirements.txt  \
