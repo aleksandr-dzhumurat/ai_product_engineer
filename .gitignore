@@ -168,3 +168,4 @@ jupyter_notebooks/catboost_info/
 .claude
 .venv
 .history
+.DS_Store
