@@ -169,3 +169,4 @@ jupyter_notebooks/catboost_info/
 .venv
 .history
 .DS_Store
+jupyter_notebooks/tokenizers/

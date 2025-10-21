@@ -4,7 +4,7 @@ catboost
 seaborn==0.13.2
 plotly
 # serve
-fastapi==0.95.2
+fastapi
 uvicorn==0.17.6
 # experiments
 mlflow-skinny==2.16.2
@@ -20,6 +20,13 @@ pyarrow==18.1.0
 # bot
 python-telegram-bot==21.8
 openai==1.57.0
+
 backoff==2.2.1
 pyarrow==18.1.0
-dlt[duckdb]
+torch==2.3.1
+transformers==4.41.2
+sentence-transformers==2.7.0
+nltk==3.6.2
+gensim
+implicit
+google-genai

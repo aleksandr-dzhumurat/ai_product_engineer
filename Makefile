@@ -6,14 +6,24 @@ prepare-dirs:
 	mkdir -p ${CURRENT_DIR}/data/minio || true && \
     mkdir -p ${CURRENT_DIR}/data/mlflow || true && \
     mkdir -p ${CURRENT_DIR}/data/zinc_data || true && \
-    mkdir -p ${CURRENT_DIR}/data/pipelines-data || true
+    mkdir -p ${CURRENT_DIR}/data/pipelines-data || true && \
+    mkdir -p ${CURRENT_DIR}/data/models || true && \
+    mkdir -p ${CURRENT_DIR}/data/nltk-data || true
 
 run-jupyter:
 	DATA_DIR=${CURRENT_DIR}/data \
 	PYTHONPATH=${CURRENT_DIR}/src \
 	CONFIG_DIR=${CURRENT_DIR}/configs \
+	ENV_PATH=${CURRENT_DIR}/.env \
 	RUN_ENV=LOCAL \
 	jupyter notebook jupyter_notebooks --ip 0.0.0.0 --port 8899 --NotebookApp.token='' --NotebookApp.password='' --allow-root --no-browser 
+
+run-script:
+	DATA_DIR=${CURRENT_DIR}/data \
+	PYTHONPATH=${CURRENT_DIR}/src \
+	CONFIG_DIR=${CURRENT_DIR}/configs \
+	RUN_ENV=LOCAL \
+	uv run python src/${SCRIPT}
 
 build-sagemaker:
 	docker build -f ${CURRENT_DIR}/dockerfiles/sagemaker/Dockerfile -t sagemaker:latest .

@@ -2,11 +2,16 @@ import hashlib
 import os
 import time
 from dataclasses import dataclass
+from pathlib import Path
 
 import backoff
 import openai
+from dotenv import load_dotenv
+from google.genai import Client, types
 from openai import OpenAI
 
+GEMINI_API_KEY = os.environ['GEMINI_API_KEY']
+g_client = None
 
 def get_openai_client(openai_key = None):
     if openai_key is None:
@@ -16,12 +21,20 @@ def get_openai_client(openai_key = None):
     )
     return client
 
+def get_gemini_client(env_path: str | Path):
+    global g_client
+
+    print(f'ENV loaded from {env_path}: {load_dotenv(env_path)}')
+    if g_client is None:
+        g_client = Client(api_key=os.environ["GEMINI_API_KEY"])
+    return g_client
+
 @dataclass
 class GenAIResponse:
     text: str
     total_tokens: str
     model: str
-    generation_id: str
+    generation_id: str = None
 
 
 def generate_id(seed=None, limit=None):
@@ -81,6 +94,29 @@ def generate(client, user_prompt, system_prompt = "You are a helpful assistant f
         generation_id=generate_id(user_prompt)
     )
 
+    return response
+
+@backoff.on_exception(backoff.expo, RuntimeError)
+def generate_gemini(api_client, user_prompt, system_prompt, model='gemini-2.5-flash-lite'):
+    """model: gemini-1.5-flash, gemini-2.0-flash-001"""
+    user_input = [
+        types.Part(text=user_prompt),
+    ]
+    dialog_contents = [
+        types.Content(
+            role="user",
+            parts=user_input
+        )
+    ]
+    response = api_client.models.generate_content(
+        model=model,
+        contents=dialog_contents,
+        config=types.GenerateContentConfig(
+            system_instruction=system_prompt,
+            temperature=0.3,
+        ),
+    )
+    response = GenAIResponse(text=response.text, total_tokens=response.usage_metadata.total_token_count, model=model)
     return response
 
 def recs_generation(candidates):

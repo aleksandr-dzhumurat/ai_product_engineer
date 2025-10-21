@@ -1,21 +1,46 @@
-import json
 import gzip
+import json
 import os
 import re
 from dataclasses import dataclass
 
-import yaml
-import requests
 import numpy as np
 import pandas as pd
+import requests
+import yaml
 
 run_env = os.getenv('RUN_ENV', 'COLLAB')
-if run_env == 'LOCAL':
-    from dotenv import load_dotenv
-    print('.env loaded: ', load_dotenv(dotenv_path='./../.env'))
-ZINCSEARCH_URL = os.getenv("ZINCSEARCH_URL")
-USERNAME=os.getenv('ZINCSEARCH_USERNAME')
-PASSWORD=os.getenv('ZINCSEARCH_PASSWORD')
+
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+
+@dataclass
+class AuthConfig:
+    """Authentication configuration for ZincSearch"""
+    ZINCSEARCH_URL: str
+    USERNAME: str
+    PASSWORD: str
+
+
+def get_auth(env_path: str | Path) -> AuthConfig:
+    """
+    Load authentication configuration from environment file.
+    
+    Args:
+        env_path: Path to the .env file
+        
+    Returns:
+        AuthConfig dataclass with ZINCSEARCH_URL, USERNAME, and PASSWORD
+    """
+    print(f'ENV loaded from {env_path}: {load_dotenv(env_path)}')
+    
+    return AuthConfig(
+        ZINCSEARCH_URL=os.environ.get('ZINCSEARCH_URL'),
+        USERNAME=os.environ.get('ZINCSEARCH_USERNAME'),
+        PASSWORD=os.environ.get('ZINCSEARCH_PASSWORD')
+    )
 
 
 @dataclass
@@ -37,15 +62,15 @@ def load_sales(root_data_dir):
   sales = Dataset(data=df[feature_cols].values, target=df[target_col].values, DESCR=', '.join(feature_cols))
   return sales
 
-def request_elastic(api_endpoint, debug=False, method='get', data=None):
-    url = f"{ZINCSEARCH_URL}/{api_endpoint}"
+def request_elastic(api_endpoint, debug=False, method='get', data=None, conf=None):
+    url = f"{conf.ZINCSEARCH_URL}/{api_endpoint}"
     if data is None:
         data = {}
     headers = {"Content-Type": "application/json"}
     request_method = getattr(requests, method.lower())
     if debug:
         print(url, json.dumps(data))
-    response = request_method(url, headers=headers, data=json.dumps(data), auth=(USERNAME, PASSWORD))
+    response = request_method(url, headers=headers, data=json.dumps(data), auth=(conf.USERNAME, conf.PASSWORD))
     if response.status_code == 200:
         return response.json()
     else:
@@ -60,18 +85,22 @@ def load_config():
     index_config = config['elastic_index_settings']
     return index_config
 
-def create_index(index_config: dict, debug=False):
-    response = request_elastic('api/index', debug=debug, data=index_config, method='post')
+def create_index(index_config: dict, debug=False, conf=None):
+    response = request_elastic('api/index', debug=debug, data=index_config, method='post', conf=conf)
     return response
 
-def load_document(doc, index_name, debug=False):
-    response = request_elastic(f'api/{index_name}/_doc', debug=debug, data=doc, method='post')
+def load_document(doc, index_name, debug=False, conf=None):
+    response = request_elastic(f'api/{index_name}/_doc', debug=debug, data=doc, method='post', conf=conf)
     return response
 
-def load_bulk_documents(index_name, documents):
+def load_bulk_documents(index_name, documents, conf):
+    errors = []
     for doc in documents:
-        load_document(doc, index_name)
-    print("Document loaded successfully.")
+        try:
+            load_document(doc, index_name, conf=conf)
+        except Exception:
+            errors.append({'status': 'error', 'doc': doc})
+    print(f"Document loaded successfully, num errors: {len(errors)}")
 
 def clean_text(txt):
     cleaned_text = re.sub(r'\n+', ' ', txt)
@@ -88,7 +117,7 @@ def save_json_gzip(input_path, output_path):
 
 def read_raw_data(file_path, limit: int = None, fields = None):
     with gzip.open(file_path, 'rt', encoding='UTF-8') as gz_file:
-        if limit is None and not 'jsonl' in file_path:
+        if limit is None and 'jsonl' not in file_path:
            res = json.load(gz_file)
         else:
             res = []
@@ -103,7 +132,7 @@ def read_raw_data(file_path, limit: int = None, fields = None):
         print(f'Dataset num items: {len(res)} from {file_path}')
         return res
 
-def search(index_name, query=None, fields_list=None, category='health', debug=False, limit=10):
+def search(index_name, query=None, fields_list=None, category='health', debug=False, limit=10, conf=None):
     if fields_list is None:
         fields_list = ['content']
     if query is not None:
@@ -146,7 +175,7 @@ def search(index_name, query=None, fields_list=None, category='health', debug=Fa
             },
             "size": limit
         }
-    response = request_elastic(f'es/{index_name}/_search', debug=debug, data=search_query, method='post')
+    response = request_elastic(f'es/{index_name}/_search', debug=debug, data=search_query, method='post', conf=conf)
     return response
 
 def pretty(search_results, include_fields=None):
