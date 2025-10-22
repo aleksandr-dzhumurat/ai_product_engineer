@@ -51,6 +51,17 @@ run-param-tuning:
 	--network ai_product_engineer_backtier_network \
 	sagemaker:latest param_search
 
+run-model-register:
+	docker run -it --rm \
+	--env-file ${CURRENT_DIR}/.env  \
+	-v "${CURRENT_DIR}/data:/srv/data" \
+	-v "${CURRENT_DIR}/src:/opt/ml/model" \
+	-v "${CURRENT_DIR}/src:/opt/ml/code" \
+	-v "${CURRENT_DIR}/configs:/opt/ml/configs" \
+	-e "PYTHONPATH=/opt/ml/code" \
+	--network ai_product_engineer_backtier_network \
+	sagemaker:latest "python3" code/register_model.py
+
 run-mlflow:
 	docker-compose --env-file .env up mlflow
 
@@ -62,3 +73,6 @@ run-api:
 
 run-tg:
 	docker-compose --env-file .env up tg_bot
+
+labelstudio:
+	uv run label-studio

@@ -1,14 +1,14 @@
 import os
-import sys
 
-import pandas as pd
 import mlflow
+import pandas as pd
 from mlflow.entities import ViewType
 from mlflow.tracking import MlflowClient
 
-from utils import get_config, train_and_save_model
+from train import train_and_save_model
+from utils import get_config
 
-HPO_EXPERIMENT_NAME = "catboost-params-new"
+HPO_EXPERIMENT_NAME = "catboost-params"
 # mlflow.create_experiment(HPO_EXPERIMENT_NAME, artifact_location="s3://mlflow")
 RF_PARAMS = ['max_depth', 'n_estimators', 'min_samples_split', 'min_samples_leaf', 'random_state']
 
@@ -30,18 +30,18 @@ def train_best_model(train_data_path, config, model_path):
     run_id = run.info.run_id
     print(run.data.params, run.info.run_id)
     with mlflow.start_run(run_id=run_id):
-        train_df = pd.read_csv(train_data_path)
+        train_df = pd.read_csv(train_data_path, compression='gzip').head(1000)
         train_and_save_model(train_df, config, model_path)
-        # mlflow.log_artifact(model_path)  ## TODO: fix the bug
+        mlflow.log_artifact(model_path, artifact_path="model")  ## TODO: fix the bug
         model_uri = f"runs:/{run_id}/model"
         mlflow.register_model(model_uri, name="rf-best-model")
     print('model logged and registered')
 
 if __name__ == '__main__':
-    config = get_config(sys.argv[1])
-    root_data_dir = '/srv/data/'
-    model_path = os.path.join('/srv/data', config['model_file_name'])
-    train_data_path = os.path.join(root_data_dir, 'train_dataset.csv')
+    config = get_config(os.path.join('/opt/ml/configs', 'model_config.json'))
+    root_data_dir = os.getenv('DATA_DIR', '/srv/data')
+    model_path = os.path.join(root_data_dir, config['model_file_name'])
+    train_data_path = os.path.join(root_data_dir, 'rtb_classification_data.csv.gz')
 
     # train_model(train_data_path, config, model_path)
     train_best_model(train_data_path, config, model_path)

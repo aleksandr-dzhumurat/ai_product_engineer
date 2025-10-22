@@ -1,0 +1,9 @@
+{
+  "model_file_name": "best_model.cb",
+  "model_params": {
+    "depth": 8,
+    "iterations": 350,
+    "l2_leaf_reg": 2.9,
+    "learning_rate": 0.127
+  }
+}

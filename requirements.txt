@@ -32,3 +32,4 @@ nltk==3.6.2
 gensim
 implicit
 google-genai
+label-studio

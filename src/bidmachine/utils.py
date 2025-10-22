@@ -1,7 +1,7 @@
 
-import os
 
-from catboost import Pool, CatBoostClassifier
+from catboost import CatBoostClassifier
+
 
 def get_model(model_params=None):
     if model_params is None:

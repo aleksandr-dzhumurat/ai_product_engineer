@@ -1,9 +1,9 @@
 import os
 
-from catboost import Pool, CatBoostClassifier
-
-from IPython.display import clear_output
 import pandas as pd
+from catboost import CatBoostClassifier, Pool
+from IPython.display import clear_output
+
 
 def get_valuable_columns(input_df):
     col_subset = []
@@ -17,6 +17,24 @@ def get_valuable_columns(input_df):
             # Ignore columns that can't be analyzed (e.g. mixed data types)
             pass
     return col_subset
+
+def train_and_save_model(train_df, config, model_path):
+    print(train_df.shape[0])
+    columns_subset = get_valuable_columns(train_df)
+    cat_candidates = ['request_context_device_type', 'dsp', 'ssp', 'hour']
+    features = {
+        'cat': [col for col in cat_candidates if col in columns_subset],
+        'num': ['price', ]
+    }
+    features_set = features['cat'] + features['num']
+    X = train_df[features_set]
+    y = train_df['target']
+    train_pool = Pool(data=X, label=y, cat_features=features['cat'])
+    model = CatBoostClassifier(**config['model_params'])
+    model.fit(train_pool)
+    model.save_model(model_path)
+    # mlflow.log_artifact(model_path, artifact_path="model")
+    print('model dump finished')
 
 if __name__ == '__main__':
     print('Train started')

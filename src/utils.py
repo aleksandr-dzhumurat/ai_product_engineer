@@ -43,6 +43,31 @@ def get_auth(env_path: str | Path) -> AuthConfig:
     )
 
 
+def get_config(config_path: str | Path) -> dict:
+    """
+    Load configuration from JSON or YAML file.
+
+    Args:
+        config_path: Path to the config file (.json or .yml/.yaml)
+
+    Returns:
+        Dictionary containing configuration parameters
+    """
+    config_path = Path(config_path)
+
+    if config_path.suffix == '.json':
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+    elif config_path.suffix in ['.yml', '.yaml']:
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = yaml.safe_load(f)
+    else:
+        raise ValueError(f"Unsupported config file format: {config_path.suffix}. Use .json, .yml, or .yaml")
+
+    print(f'Config loaded from {config_path}')
+    return config
+
+
 @dataclass
 class Dataset:
     data: np.array
@@ -225,4 +250,3 @@ def main_function():
     sink_file_name = 'events.csv'
 
     csv_reader(os.path.join(home_dir, file_name), os.path.join(home_dir, sink_file_name))
-
