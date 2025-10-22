@@ -13,6 +13,7 @@ boto3==1.35
 # retrieval
 python-dotenv==1.0.1
 scikit-learn==1.5
+umap-learn
 PyYAML==6.0.1
 # data processing
 polars==1.15.0
@@ -26,6 +27,7 @@ pyarrow==18.1.0
 torch==2.3.1
 transformers==4.41.2
 sentence-transformers==2.7.0
+torchvision
 nltk==3.6.2
 gensim
 implicit
