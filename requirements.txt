@@ -33,3 +33,4 @@ gensim
 implicit
 google-genai
 label-studio
+catalyst==21.12
