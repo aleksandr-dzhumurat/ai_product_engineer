@@ -6,6 +6,7 @@ services:
       context: ./dockerfiles/mlflow
     depends_on:
       - minio
+      - jupyter
     env_file:
       - .env
     volumes:
@@ -84,6 +85,23 @@ services:
         aliases:
           - tg_bot
     container_name: tg_bot
+  jupyter:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/sagemaker/Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - ./data:/opt/ml/data
+      - ./src:/opt/ml/code
+      - ./jupyter_notebooks:/opt/ml/jupyter_notebooks
+      - ./configs:/opt/ml/configs
+    ports:
+      - "9999:8899"
+    networks:
+      - backtier_network
+    container_name: jupyter_notebook
+    command: jupyter
 networks:
   backtier_network:
     driver: bridge

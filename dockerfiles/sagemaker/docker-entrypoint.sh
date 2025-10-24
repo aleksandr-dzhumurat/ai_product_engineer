@@ -13,6 +13,9 @@ case "$1" in
   serve)
     uvicorn src.main:app --host $FASTAPI_HOST --port $FASTAPI_PORT --reload
     ;;
+  jupyter)
+    jupyter notebook jupyter_notebooks --ip 0.0.0.0 --port 8899 --NotebookApp.token='' --NotebookApp.password='' --allow-root --no-browser
+    ;;
   *)
     exec "$@"
 esac

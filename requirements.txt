@@ -1,7 +1,7 @@
 jupyter
 numpy
 catboost
-seaborn==0.13.2
+seaborn
 plotly
 # serve
 fastapi
@@ -12,7 +12,7 @@ hyperopt
 boto3==1.35
 # retrieval
 python-dotenv==1.0.1
-scikit-learn==1.5
+scikit-learn
 umap-learn
 PyYAML==6.0.1
 # data processing
@@ -28,9 +28,9 @@ torch==2.3.1
 transformers==4.41.2
 sentence-transformers==2.7.0
 torchvision
-nltk==3.6.2
+nltk==3.6.7
 gensim
 implicit
 google-genai
 label-studio
-catalyst==21.12
+catalyst
