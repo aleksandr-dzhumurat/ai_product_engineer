@@ -1,7 +1,9 @@
 import gzip
 import json
+import logging
 import os
 import re
+import sys
 from dataclasses import dataclass
 
 import numpy as np
@@ -250,3 +252,23 @@ def main_function():
     sink_file_name = 'events.csv'
 
     csv_reader(os.path.join(home_dir, file_name), os.path.join(home_dir, sink_file_name))
+
+def setup_logger(log_file):
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    logger.handlers.clear()
+    formatter = logging.Formatter(
+        '%(asctime)s | %(levelname)-8s | %(filename)-24s :%(lineno)-4d | %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(logging.INFO)
+    console_handler.setFormatter(formatter)
+    logger.addHandler(console_handler)
+
+    file_handler = logging.FileHandler(log_file, mode='a', encoding='utf-8')
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+
+    return logger

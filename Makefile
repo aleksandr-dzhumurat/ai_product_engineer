@@ -82,6 +82,7 @@ run-train:
 	--env-file ${CURRENT_DIR}/.env  \
 	-v "${CURRENT_DIR}/data:/srv/data" \
 	-v "${CURRENT_DIR}/dockerfiles/api/src:/srv/src" \
+	-v "${CURRENT_DIR}/src:/srv/src/ml_tools" \
 	api:latest train
 
 run-service:

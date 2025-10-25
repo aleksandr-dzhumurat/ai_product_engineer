@@ -7,3 +7,4 @@ fastapi
 uvicorn[standard]
 pydantic
 pytest
+scikit-learn
