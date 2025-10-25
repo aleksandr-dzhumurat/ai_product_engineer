@@ -39,8 +39,7 @@ def train_and_save_model(train_df, config, model_path):
 if __name__ == '__main__':
     print('Train started')
     root_data_dir = os.environ['DATA_DIR']
-    train_data_dir = os.path.join(root_data_dir, 'bidmachine_task_data')
-    train_df = pd.read_csv(os.path.join(train_data_dir, 'train_data.csv'), nrows=1000)
+    train_df = pd.read_csv(os.path.join(root_data_dir, 'rtb_classification_data.csv.gz'), compression="gzip", nrows=1000)
     print(train_df.shape[0])
     columns_subset = get_valuable_columns(train_df)
     cat_candidates = ['request_context_device_type', 'dsp', 'ssp', 'hour']

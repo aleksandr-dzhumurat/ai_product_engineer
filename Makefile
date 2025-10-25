@@ -76,3 +76,21 @@ run-tg:
 
 labelstudio:
 	uv run label-studio
+
+run-train:
+	docker run -it --rm \
+	--env-file ${CURRENT_DIR}/.env  \
+	-v "${CURRENT_DIR}/data:/srv/data" \
+	-v "${CURRENT_DIR}/dockerfiles/api/src:/srv/src" \
+	api:latest train
+
+run-service:
+	docker run -it --rm \
+	--env-file ${CURRENT_DIR}/.env  \
+	-e CONFIG_DIR=/srv/configs \
+	-p 8002:8000 \
+	-v "${CURRENT_DIR}/configs:/srv/configs" \
+	-v "${CURRENT_DIR}/data:/srv/data" \
+	-v "${CURRENT_DIR}/dockerfiles/api/src:/srv/src" \
+	-v "${CURRENT_DIR}/src:/srv/src/ml_tools" \
+	api:latest serve
