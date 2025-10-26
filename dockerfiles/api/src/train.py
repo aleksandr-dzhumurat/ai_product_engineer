@@ -1,4 +1,5 @@
 import os
+import pickle
 
 import numpy as np
 import pandas as pd
@@ -39,6 +40,10 @@ if __name__ == '__main__':
     clf = train_model(X, y)
     print(f"For object id={random_id} redicted class: {test_classifier(X, random_id)}, actual class={y[random_id]}")
 
+    output_model_path = os.path.join(root_data_dir, 'pipelines-data', 'segmentation_model.pkl')
+    with open(output_model_path, 'wb') as f:
+        pickle.dump(clf, f)
+        print(f'Model was dumped to {output_model_path}')
     # Your training code here
     # Example:
     # logger.info('Loading training data')
