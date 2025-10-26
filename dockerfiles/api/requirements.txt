@@ -8,3 +8,4 @@ uvicorn[standard]
 pydantic
 pytest
 scikit-learn
+streamlit

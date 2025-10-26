@@ -10,6 +10,9 @@ case "$1" in
   serve)
     PYTHONPATH=$(pwd)/src uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
     ;;
+  streamlit)
+    PYTHONPATH=$(pwd)/src streamlit run src/streamlit_app.py --server.port 8501
+    ;;
   hello)
     echo "Hello, engineer!"
     ;;

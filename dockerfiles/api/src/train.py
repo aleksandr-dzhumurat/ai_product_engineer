@@ -7,6 +7,7 @@ from sklearn.tree import DecisionTreeClassifier
 
 root_data_dir = '/srv/data'
 log_file_path = os.path.join(root_data_dir, 'pipelines-data/service.log')
+batch_prediction_file_path = os.path.join(root_data_dir, 'pipelines-data/batch_prediction.csv')
 
 from ml_tools.utils import setup_logger
 

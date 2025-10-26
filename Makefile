@@ -94,4 +94,19 @@ run-service:
 	-v "${CURRENT_DIR}/data:/srv/data" \
 	-v "${CURRENT_DIR}/dockerfiles/api/src:/srv/src" \
 	-v "${CURRENT_DIR}/src:/srv/src/ml_tools" \
+	--name demo_api_service \
+	--network ai_product_engineer_backtier_network \
 	api:latest serve
+
+run-streamlit:
+	docker run -it --rm \
+	--env-file ${CURRENT_DIR}/.env  \
+	-e CONFIG_DIR=/srv/configs \
+	-p 8005:8501 \
+	-v "${CURRENT_DIR}/configs:/srv/configs" \
+	-v "${CURRENT_DIR}/data:/srv/data" \
+	-v "${CURRENT_DIR}/dockerfiles/api/src:/srv/src" \
+	-v "${CURRENT_DIR}/src:/srv/src/ml_tools" \
+	--name streamlit_service \
+	--network ai_product_engineer_backtier_network \
+	api:latest streamlit
