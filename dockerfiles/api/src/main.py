@@ -30,6 +30,7 @@ class SearchResult(BaseModel):
 async def search_items(request: SearchRequest):
     # Placeholder search logic based on the request
     index_name = index_config['name']
+    # 'cough'
     search_results = search(index_name, request.text, limit=request.num)['hits']['hits']
     print(search_results[0])
     results = pretty(search_results, include_fields = ['content', 'asin'])
