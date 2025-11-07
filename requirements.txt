@@ -34,3 +34,4 @@ implicit
 google-genai
 label-studio
 catalyst
+chromadb

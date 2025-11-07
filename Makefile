@@ -110,3 +110,12 @@ run-streamlit:
 	--name streamlit_service \
 	--network ai_product_engineer_backtier_network \
 	api:latest streamlit
+
+run-chroma:
+	docker-compose --env-file .env up chroma
+
+ingest: run-chroma
+	uv run python src/ingestion.py "$(SOURCE_DIR)" \
+	  --embedding-model $(EMBED_MODEL) \
+	  --ollama-host $(OLLAMA_HOST) \
+	  --batch-size $(BATCH_SIZE)
