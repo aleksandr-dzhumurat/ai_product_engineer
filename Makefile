@@ -45,7 +45,7 @@ run-sagemaker-train:
 run-param-tuning:
 	docker run -it --rm \
 	--env-file ${CURRENT_DIR}/.env  \
-	-v "${CURRENT_DIR}/data:/srv/data" \
+	-v "${CURRENT_DIR}/data:/opt/ml/data" \
 	-v "${CURRENT_DIR}/src:/opt/ml/model" \
 	-v "${CURRENT_DIR}/src:/opt/ml/code" \
 	--network ai_product_engineer_backtier_network \
@@ -54,7 +54,7 @@ run-param-tuning:
 run-model-register:
 	docker run -it --rm \
 	--env-file ${CURRENT_DIR}/.env  \
-	-v "${CURRENT_DIR}/data:/srv/data" \
+	-v "${CURRENT_DIR}/data:/opt/ml/data" \
 	-v "${CURRENT_DIR}/src:/opt/ml/model" \
 	-v "${CURRENT_DIR}/src:/opt/ml/code" \
 	-v "${CURRENT_DIR}/configs:/opt/ml/configs" \
@@ -119,3 +119,12 @@ ingest: run-chroma
 	  --embedding-model $(EMBED_MODEL) \
 	  --ollama-host $(OLLAMA_HOST) \
 	  --batch-size $(BATCH_SIZE)
+
+rag-data-ingestion:
+	DATA_DIR=${CURRENT_DIR}/data \
+	PYTHONPATH=${CURRENT_DIR}/src \
+	CONFIG_DIR=${CURRENT_DIR}/configs \
+	RUN_ENV=LOCAL \
+	.venv/bin/python src/rag/ingestion.py  --embedding-model qwen2.5:1.5b --collection docs1 "ai_product_engineer/jupyter_notebooks"
+#	.venv/bin/python src/rag/ingestion.py "ai_product_engineer/jupyter_notebooks" --reset-collection
+#	.venv/bin/python src/rag/ipynb2md.py ${CURRENT_DIR}/jupyter_notebooks

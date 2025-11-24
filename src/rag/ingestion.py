@@ -6,18 +6,18 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
+import time
 from pathlib import Path
 from typing import Iterable, List, Sequence
 
 import chromadb
 import requests
 from chromadb.api.models.Collection import Collection
-
 from connections import get_chroma_client
 from text_processing import split_text
 
-
-DEFAULT_LOG_PATH = Path("data/md_docs/conversion_log.jsonl")
+DEFAULT_LOG_PATH = Path(os.environ.get('DATA_DIR', 'data')) / "md_docs/conversion_log.jsonl"
 
 
 def load_conversion_log(log_path: Path) -> List[dict]:
@@ -63,21 +63,55 @@ def fetch_embeddings(
     model: str,
     timeout: float,
 ) -> List[List[float]]:
+    """
+    Fetch embeddings from Ollama API.
+
+    Note: Ollama's /api/embeddings endpoint accepts one text at a time.
+    We need to make individual requests for each text.
+    """
     if not texts:
         return []
+
     url = host.rstrip("/") + "/api/embeddings"
-    response = requests.post(
-        url,
-        json={"model": model, "prompt": list(texts)},
-        timeout=timeout,
-    )
-    response.raise_for_status()
-    data = response.json()
-    embeddings = data.get("embeddings")
-    if not isinstance(embeddings, list) or len(embeddings) != len(texts):
-        raise ValueError(
-            f"Unexpected embeddings response shape: {data}"
-        )
+    embeddings = []
+
+    for idx, text in enumerate(texts):
+        # Skip empty texts
+        if not text or not text.strip():
+            print(f"Warning: Skipping empty text at index {idx}")
+            # Return zero vector for empty text
+            embeddings.append([0.0] * 384)  # Default embedding size
+            continue
+
+        try:
+            response = requests.post(
+                url,
+                json={"model": model, "prompt": text},
+                timeout=timeout,
+            )
+            response.raise_for_status()
+            data = response.json()
+
+            # Ollama returns embedding in "embeddings" or "embedding" field
+            embedding = data.get("embedding") or data.get("embeddings")
+
+            if not embedding or (isinstance(embedding, list) and len(embedding) == 0):
+                print(f"Warning: Empty embedding for text at index {idx} (length: {len(text)})")
+                print(f"Text preview: {text[:100]}...")
+                print(f"Response: {data}")
+                # Use zero vector as fallback
+                if embeddings:
+                    embedding = [0.0] * len(embeddings[0])
+                else:
+                    embedding = [0.0] * 384  # Default size
+
+            embeddings.append(embedding)
+
+        except Exception as e:
+            print(f"Error fetching embedding for text {idx}: {e}")
+            print(f"Text preview: {text[:100]}...")
+            raise
+
     return embeddings
 
 
@@ -119,14 +153,23 @@ def ingest_from_log(
     ollama_host: str,
     request_timeout: float,
 ) -> int:
-    collection = client.get_or_create_collection(collection_name)
+    # Try to get existing collection, or create new one
+    try:
+        collection = client.get_collection(collection_name)
+        print(f"Using existing collection: {collection_name}")
+    except Exception:
+        # Create new collection - ChromaDB will auto-detect dimensions from first insert
+        print(f"Creating new collection: {collection_name}")
+        collection = client.create_collection(collection_name)
 
     documents: List[str] = []
     metadatas: List[dict[str, str]] = []
     ids: List[str] = []
     total_chunks = 0
 
-    for entry in entries:
+    for n, entry in enumerate(entries):
+        if n % 2 == 0:
+            print(f'{n} from {len(entries)}')
         destination = entry.get("desctination_file")
         source_dir = entry.get("source_dir", "")
         source_file = entry.get("source_file_name", "")
@@ -176,7 +219,7 @@ def ingest_from_log(
             timeout=request_timeout,
         )
 
-    client.persist()
+    # Note: HttpClient doesn't have persist() - data is automatically persisted by the server
     return total_chunks
 
 
@@ -200,6 +243,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "--collection",
         default="documents",
         help="ChromaDB collection name (default: documents).",
+    )
+    parser.add_argument(
+        "--reset-collection",
+        action="store_true",
+        help="Delete and recreate the collection if it exists (useful for dimension changes).",
     )
     parser.add_argument(
         "--batch-size",
@@ -245,14 +293,24 @@ def main(argv: Sequence[str] | None = None) -> None:
     log_path = Path(args.log_path).expanduser()
     entries = load_conversion_log(log_path)
 
-    filtered_entries = [entry for entry in entries if entry.get("source_dir") == args.directory]
+    filtered_entries = [entry for entry in entries if args.directory in entry["source_dir"]]
     if not filtered_entries:
         raise SystemExit(
             f"No entries found in {log_path} with source_dir = '{args.directory}'."
         )
 
-    persist_dir = Path(args.persist_dir).expanduser()
-    client = get_chroma_client(persist_dir)
+    # Connect to ChromaDB service (persist_dir is no longer used)
+    client = get_chroma_client()
+
+    # Handle collection reset if requested
+    if args.reset_collection:
+        try:
+            client.delete_collection(args.collection)
+            print(f"Deleted existing collection: {args.collection}")
+            # Give ChromaDB server time to process the deletion
+            time.sleep(1)
+        except Exception as e:
+            print(f"No existing collection to delete: {e}")
 
     total = ingest_from_log(
         filtered_entries,
@@ -268,7 +326,7 @@ def main(argv: Sequence[str] | None = None) -> None:
 
     print(
         f"Ingested {total} chunks from {len(filtered_entries)} files into collection "
-        f"'{args.collection}' at {persist_dir}"
+        f"'{args.collection}'"
     )
 
 

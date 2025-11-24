@@ -7,14 +7,8 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import sys
 from pathlib import Path
-from typing import Any, Iterable, List, Optional
-
-REPO_ROOT = Path(__file__).resolve().parents[1]
-SRC_PATH = REPO_ROOT / "src"
-if str(SRC_PATH) not in sys.path:
-    sys.path.insert(0, str(SRC_PATH))
+from typing import Any, Iterable, List
 
 from text_processing import record_conversion  # noqa: E402
 

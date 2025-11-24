@@ -4,13 +4,40 @@ Query documents stored in a ChromaDB collection.
 from __future__ import annotations
 
 import argparse
-from pathlib import Path
-from typing import Sequence
+from typing import List, Sequence
 
-from chromadb.errors import InvalidCollectionException
+import requests
 from chromadb.api.models.Collection import Collection
-
 from connections import get_chroma_client
+
+
+def fetch_query_embedding(query: str, host: str, model: str, timeout: float = 60.0) -> List[float]:
+    """
+    Fetch embedding for a query from Ollama.
+
+    Args:
+        query: The query text to embed
+        host: Ollama host URL
+        model: Ollama model name
+        timeout: Request timeout in seconds
+
+    Returns:
+        Embedding vector for the query
+    """
+    url = host.rstrip("/") + "/api/embeddings"
+    response = requests.post(
+        url,
+        json={"model": model, "prompt": query},
+        timeout=timeout,
+    )
+    response.raise_for_status()
+    data = response.json()
+
+    embedding = data.get("embedding") or data.get("embeddings")
+    if not embedding:
+        raise ValueError(f"No embedding found in response: {data}")
+
+    return embedding
 
 
 def query_collection(
@@ -18,15 +45,39 @@ def query_collection(
     query: str,
     limit: int,
     include_distances: bool,
+    query_embedding: List[float] | None = None,
 ) -> dict:
+    """
+    Query the collection with either text or embedding.
+
+    Args:
+        collection: ChromaDB collection
+        query: Query text (used if query_embedding is None)
+        limit: Number of results
+        include_distances: Whether to include distances
+        query_embedding: Pre-computed embedding vector (optional)
+
+    Returns:
+        Query results dictionary
+    """
     include = ["documents", "metadatas"]
     if include_distances:
         include.append("distances")
-    return collection.query(
-        query_texts=[query],
-        n_results=limit,
-        include=include,
-    )
+
+    if query_embedding:
+        # Use embedding-based query (more accurate)
+        return collection.query(
+            query_embeddings=[query_embedding],
+            n_results=limit,
+            include=include,
+        )
+    else:
+        # Fallback to text query (ChromaDB will use its default embedding)
+        return collection.query(
+            query_texts=[query],
+            n_results=limit,
+            include=include,
+        )
 
 
 def print_results(results: dict, include_distances: bool) -> None:
@@ -79,25 +130,51 @@ def build_arg_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Do not display similarity distances.",
     )
+    parser.add_argument(
+        "--embedding-model",
+        default="granite4:350m",
+        help="Ollama embedding model (default: granite4:350m).",
+    )
+    parser.add_argument(
+        "--ollama-host",
+        default="http://localhost:11434",
+        help="Ollama API host (default: http://localhost:11434).",
+    )
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> None:
     parser = build_arg_parser()
     args = parser.parse_args(argv)
-
-    persist_dir = Path(args.persist_dir).expanduser()
-    client = get_chroma_client(persist_dir)
+    client = get_chroma_client()
 
     try:
         collection = client.get_collection(args.collection)
-    except InvalidCollectionException as exc:
+    except Exception as exc:
         raise SystemExit(
-            f"Collection '{args.collection}' was not found in {persist_dir}. "
-            "Ingest documents first using src/ingestion.py."
+            f"Collection '{args.collection}' was not found. "
+            "Ingest documents first using src/rag/ingestion.py."
         ) from exc
 
-    results = query_collection(collection, args.query, args.limit, include_distances=not args.no_distances)
+    # Fetch query embedding from Ollama
+    print(f"Generating embedding for query: '{args.query}'")
+    query_embedding = fetch_query_embedding(
+        args.query,
+        host=args.ollama_host,
+        model=args.embedding_model,
+    )
+    print(f"Embedding dimension: {len(query_embedding)}")
+    print(f"Searching in collection: {args.collection}")
+    print()
+
+    # Query the collection
+    results = query_collection(
+        collection,
+        args.query,
+        args.limit,
+        include_distances=not args.no_distances,
+        query_embedding=query_embedding,
+    )
     print_results(results, include_distances=not args.no_distances)
 
 

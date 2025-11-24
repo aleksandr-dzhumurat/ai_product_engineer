@@ -13,7 +13,7 @@ from bidmachine.utils import get_model, get_valuable_columns
 
 mlflow.set_tracking_uri("http://mlflow_container_ui:8000")
 print('MLFlow connected successfully')
-HPO_EXPERIMENT_NAME = "catboost-params"
+HPO_EXPERIMENT_NAME = "catboost-params-1"
 try:
     mlflow.create_experiment(HPO_EXPERIMENT_NAME, artifact_location="s3://mlflow")
 except mlflow.exceptions.RestException as e:

@@ -35,3 +35,6 @@ google-genai
 label-studio
 catalyst
 chromadb
+langchain
+langchain-text-splitters
+langchain_huggingface

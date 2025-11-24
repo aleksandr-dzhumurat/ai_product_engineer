@@ -4,16 +4,21 @@ Utility helpers for text processing tasks.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Sequence
 
 try:
-    from langchain.text_splitter import RecursiveCharacterTextSplitter
+    from langchain_text_splitters import RecursiveCharacterTextSplitter
 except ImportError:  # pragma: no cover
-    RecursiveCharacterTextSplitter = None  # type: ignore[assignment]
+    try:
+        # Fallback for older langchain versions
+        from langchain.text_splitter import RecursiveCharacterTextSplitter
+    except ImportError:
+        RecursiveCharacterTextSplitter = None  # type: ignore[assignment]
 
 
-DEFAULT_CONVERSION_LOG = Path("data/md_docs/conversion_log.jsonl")
+DEFAULT_CONVERSION_LOG = Path(os.environ.get('DATA_DIR', 'data')) / "md_docs/conversion_log.jsonl"
 
 
 def split_text(

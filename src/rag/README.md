@@ -1,13 +1,8 @@
 # Utility Scripts
 
-### Interview History Export
-- `python3 scripts/process_interview.py ~/Downloads/Interview_History_Ashby.mhtml`
-- `python3 scripts/chart_interviews.py data/interview_history.csv --reference-date 2025-10-09`
-- `python3 scripts/sum_interview_hours.py data/interview_history.csv --reference-date 2025-10-09`
-
 ### Notebook → Markdown
 - Convert a single notebook: `python3 scripts/ipynb2md.py path/to/notebook.ipynb`
-- Convert a directory: `python3 scripts/ipynb2md.py /path/to/notebooks/` (outputs flat files under `data/md_docs/`)
+- Convert a directory: `python3 src/rag/ipynb2md.py $(pwd)/jupyter_notebooks` (outputs flat files under `data/md_docs/`)
 - Each conversion appends a JSON entry to `data/md_docs/conversion_log.jsonl` with `source_dir`, `source_file_name`, and `desctination_file` for checkpointing.
 
 ### Text Processing
@@ -46,6 +41,11 @@
   ```
 - Ingest converted notebooks (filters by `source_dir` in `data/md_docs/conversion_log.jsonl`):
   ```bash
-  uv run python src/ingestion.py "/Users/adzhumurat/PycharmProjects/ai_product_engineer/jupyter_notebooks"
+  ./.venv/bin/python src/rag/ingestion.py "ai_product_engineer/jupyter_notebooks" --embedding-model qwen3:0.6b --collection docs1
   ```
 - `src/ingestion.py` batches chunks (default 50) and for each batch calls Ollama’s embedding API (default model `granite4:350m`) before upserting into Chroma. Tune the batch/embedding parameters via CLI flags (`--batch-size`, `--chunk-size`, `--chunk-overlap`, `--embedding-model`, `--ollama-host`, `--request-timeout`).
+
+Check ingestion
+```shell
+ .venv/bin/python src/rag/retrieve.py "что такое антиградиент" --limit 3
+ ```

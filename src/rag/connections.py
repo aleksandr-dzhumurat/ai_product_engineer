@@ -3,31 +3,38 @@ Shared helpers for working with external services (e.g., ChromaDB).
 """
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Any, Dict
+import os
 
 import chromadb
-from chromadb.config import Settings
 
 
-def get_chroma_client(persist_dir: str | Path, **settings_overrides: Any) -> chromadb.Client:
+def get_chroma_client(
+    host: str | None = None,
+    port: int = 8000,
+) -> chromadb.Client:
     """
-    Create (and ensure) a persistent ChromaDB client rooted at ``persist_dir``.
+    Create a ChromaDB HTTP client to connect to the service.
 
     Args:
-        persist_dir: Directory where ChromaDB should persist its data.
-        **settings_overrides: Optional keyword overrides passed to ``Settings``.
+        host: ChromaDB service host (default: from CHROMA_HOST env or 'localhost').
+        port: ChromaDB service port (default: from CHROMA_PORT env or 8000).
 
     Returns:
-        Configured ``chromadb.Client`` instance.
+        Configured ``chromadb.HttpClient`` instance.
+
+    Examples:
+        # Connect to Chroma service
+        client = get_chroma_client(host="chroma", port=8000)
+
+        # Auto-detect from environment (CHROMA_HOST, CHROMA_PORT)
+        client = get_chroma_client()
     """
-    persist_path = Path(persist_dir).expanduser()
-    persist_path.mkdir(parents=True, exist_ok=True)
+    # Get host from parameter or environment
+    if host is None:
+        host = os.getenv('CHROMA_HOST', 'localhost')
 
-    settings: Dict[str, Any] = {
-        "chroma_db_impl": "duckdb+parquet",
-        "persist_directory": str(persist_path),
-    }
-    settings.update(settings_overrides)
+    # Get port from environment or use default
+    chroma_port = int(os.getenv('CHROMA_PORT', str(port)))
 
-    return chromadb.Client(Settings(**settings))
+    print(f"Connecting to ChromaDB service at http://{host}:{chroma_port}")
+    return chromadb.HttpClient(host=host, port=chroma_port)
