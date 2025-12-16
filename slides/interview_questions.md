@@ -113,7 +113,7 @@ $$\bar{x} = \frac{1}{n}\sum x_i$$
 - Variance:
 
 $$s^2 = \frac{1}{n-1}\sum(x_i - \bar{x})^2$$
-
+ 
 - Standard Deviation:
 
 $$s = \sqrt{s^2}$$
