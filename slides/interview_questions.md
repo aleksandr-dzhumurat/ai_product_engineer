@@ -30,7 +30,7 @@ $$\bar{X}_n \to \mathbb{E}[X] \quad \text{when } n \to \infty$$
 
 **What it states:** Sum (or scaled mean) of i.i.d. random variables → Normal distribution
 
-$\frac{\sum X_i - n\mathbb{E}[X]}{\sqrt{n\text{Var}(X)}} \xrightarrow{d} N(0,1)$
+$$\frac{\sum X_i - n\mathbb{E}[X]}{\sqrt{n\text{Var}(X)}} \xrightarrow{d} N(0,1)$$
 
 **Intuition:** Even if X is skewed/discrete, sum of many X's looks like bell curve.
 
@@ -238,6 +238,7 @@ $$r = \frac{\sum(x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum(x_i - \bar{x})^2 \sum
 ### Cramér's V (Categorical ↔ Categorical)
 
 **Formula:**
+
 $$V = \sqrt{\frac{\chi^2}{n \cdot \min(k-1, r-1)}}$$
 
 Where:
@@ -263,6 +264,7 @@ Where:
 ### Point-Biserial (Binary ↔ Numerical)
 
 **Formula:**
+
 $$r_{pb} = \frac{M_1 - M_0}{s_n} \sqrt{\frac{n_1 \cdot n_0}{n^2}}$$
 
 Where:
@@ -280,6 +282,7 @@ Where:
 ### Correlation Ratio (η - Eta)
 
 **Formula:**
+
 $$\eta^2 = \frac{SS_{between}}{SS_{total}} = \frac{\sum n_k(\bar{y}_k - \bar{y})^2}{\sum(y_i - \bar{y})^2}$$
 
 **Range:** [0, 1]
@@ -576,9 +579,11 @@ Set threshold to minimize total cost.
 
 **Mathematical Foundation:**
 Models probability using sigmoid function:
+
 $$P(y=1|x) = \frac{1}{1 + e^{-(\beta_0 + \beta_1x_1 + ... + \beta_nx_n)}}$$
 
 **Loss Function (Log-Loss):**
+
 $$J(\beta) = -\frac{1}{n}\sum_{i=1}^{n}\left[y_i \log(p_i) + (1-y_i)\log(1-p_i)\right]$$
 
 **Regularized Versions:**
