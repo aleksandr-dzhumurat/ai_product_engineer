@@ -3828,34 +3828,7 @@ Agent:
 
 ## Bonus Tasks
 
-### Task 1: Fair Coin Predictions
-
-**Dataset:**
-- 1000 samples
-- 90 positive (9%)
-- 910 negative (91%)
-
-**Prediction: Fair coin flip (50/50)**
-
-**Expected outcomes:**
-- E[TP] = 90 × 0.5 = 45
-- E[FN] = 90 × 0.5 = 45
-- E[TN] = 910 × 0.5 = 455
-- E[FP] = 910 × 0.5 = 455
-
-**Precision:**
-$$\text{Precision} = \frac{TP}{TP + FP} = \frac{45}{45 + 455} = \frac{45}{500} = 0.09 = 9\%$$
-
-**Recall:**
-$$\text{Recall} = \frac{TP}{TP + FN} = \frac{45}{45 + 45} = \frac{45}{90} = 0.5 = 50\%$$
-
-**Answer:**
-- **Precision = 9%** (same as base rate!)
-- **Recall = 50%** (random guessing catches half)
-
----
-
-### Task 2: Junior DS Model Evaluation
+### Task 1: Model Evaluation
 
 **Test Set:**
 - 45K samples class 1
@@ -3912,6 +3885,34 @@ $$FP = 5000$$
 4. ✅ Retrain properly
 
 ---
+
+### Task 2: Fair Coin Predictions
+
+**Dataset:**
+- 1000 samples
+- 90 positive (9%)
+- 910 negative (91%)
+
+**Prediction: Fair coin flip (50/50)**
+
+**Expected outcomes:**
+- E[TP] = 90 × 0.5 = 45
+- E[FN] = 90 × 0.5 = 45
+- E[TN] = 910 × 0.5 = 455
+- E[FP] = 910 × 0.5 = 455
+
+**Precision:**
+$$\text{Precision} = \frac{TP}{TP + FP} = \frac{45}{45 + 455} = \frac{45}{500} = 0.09 = 9\%$$
+
+**Recall:**
+$$\text{Recall} = \frac{TP}{TP + FN} = \frac{45}{45 + 45} = \frac{45}{90} = 0.5 = 50\%$$
+
+**Answer:**
+- **Precision = 9%** (same as base rate!)
+- **Recall = 50%** (random guessing catches half)
+
+---
+
 
 ### Task 3: Order Acceptance Probability
 

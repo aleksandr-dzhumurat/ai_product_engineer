@@ -1,6 +1,7 @@
 # Logistic regression
 
 * [Jupyter Notebook](../jupyter_notebooks/vol_00_pre_requirements_02_machine_learning_classification.ipynb)
+* [Naive bayes classifier](../jupyter_notebooks/vol_04_deep_dive_00_probability_hw_2_naive_bayes_solved.ipynb)
 
 
 ## Logistic regression: simple case
