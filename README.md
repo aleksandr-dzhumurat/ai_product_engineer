@@ -16,3 +16,8 @@
 
 
 [![Лекция 01 vol 1: введение в ML. Изучаем линейную регрессию](http://img.youtube.com/vi/sCIegfIcl10/0.jpg)](http://www.youtube.com/watch?v=sCIegfIcl10 "Лекция 01 vol 1: введение в ML. Изучаем линейную регрессию")
+
+* [cracking linear regression](slides/cracking_linear_regression.md)
+
+
+[![Лекция 01 vol 2: CRISP-DM](http://img.youtube.com/vi/7_ua8tWjQtA/0.jpg)](http://www.youtube.com/watch?v=7_ua8tWjQtA "Лекция 01 vol 2: CRISP-DM")
