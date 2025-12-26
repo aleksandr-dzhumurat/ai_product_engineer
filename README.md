@@ -122,10 +122,10 @@ TG канал где я [пишу о продуктовом ML](https://t.me/loc
 
 | Материалы | Видео |
 |-----------|-------|
-| [jupyter notebook](jupyter_notebooks/vol_03_sys_design_01_recommendation_system.ipynb) | [![Лекция 08 vol 01: Введение в рекомендательные системы: content-based](http://img.youtube.com/vi/QQaCfwuR8gE/0.jpg)](http://www.youtube.com/watch?v=QQaCfwuR8gE "Лекция 08 vol 01: Введение в рекомендательные системы: content-based") |
+| • [jupyter notebook](jupyter_notebooks/vol_03_sys_design_01_recommendation_system.ipynb)<br>• [Recsys, Search, Ranking reading list](https://cold-scallion-5b8.notion.site/Recsys-Search-Ranking-ccbf1b9863ef4701a483a1585c8b51f1)| [![Лекция 08 vol 01: Введение в рекомендательные системы: content-based](http://img.youtube.com/vi/QQaCfwuR8gE/0.jpg)](http://www.youtube.com/watch?v=QQaCfwuR8gE "Лекция 08 vol 01: Введение в рекомендательные системы: content-based") |
 
 ## Лекция 09: Telegram бот + AI agent
 
 | Материалы | Видео |
 |-----------|-------|
-| • [Google ADK Agent](dockerfiles/agent)<br>•  | [![Лекция 09: Telegram бот + AI agent](http://img.youtube.com/vi/CJAptUEGojA/0.jpg)](http://www.youtube.com/watch?v=CJAptUEGojA "Лекция 09: Telegram бот + AI agent") |
+| [Google ADK Agent](dockerfiles/agent) | [![Лекция 09: Telegram бот + AI agent](http://img.youtube.com/vi/CJAptUEGojA/0.jpg)](http://www.youtube.com/watch?v=CJAptUEGojA "Лекция 09: Telegram бот + AI agent") |
