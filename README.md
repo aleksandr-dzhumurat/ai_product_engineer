@@ -71,3 +71,18 @@
 ## Лекция 06 vol 01: Поиск. ElasticSearch
 
 [![Лекция 06 vol 01: Поиск. ElasticSearch](http://img.youtube.com/vi/aD6q_KAq6LU/0.jpg)](http://www.youtube.com/watch?v=aD6q_KAq6LU "Лекция 06 vol 01: Поиск. ElasticSearch")
+
+## Лекция 07: AI агенты
+
+
+[![Лекция 07: AI агенты](http://img.youtube.com/vi/5RabCJMPJE8/0.jpg)](http://www.youtube.com/watch?v=5RabCJMPJE8 "Лекция 07: AI агенты")
+
+## Лекция 08 vol 01: Введение в рекомендательные системы: content-based
+
+
+[![Лекция 08 vol 01: Введение в рекомендательные системы: content-based](http://img.youtube.com/vi/QQaCfwuR8gE/0.jpg)](http://www.youtube.com/watch?v=QQaCfwuR8gE "Лекция 08 vol 01: Введение в рекомендательные системы: content-based")
+
+## Лекция 09: Telegram бот + AI agent
+
+
+[![Лекция 09: Telegram бот + AI agent](http://img.youtube.com/vi/CJAptUEGojA/0.jpg)](http://www.youtube.com/watch?v=CJAptUEGojA "Лекция 09: Telegram бот + AI agent")
