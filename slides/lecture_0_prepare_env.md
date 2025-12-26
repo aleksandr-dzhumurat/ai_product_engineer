@@ -1,3 +1,5 @@
+[![Лекция 04 vol 1: Организация кода в ML проектах](http://img.youtube.com/vi/yFGYz8XAw30/0.jpg)](http://www.youtube.com/watch?v=yFGYz8XAw30 "Лекция 04 vol 1: Организация кода в ML проектах")
+
 start with [installing uv](https://docs.astral.sh/uv/getting-started/installation/)
 
 Creating python environment 
