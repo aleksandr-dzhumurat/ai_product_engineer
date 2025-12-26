@@ -76,7 +76,7 @@ TG канал где я [пишу о продуктовом ML](https://t.me/loc
 
 | Материалы | Видео |
 |-----------|-------|
-| [jupyter notebook](jupyter_notebooks/vol_01_ml_products_02_machine_learning_production_docker.ipynb)<br><br>Рассказ про system design, логирование, мониторинг. | [![Лекция 02 vol 1: Вывод модели в продакшн: чеклист](http://img.youtube.com/vi/xXCzeXK3y80/0.jpg)](http://www.youtube.com/watch?v=xXCzeXK3y80 "Лекция 02 vol 1: Вывод модели в продакшн: чеклист") |
+| [machine_learning_production_docker.ipynb](jupyter_notebooks/vol_01_ml_products_02_machine_learning_production_docker.ipynb)<br><br>Рассказ про system design, логирование, мониторинг. | [![Лекция 02 vol 1: Вывод модели в продакшн: чеклист](http://img.youtube.com/vi/xXCzeXK3y80/0.jpg)](http://www.youtube.com/watch?v=xXCzeXK3y80 "Лекция 02 vol 1: Вывод модели в продакшн: чеклист") |
 
 ### Лекция 02 vol 2: Вывод модели в продакшн: упаковка Docker. Streamlit
 
