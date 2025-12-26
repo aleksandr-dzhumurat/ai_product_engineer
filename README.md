@@ -86,7 +86,7 @@ TG канал где я [пишу о продуктовом ML](https://t.me/loc
 
 | Материалы | Видео |
 |-----------|-------|
-| [jupyter notebook](jupyter_notebooks/vol_01_ml_products_03_nlp_problems.ipynb) | [![Лекция 03 vol 1 Векторизация текста Bag of Words](http://img.youtube.com/vi/h0XiVQ-OvOI/0.jpg)](http://www.youtube.com/watch?v=h0XiVQ-OvOI "Лекция 03 vol 1 Векторизация текста Bag of Words") |
+| [nlp_problems.ipynb](jupyter_notebooks/vol_01_ml_products_03_nlp_problems.ipynb) | [![Лекция 03 vol 1 Векторизация текста Bag of Words](http://img.youtube.com/vi/h0XiVQ-OvOI/0.jpg)](http://www.youtube.com/watch?v=h0XiVQ-OvOI "Лекция 03 vol 1 Векторизация текста Bag of Words") |
 
 ### Лекция 03 vol 2. Векторизация текста Word2Vec Transformers
 
@@ -110,20 +110,20 @@ TG канал где я [пишу о продуктовом ML](https://t.me/loc
 
 | Материалы | Видео |
 |-----------|-------|
-| • [jupyter notebook](jupyter_notebooks/vol_01_ml_products_01_ML_project_flow.ipynb) | [![Лекция 04 vol 2: Стадии CRISP-DM, создаем систему модерации контента](http://img.youtube.com/vi/NZrgApPYkpk/0.jpg)](http://www.youtube.com/watch?v=NZrgApPYkpk "Лекция 04 vol 2: Стадии CRISP-DM, создаем систему модерации контента") |
+| [ML_project_flow.ipynb](jupyter_notebooks/vol_01_ml_products_01_ML_project_flow.ipynb) | [![Лекция 04 vol 2: Стадии CRISP-DM, создаем систему модерации контента](http://img.youtube.com/vi/NZrgApPYkpk/0.jpg)](http://www.youtube.com/watch?v=NZrgApPYkpk "Лекция 04 vol 2: Стадии CRISP-DM, создаем систему модерации контента") |
 
 ## Лекция 05: Трекинг экспериментов. MLFlow.
 
 | Материалы | Видео |
 |-----------|-------|
-| • Разбираем код логирования экспериментов [parameters_tuning.py](src/parameters_tuning.py)<br>• [jupyter notebook](jupyter_notebooks/vol_01_ml_products_02_mflow_powered_classifier.ipynb)| [![Лекция 05: Трекинг экспериментов. MLFlow. MlOps.](http://img.youtube.com/vi/Zeo6fqrTc1A/0.jpg)](http://www.youtube.com/watch?v=Zeo6fqrTc1A "Лекция 05: Трекинг экспериментов. MLFlow.") |
+| • Разбираем код логирования экспериментов [parameters_tuning.py](src/parameters_tuning.py)<br>• [mflow_powered_classifier.ipynb](jupyter_notebooks/vol_01_ml_products_02_mflow_powered_classifier.ipynb)| [![Лекция 05: Трекинг экспериментов. MLFlow. MlOps.](http://img.youtube.com/vi/Zeo6fqrTc1A/0.jpg)](http://www.youtube.com/watch?v=Zeo6fqrTc1A "Лекция 05: Трекинг экспериментов. MLFlow.") |
 
 
 ## Лекция 06 vol 01: Поиск. ElasticSearch
 
 | Материалы | Видео |
 |-----------|-------|
-| [Jupyter notebook](jupyter_notebooks/vol_02_ml_products_01_search.ipynb) | [![Лекция 06 vol 01: Поиск. ElasticSearch](http://img.youtube.com/vi/aD6q_KAq6LU/0.jpg)](http://www.youtube.com/watch?v=aD6q_KAq6LU "Лекция 06 vol 01: Поиск. ElasticSearch") |
+| [ml_products_01_search.ipynb](jupyter_notebooks/vol_02_ml_products_01_search.ipynb) | [![Лекция 06 vol 01: Поиск. ElasticSearch](http://img.youtube.com/vi/aD6q_KAq6LU/0.jpg)](http://www.youtube.com/watch?v=aD6q_KAq6LU "Лекция 06 vol 01: Поиск. ElasticSearch") |
 
 ## Лекция 07: AI агенты
 
@@ -135,10 +135,10 @@ TG канал где я [пишу о продуктовом ML](https://t.me/loc
 
 | Материалы | Видео |
 |-----------|-------|
-| • [jupyter notebook](jupyter_notebooks/vol_03_sys_design_01_recommendation_system.ipynb)<br>• [Recsys, Search, Ranking reading list](https://cold-scallion-5b8.notion.site/Recsys-Search-Ranking-ccbf1b9863ef4701a483a1585c8b51f1)| [![Лекция 08 vol 01: Введение в рекомендательные системы: content-based](http://img.youtube.com/vi/QQaCfwuR8gE/0.jpg)](http://www.youtube.com/watch?v=QQaCfwuR8gE "Лекция 08 vol 01: Введение в рекомендательные системы: content-based") |
+| • [recommendation_system.ipynb](jupyter_notebooks/vol_03_sys_design_01_recommendation_system.ipynb)<br>• [Recsys, Search, Ranking reading list](https://cold-scallion-5b8.notion.site/Recsys-Search-Ranking-ccbf1b9863ef4701a483a1585c8b51f1)| [![Лекция 08 vol 01: Введение в рекомендательные системы: content-based](http://img.youtube.com/vi/QQaCfwuR8gE/0.jpg)](http://www.youtube.com/watch?v=QQaCfwuR8gE "Лекция 08 vol 01: Введение в рекомендательные системы: content-based") |
 
 ## Лекция 09: Telegram бот + AI agent
 
 | Материалы | Видео |
 |-----------|-------|
-| [Google ADK Agent](dockerfiles/agent) | [![Лекция 09: Telegram бот + AI agent](http://img.youtube.com/vi/CJAptUEGojA/0.jpg)](http://www.youtube.com/watch?v=CJAptUEGojA "Лекция 09: Telegram бот + AI agent") |
+| [Google ADK framework](dockerfiles/agent) | [![Лекция 09: Telegram бот + AI agent](http://img.youtube.com/vi/CJAptUEGojA/0.jpg)](http://www.youtube.com/watch?v=CJAptUEGojA "Лекция 09: Telegram бот + AI agent") |
