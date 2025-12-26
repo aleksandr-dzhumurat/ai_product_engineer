@@ -4,9 +4,9 @@
 
 Курс включает
 
-* базовый ML - разбираем основые основные алгоримы (c формулами!)
-* воркшопы по ML тулам: MLFlow, Streamlit, 
-* сервисы и их взаимодействие: Docker, FastAPI, PineCone, Telegram как пользовательский интерфейc
+* базовый ML - разбираем основые основные алгоримы (c формулами!) и ML библитеки (от scikit-learn до Transformers)
+* воркшопы по ML тулам: MLFlow, Streamlit, hyperopt.
+* сервисы и их взаимодействие: Docker, S3 (minIO), FastAPI, PineCone, Telegram как пользовательский интерфейc
 
 Курс полностью доступен в google collab
 Если хотите запускать локально - требуется подготовить [локальное окружение](slides/lecture_0_prepare_env.md)
@@ -44,11 +44,15 @@ TG канал где я [пишу о продуктовом ML](https://t.me/loc
 
 Базовая лекция про этапы ML проекта - пригодится при разработке курсового проекта.
 
-ML в проде
+## ML в проде
+
+Как проводить демки - создание http сервисов и другие хитрости.
 
 ### Лекция 02 vol 1: Вывод модели в продакшн: чеклист
 
 [![Лекция 02 vol 1: Вывод модели в продакшн: чеклист](http://img.youtube.com/vi/xXCzeXK3y80/0.jpg)](http://www.youtube.com/watch?v=xXCzeXK3y80 "Лекция 02 vol 1: Вывод модели в продакшн: чеклист")
+
+[jupyter notebook](jupyter_notebooks/vol_01_ml_products_02_machine_learning_production_docker.ipynb)
 
 Рассказ про system design, логирование, мониторинг.
 
@@ -121,3 +125,5 @@ ML в проде
 
 
 [![Лекция 09: Telegram бот + AI agent](http://img.youtube.com/vi/CJAptUEGojA/0.jpg)](http://www.youtube.com/watch?v=CJAptUEGojA "Лекция 09: Telegram бот + AI agent")
+
+[Google ADK](dockerfiles/agent)
