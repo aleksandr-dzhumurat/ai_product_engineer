@@ -74,6 +74,9 @@ ML в проде
 
 [![Лекция 03 vol 2. Векторизация текста Word2Vec Transformers](http://img.youtube.com/vi/csqW3HF_3p8/0.jpg)](http://www.youtube.com/watch?v=csqW3HF_3p8 "Лекция 03 vol 2. Векторизация текста Word2Vec Transformers")
 
+* [ollama embeddings](jupyter_notebooks/vol_02_ml_products_03_knowledgebase_rag.ipynb)
+* [basic rag](jupyter_notebooks/vol_02_ml_products_02_search_rag.ipynb)
+
 ## ML: от моделей к проектам
 
 Как провести этап моделирования
@@ -93,7 +96,7 @@ ML в проде
 
 [![Лекция 05: Трекинг экспериментов. MLFlow. MlOps.](http://img.youtube.com/vi/Zeo6fqrTc1A/0.jpg)](http://www.youtube.com/watch?v=Zeo6fqrTc1A "Лекция 05: Трекинг экспериментов. MLFlow.")
 
-Разбираем код логирования экспериментов [](src/parameters_tuning.py)
+Разбираем код логирования экспериментов [parameters_tuning.py](src/parameters_tuning.py)
 
 
 ## Лекция 06 vol 01: Поиск. ElasticSearch
@@ -111,6 +114,8 @@ ML в проде
 
 
 [![Лекция 08 vol 01: Введение в рекомендательные системы: content-based](http://img.youtube.com/vi/QQaCfwuR8gE/0.jpg)](http://www.youtube.com/watch?v=QQaCfwuR8gE "Лекция 08 vol 01: Введение в рекомендательные системы: content-based")
+
+[jupyter notebook](jupyter_notebooks/vol_03_sys_design_01_recommendation_system.ipynb)
 
 ## Лекция 09: Telegram бот + AI agent
 
