@@ -87,9 +87,9 @@ TG канал где я [пишу о продуктовом ML](https://t.me/loc
 
 ### Лекция 04 vol 1: Организация кода в ML проектах
 
-| Видео |
-|-------|
-| [![Лекция 04 vol 1: Организация кода в ML проектах](http://img.youtube.com/vi/yFGYz8XAw30/0.jpg)](http://www.youtube.com/watch?v=yFGYz8XAw30 "Лекция 04 vol 1: Организация кода в ML проектах") |
+| Материалы | Видео |
+|-----------|-------|
+| [Подготовка окружения](slides/lecture_0_prepare_env.md) | [![Лекция 04 vol 1: Организация кода в ML проектах](http://img.youtube.com/vi/yFGYz8XAw30/0.jpg)](http://www.youtube.com/watch?v=yFGYz8XAw30 "Лекция 04 vol 1: Организация кода в ML проектах") |
 
 ### Лекция 04 vol 2: Стадии CRISP-DM, создаем систему модерации контента
 
@@ -112,9 +112,9 @@ TG канал где я [пишу о продуктовом ML](https://t.me/loc
 
 ## Лекция 07: AI агенты
 
-| Видео |
-|-------|
-| [![Лекция 07: AI агенты](http://img.youtube.com/vi/5RabCJMPJE8/0.jpg)](http://www.youtube.com/watch?v=5RabCJMPJE8 "Лекция 07: AI агенты") |
+| Материалы | Видео |
+|-----------|-------|
+| [Building a production-ready AI travel agent using Google ADK and Langfuse](https://medium.com/@alexandrdzhumurat/building-a-production-ready-ai-travel-agent-using-google-adk-and-langfuse-fc08f8ac1b3c) | [![Лекция 07: AI агенты](http://img.youtube.com/vi/5RabCJMPJE8/0.jpg)](http://www.youtube.com/watch?v=5RabCJMPJE8 "Лекция 07: AI агенты") |
 
 ## Лекция 08 vol 01: Введение в рекомендательные системы: content-based
 
