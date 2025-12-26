@@ -8,15 +8,15 @@
 * воркшопы по ML тулам: MLFlow, Streamlit, Langfuse, hyperopt.
 * сервисы и их взаимодействие: Docker, S3 (minIO), FastAPI, PineCone, Telegram как пользовательский интерфейc, Ollama
 
-Курс полностью доступен в google collab
-Если хотите запускать локально - требуется подготовить [локальное окружение](slides/lecture_0_prepare_env.md)
-
-Ссылка на данные для курса - её надо скопировать к себе [google drive](https://drive.google.com/drive/folders/1FMLKfNZZyFgzOhWjOiyeN3XvCsjT5-ET)
-
-
-[Вопросы к экзамену](slides/lecture_0_prepare_env.md) - тут по факту список вопросов для собесов
+Ресурсы
+* Курс полностью доступен в google collab
+* Если хотите запускать локально - требуется подготовить [локальное окружение](slides/lecture_0_prepare_env.md)
+* Ссылка на данные для курса - её надо скопировать к себе [google drive](https://drive.google.com/drive/folders/1FMLKfNZZyFgzOhWjOiyeN3XvCsjT5-ET)
+* [Вопросы к экзамену](slides/lecture_0_prepare_env.md) - тут по факту список вопросов для собесов
 
 TG канал где я [пишу о продуктовом ML](https://t.me/locomotive_production_driver)
+
+Приятного просмотра!
 
 ## Содержание курса
 
