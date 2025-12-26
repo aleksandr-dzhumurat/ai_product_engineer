@@ -56,6 +56,12 @@ TG канал где я [пишу о продуктовом ML](https://t.me/loc
 * [Gradient descent: linear regression](jupyter_notebooks/vol_00_pre_requirements_04_machine_learning_linear_regression_sgd_deep_dive.ipynb)
 * [Trees, gradient boosting](jupyter_notebooks/vol_04_deep_dive_09_trees_boosting.ipynb)
 
+#### Домашка
+
+* [machine_learning_intro_hw_1.ipynb](jupyter_notebooks/vol_00_pre_requirements_01_machine_learning_intro_hw_1.ipynb)
+* [machine_learning_intro_hw_2.ipynb](jupyter_notebooks/vol_00_pre_requirements_01_machine_learning_intro_hw_2.ipynb)
+* [unsupervised_hw.ipynb](jupyter_notebooks/vol_00_pre_requirements_05_unsupervised_hw.ipynb)
+
 ### Лекция 01 vol 2: CRISP-DM
 
 | Описание | Видео |
@@ -87,6 +93,10 @@ TG канал где я [пишу о продуктовом ML](https://t.me/loc
 | Материалы | Видео |
 |-----------|-------|
 | [nlp_problems.ipynb](jupyter_notebooks/vol_01_ml_products_03_nlp_problems.ipynb) | [![Лекция 03 vol 1 Векторизация текста Bag of Words](http://img.youtube.com/vi/h0XiVQ-OvOI/0.jpg)](http://www.youtube.com/watch?v=h0XiVQ-OvOI "Лекция 03 vol 1 Векторизация текста Bag of Words") |
+
+Домашка
+* [nlp_problems_hw.ipynb](jupyter_notebooks/vol_01_ml_products_03_nlp_problems_hw.ipynb)
+* [LabelStudio для разметки](slides/lecture_06_mlops_intro.md)
 
 ### Лекция 03 vol 2. Векторизация текста Word2Vec Transformers
 
