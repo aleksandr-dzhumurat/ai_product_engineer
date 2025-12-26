@@ -332,3 +332,160 @@ $$F_1(x) = F_0(x) + 0.1 \times \gamma_j = 17.5 + 0.1 \times \{\text{-5 или 5}
 | Variance                  | Снижает                          | Снижает сильнее                                          |
 | Bias                      | Не меняет сильно                 | Немного выше (из-за ограничения признаков)               |
 | Когда использовать        | Любая модель, нестабильная       | Деревья, когда есть сильные коррелирующие признаки       |
+
+### Сильная регуляризация (защита от переобучения)
+
+```python
+params = {
+    'learning_rate': 0.01-0.05,    # малый learning rate
+    'max_depth': 3-5,               # мелкие деревья
+    'subsample': 0.8-0.9,           # большой subsample
+    'colsample_bytree': 0.8-0.9     # большой subsample признаков
+}
+
+```
+
+**Когда использовать**: маленькие датасеты, много шума, риск переобучения
+
+### Слабая регуляризация (больше гибкости)
+
+```python
+params = {
+    'learning_rate': 0.1-0.3,       # большой learning rate
+    'max_depth': 6-10,              # глубокие деревья
+    'subsample': 0.5-0.7,           # меньший subsample
+    'colsample_bytree': 0.6-0.8
+}
+
+```
+
+**Когда использовать**: большие датасеты, сложные зависимости, мало шума
+
+Типичный пайплайн настройки
+
+1. **Начать с консервативных параметров**
+    - learning_rate = 0.1
+    - max_depth = 3
+    - n_estimators = 100
+2. **Настроить глубину деревьев**
+    - Попробовать 3, 5, 7, 9
+    - Выбрать по валидации
+3. **Подобрать learning rate**
+    - Уменьшить до 0.01–0.05
+    - Увеличить n_estimators соответственно
+4. **Добавить subsampling**
+    - Попробовать 0.6, 0.8, 1.0
+    - Для строк и колонок
+5. **Точная настройка λ/α** (если XGBoost/LightGBM)
+    - Добавить L2: lambda = 1, 10, 100
+    - Или L1: alpha = 1, 10, 100
+
+---
+
+Задача: предсказать цену квартиры
+
+**Ситуация:**
+
+- Текущее предсказание модели: $F(x) = 100$ тыс. руб
+- Реальная цена: $y = 150$ тыс. руб
+- Градиент (ошибка): $150 - 100 = 50$ тыс. руб
+
+**В один лист попали 10 квартир** с градиентами:
+
+```
+[45, 50, 48, 52, 49, 51, 47, 50, 48, 50]
+
+```
+
+**Вес этого листа:**
+$$w = \text{среднее}([45, 50, 48, 52, 49, 51, 47, 50, 48, 50])$$
+$$w = 49 \text{ тыс. руб}$$
+
+**Результат:** Новое дерево будет добавлять **+49 тыс. руб** к предсказанию для объектов, попавших в этот лист.
+
+---
+
+**Регуляризация весов листьев:** как работает штраф
+
+Когда мы штрафуем за веса листьев (L2):
+
+$$\text{Штраф} = \lambda \cdot \sum_{j=1}^{T} w_j^2$$
+
+Мы **уменьшаем абсолютные значения весов**, делая предсказания каждого дерева более консервативными.
+
+Эффект на вес
+
+- **Без регуляризации**: $w = 49$
+- **С регуляризацией** ($\lambda = 1$): $w \approx 30\text{–}35$
+
+**Зачем?** Это предотвращает слишком **агрессивные корректировки** модели и переобучение.
+
+---
+
+Визуализация дерева
+
+```
+        [Корень]
+       /        \
+   возраст>30   возраст≤30
+     /              \
+  [Лист 1]       [Лист 2]
+   w = +20        w = -15
+
+```
+
+**Интерпретация:**
+
+- Объекты с возрастом > 30 → получат прибавку **+20** к предсказанию
+- Объекты с возрастом ≤ 30 → получат вычитание **15** от предсказания
+
+---
+
+**Ключевые выводы**
+
+1. **Регуляризация критична** для предотвращения переобучения в градиентном бустинге
+2. **Learning rate** — самый важный параметр регуляризации
+3. **Структура деревьев** (глубина, размер листьев) сильно влияет на переобучение
+4. **Subsampling** добавляет случайность и уменьшает дисперсию
+5. **L1/L2 штрафы** делают веса листьев более консервативными
+6. **Early stopping** автоматически находит оптимальное количество деревьев
+7. **Вес листа** — это оптимальное значение, минимизирующее функцию потерь для объектов в листе
+
+---
+
+**Совет:** Начинайте с сильной регуляризации и постепенно ослабляйте её, наблюдая за метриками на валидации!
+
+## XGBoost params
+
+XGBoost hyperparameter and its role:
+
+eta (learning rate):
+
+- Controls how much weight is given to new trees when added to the model
+- Typically between 0.01-0.3
+- Lower values make the model more conservative/robust but require more trees
+- Also called 'learning_rate'
+
+gamma (minimum loss reduction):
+
+- Minimum loss reduction required to make a new split
+- Controls whether a node should be split further
+- Higher values = more conservative splitting
+- Helps prevent overfitting by requiring splits to provide meaningful gain
+- Default is 0
+
+alpha (L1 regularization):
+
+- Controls L1 regularization on leaf weights
+- Similar to Lasso regression
+- Higher values = more regularization = simpler model
+- Useful for making model sparse and handling high-dimensional data
+- Default is 0
+
+lambda (L2 regularization):
+
+- Controls L2 regularization on leaf weights
+- Similar to Ridge regression
+- Higher values = more regularization = more conservative model
+- Helps prevent overfitting by keeping leaf weights small
+- Default is 1
