@@ -46,15 +46,15 @@ TG канал где я [пишу о продуктовом ML](https://t.me/loc
 
 **Дополнительные материалы** - если нужно освежить базовые знания:
 
-• [Validation, generalization, overfitting](jupyter_notebooks/vol_00_pre_requirements_05_machine_learning_validation_generalization_overfitting.ipynb)
-• [Classification](jupyter_notebooks/vol_00_pre_requirements_02_machine_learning_classification.ipynb)
-• [cracking classification interview](slides/lecture_02_classification.md)
-• [Naive Bayes classifier](jupyter_notebooks/vol_04_deep_dive_00_probability_hw_2_naive_bayes.ipynb)
-• [feature engineering](jupyter_notebooks/vol_00_pre_requirements_06_feature_engineering.ipynb)
-• [unsupervised algorithms](jupyter_notebooks/vol_00_pre_requirements_05_unsupervised_intro.ipynb)
-• [clustering algorithms implementation](jupyter_notebooks/s/vol_04_deep_dive_10_unsupervised_learning_implementation.ipynb)
-• [Gradient descent: linear regression](jupyter_notebooks/vol_00_pre_requirements_04_machine_learning_linear_regression_sgd_deep_dive.ipynb)
-• [Trees, gradient boosting](jupyter_notebooks/vol_04_deep_dive_09_trees_boosting.ipynb)
+* [Validation, generalization, overfitting](jupyter_notebooks/vol_00_pre_requirements_05_machine_learning_validation_generalization_overfitting.ipynb)
+* [Classification](jupyter_notebooks/vol_00_pre_requirements_02_machine_learning_classification.ipynb)
+* [cracking classification interview](slides/lecture_02_classification.md)
+* [Naive Bayes classifier](jupyter_notebooks/vol_04_deep_dive_00_probability_hw_2_naive_bayes.ipynb)
+* [feature engineering](jupyter_notebooks/vol_00_pre_requirements_06_feature_engineering.ipynb)
+* [unsupervised algorithms](jupyter_notebooks/vol_00_pre_requirements_05_unsupervised_intro.ipynb)
+* [clustering algorithms implementation](jupyter_notebooks/s/vol_04_deep_dive_10_unsupervised_learning_implementation.ipynb)
+* [Gradient descent: linear regression](jupyter_notebooks/vol_00_pre_requirements_04_machine_learning_linear_regression_sgd_deep_dive.ipynb)
+* [Trees, gradient boosting](jupyter_notebooks/vol_04_deep_dive_09_trees_boosting.ipynb)
 
 ### Лекция 01 vol 2: CRISP-DM
 
@@ -76,7 +76,7 @@ TG канал где я [пишу о продуктовом ML](https://t.me/loc
 
 | Материалы | Видео |
 |-----------|-------|
-| Разбираем как работает [train.py](./src/train.py)<br>• [домашка](jupyter_notebooks/vol_01_ml_products_02_machine_learning_production_docker_hw.ipynb)| [![Лекция 02 vol 2: Вывод модели в продакшн: упаковка Docker. Streamlit](http://img.youtube.com/vi/przsL26slSA/0.jpg)](http://www.youtube.com/watch?v=przsL26slSA "Лекция 02 vol 2: Вывод модели в продакшн: упаковка Docker. Streamlit") |
+| • Разбираем как работает [train.py](./src/train.py)<br>• [домашка](jupyter_notebooks/vol_01_ml_products_02_machine_learning_production_docker_hw.ipynb)| [![Лекция 02 vol 2: Вывод модели в продакшн: упаковка Docker. Streamlit](http://img.youtube.com/vi/przsL26slSA/0.jpg)](http://www.youtube.com/watch?v=przsL26slSA "Лекция 02 vol 2: Вывод модели в продакшн: упаковка Docker. Streamlit") |
 
 ## NLP
 

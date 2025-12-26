@@ -13,6 +13,24 @@
 | Переобучение | Меньше | Может быть, требует регуляризации |
 | Стратегия | Усреднение | Взвешивание ошибок |
 
+[XGBoost vs LightGBM: How Are They Different](https://neptune.ai/blog/xgboost-vs-lightgbm)
+
+[Why XGBoost performs better](https://newsletter.theaiedge.io/p/why-xgboost-is-better-than-gbm)
+
+[XGBoost: Everything You Need to Know](https://neptune.ai/blog/xgboost-everything-you-need-to-know)
+
+[CatBoost, XGBoost и выразительная способность решающих деревьев](https://habr.com/ru/company/ods/blog/645887/)
+
+[XGBoost: пишем с нуля](https://habr.com/ru/company/vk/blog/438560/)
+
+[Which algorithm takes the crown: Light GBM vs XGBOOST?](https://www.analyticsvidhya.com/blog/2017/06/which-algorithm-takes-the-crown-light-gbm-vs-xgboost/)
+
+Boosting in depth
+
+- [boosting for regression](https://towardsdatascience.com/all-you-need-to-know-about-gradient-boosting-algorithm-part-1-regression-2520a34a502)
+- [boosting for classification](https://towardsdatascience.com/all-you-need-to-know-about-gradient-boosting-algorithm-part-2-classification-d3ed8f56541e)
+- [boosting in russian](https://kstu.kg/fileadmin/user_upload/lecture11_machine_learning_orozobekova_a.k..pdf)
+
 # Gradient boosting
 
 Основная формула обновления модели
