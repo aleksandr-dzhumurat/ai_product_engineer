@@ -40,7 +40,7 @@ TG канал где я [пишу о продуктовом ML](https://t.me/loc
 
 | Материалы | Видео |
 |-----------|-------|
-| **Основные материалы:**<br>• [ML intro: linear regression](jupyter_notebooks/vol_00_pre_requirements_01_machine_learning_intro.ipynb)<br>• [cracking linear regression](slides/cracking_linear_regression.md)<br><br>**Дополнительные материалы** - если нужно освежить базовые знания:<br>• [Validation, generalization, overfitting](jupyter_notebooks/vol_00_pre_requirements_05_machine_learning_validation_generalization_overfitting.ipynb)<br>• [Classification](jupyter_notebooks/vol_00_pre_requirements_02_machine_learning_classification.ipynb)<br>• [Naive Bayes classifier](jupyter_notebooks/vol_04_deep_dive_00_probability_hw_2_naive_bayes.ipynb)<br>• [feature engineering](jupyter_notebooks/vol_00_pre_requirements_06_feature_engineering.ipynb)<br>• [unsupervised algorithms](jupyter_notebooks/vol_00_pre_requirements_05_unsupervised_intro.ipynb)<br>• [clustering algorithms implementation](jupyter_notebooks/vol_04_deep_dive_06_unsupervised_learning_implementation.ipynb)<br>• [Gradient descent: linear regression](jupyter_notebooks/vol_00_pre_requirements_04_machine_learning_linear_regression_sgd_deep_dive.ipynb)<br>• [Trees, gradient boosting](jupyter_notebooks/vol_04_deep_dive_09_trees_boosting.ipynb) | [![Лекция 01 vol 1: введение в ML. Изучаем линейную регрессию](http://img.youtube.com/vi/sCIegfIcl10/0.jpg)](http://www.youtube.com/watch?v=sCIegfIcl10 "Лекция 01 vol 1: введение в ML. Изучаем линейную регрессию") |
+| **Основные материалы:**<br>• [ML intro: linear regression](jupyter_notebooks/vol_00_pre_requirements_01_machine_learning_intro.ipynb)<br>• [cracking linear regression](slides/cracking_linear_regression.md)<br><br>**Дополнительные материалы** - если нужно освежить базовые знания:<br>• [Validation, generalization, overfitting](jupyter_notebooks/vol_00_pre_requirements_05_machine_learning_validation_generalization_overfitting.ipynb)<br>• [Classification](jupyter_notebooks/vol_00_pre_requirements_02_machine_learning_classification.ipynb)<br>• [cracking classification interview](slides/lecture_02_classification.md)<br>• [Naive Bayes classifier](jupyter_notebooks/vol_04_deep_dive_00_probability_hw_2_naive_bayes.ipynb)<br>• [feature engineering](jupyter_notebooks/vol_00_pre_requirements_06_feature_engineering.ipynb)<br>• [unsupervised algorithms](jupyter_notebooks/vol_00_pre_requirements_05_unsupervised_intro.ipynb)<br>• [clustering algorithms implementation](jupyter_notebooks/vol_04_deep_dive_06_unsupervised_learning_implementation.ipynb)<br>• [Gradient descent: linear regression](jupyter_notebooks/vol_00_pre_requirements_04_machine_learning_linear_regression_sgd_deep_dive.ipynb)<br>• [Trees, gradient boosting](jupyter_notebooks/vol_04_deep_dive_09_trees_boosting.ipynb) | [![Лекция 01 vol 1: введение в ML. Изучаем линейную регрессию](http://img.youtube.com/vi/sCIegfIcl10/0.jpg)](http://www.youtube.com/watch?v=sCIegfIcl10 "Лекция 01 vol 1: введение в ML. Изучаем линейную регрессию") |
 
 
 ### Лекция 01 vol 2: CRISP-DM
@@ -63,7 +63,7 @@ TG канал где я [пишу о продуктовом ML](https://t.me/loc
 
 | Материалы | Видео |
 |-----------|-------|
-| Разбираем как работает [train.py](./src/train.py) | [![Лекция 02 vol 2: Вывод модели в продакшн: упаковка Docker. Streamlit](http://img.youtube.com/vi/przsL26slSA/0.jpg)](http://www.youtube.com/watch?v=przsL26slSA "Лекция 02 vol 2: Вывод модели в продакшн: упаковка Docker. Streamlit") |
+| Разбираем как работает [train.py](./src/train.py)<br>• [домашка](jupyter_notebooks/vol_01_ml_products_02_machine_learning_production_docker_hw.ipynb)| [![Лекция 02 vol 2: Вывод модели в продакшн: упаковка Docker. Streamlit](http://img.youtube.com/vi/przsL26slSA/0.jpg)](http://www.youtube.com/watch?v=przsL26slSA "Лекция 02 vol 2: Вывод модели в продакшн: упаковка Docker. Streamlit") |
 
 ## NLP
 
@@ -103,7 +103,7 @@ TG канал где я [пишу о продуктовом ML](https://t.me/loc
 
 | Материалы | Видео |
 |-----------|-------|
-| Разбираем код логирования экспериментов [parameters_tuning.py](src/parameters_tuning.py)<br>•[jupyter notebook](jupyter_notebooks/vol_01_ml_products_02_mflow_powered_classifier.ipynb)| [![Лекция 05: Трекинг экспериментов. MLFlow. MlOps.](http://img.youtube.com/vi/Zeo6fqrTc1A/0.jpg)](http://www.youtube.com/watch?v=Zeo6fqrTc1A "Лекция 05: Трекинг экспериментов. MLFlow.") |
+| • Разбираем код логирования экспериментов [parameters_tuning.py](src/parameters_tuning.py)<br>• [jupyter notebook](jupyter_notebooks/vol_01_ml_products_02_mflow_powered_classifier.ipynb)| [![Лекция 05: Трекинг экспериментов. MLFlow. MlOps.](http://img.youtube.com/vi/Zeo6fqrTc1A/0.jpg)](http://www.youtube.com/watch?v=Zeo6fqrTc1A "Лекция 05: Трекинг экспериментов. MLFlow.") |
 
 
 ## Лекция 06 vol 01: Поиск. ElasticSearch
@@ -128,4 +128,4 @@ TG канал где я [пишу о продуктовом ML](https://t.me/loc
 
 | Материалы | Видео |
 |-----------|-------|
-| [Google ADK](dockerfiles/agent) | [![Лекция 09: Telegram бот + AI agent](http://img.youtube.com/vi/CJAptUEGojA/0.jpg)](http://www.youtube.com/watch?v=CJAptUEGojA "Лекция 09: Telegram бот + AI agent") |
+| • [Google ADK Agent](dockerfiles/agent)<br>•  | [![Лекция 09: Telegram бот + AI agent](http://img.youtube.com/vi/CJAptUEGojA/0.jpg)](http://www.youtube.com/watch?v=CJAptUEGojA "Лекция 09: Telegram бот + AI agent") |

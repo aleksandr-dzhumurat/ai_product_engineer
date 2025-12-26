@@ -96,3 +96,11 @@ cd python-env & \
 	uv add $(cat temp_requirements.txt | tr '\n' ' ')
 	cd ..
 ```
+
+Докер для винды (обе опции) https://docs.docker.com/desktop/setup/install/windows-install/
+
+Подробнее про WSL: https://learn.microsoft.com/en-us/windows/wsl/install
+
+# Remote 
+
+Плюс действительно интересная опция с Cloud.ru https://cloud.ru/, действительно есть возможность  Удаленно подключиться к убунте и настроить докер по инструкции для убунты
