@@ -40,8 +40,21 @@ TG канал где я [пишу о продуктовом ML](https://t.me/loc
 
 | Материалы | Видео |
 |-----------|-------|
-| **Основные материалы:**<br>• [ML intro: linear regression](jupyter_notebooks/vol_00_pre_requirements_01_machine_learning_intro.ipynb)<br>• [cracking linear regression](slides/cracking_linear_regression.md)<br><br>**Дополнительные материалы** - если нужно освежить базовые знания:<br>• [Validation, generalization, overfitting](jupyter_notebooks/vol_00_pre_requirements_05_machine_learning_validation_generalization_overfitting.ipynb)<br>• [Classification](jupyter_notebooks/vol_00_pre_requirements_02_machine_learning_classification.ipynb)<br>• [cracking classification interview](slides/lecture_02_classification.md)<br>• [Naive Bayes classifier](jupyter_notebooks/vol_04_deep_dive_00_probability_hw_2_naive_bayes.ipynb)<br>• [feature engineering](jupyter_notebooks/vol_00_pre_requirements_06_feature_engineering.ipynb)<br>• [unsupervised algorithms](jupyter_notebooks/vol_00_pre_requirements_05_unsupervised_intro.ipynb)<br>• [clustering algorithms implementation](jupyter_notebooks/s/vol_04_deep_dive_10_unsupervised_learning_implementation.ipynb)<br>• [Gradient descent: linear regression](jupyter_notebooks/vol_00_pre_requirements_04_machine_learning_linear_regression_sgd_deep_dive.ipynb)<br>• [Trees, gradient boosting](jupyter_notebooks/vol_04_deep_dive_09_trees_boosting.ipynb) | [![Лекция 01 vol 1: введение в ML. Изучаем линейную регрессию](http://img.youtube.com/vi/sCIegfIcl10/0.jpg)](http://www.youtube.com/watch?v=sCIegfIcl10 "Лекция 01 vol 1: введение в ML. Изучаем линейную регрессию") |
+| **Основные материалы:**<br>• [ML intro: linear regression](jupyter_notebooks/vol_00_pre_requirements_01_machine_learning_intro.ipynb)<br>• [cracking linear regression](slides/cracking_linear_regression.md)<br><br> | [![Лекция 01 vol 1: введение в ML. Изучаем линейную регрессию](http://img.youtube.com/vi/sCIegfIcl10/0.jpg)](http://www.youtube.com/watch?v=sCIegfIcl10 "Лекция 01 vol 1: введение в ML. Изучаем линейную регрессию") |
 
+
+
+**Дополнительные материалы** - если нужно освежить базовые знания:
+
+• [Validation, generalization, overfitting](jupyter_notebooks/vol_00_pre_requirements_05_machine_learning_validation_generalization_overfitting.ipynb)
+• [Classification](jupyter_notebooks/vol_00_pre_requirements_02_machine_learning_classification.ipynb)
+• [cracking classification interview](slides/lecture_02_classification.md)
+• [Naive Bayes classifier](jupyter_notebooks/vol_04_deep_dive_00_probability_hw_2_naive_bayes.ipynb)
+• [feature engineering](jupyter_notebooks/vol_00_pre_requirements_06_feature_engineering.ipynb)
+• [unsupervised algorithms](jupyter_notebooks/vol_00_pre_requirements_05_unsupervised_intro.ipynb)
+• [clustering algorithms implementation](jupyter_notebooks/s/vol_04_deep_dive_10_unsupervised_learning_implementation.ipynb)
+• [Gradient descent: linear regression](jupyter_notebooks/vol_00_pre_requirements_04_machine_learning_linear_regression_sgd_deep_dive.ipynb)
+• [Trees, gradient boosting](jupyter_notebooks/vol_04_deep_dive_09_trees_boosting.ipynb)
 
 ### Лекция 01 vol 2: CRISP-DM
 
