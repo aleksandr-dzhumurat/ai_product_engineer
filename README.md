@@ -16,6 +16,8 @@
 
 [Вопросы к экзамену](slides/lecture_0_prepare_env.md) - тут по факту список вопросов для собесов
 
+TG канал где я пишу о продуктовом ML [https://t.me/locomotive_production_driver](https://t.me/locomotive_production_driver)
+
 ## Лекция 01 vol 1: введение в ML. Изучаем линейную регрессию
 
 [![Лекция 01 vol 1: введение в ML. Изучаем линейную регрессию](http://img.youtube.com/vi/sCIegfIcl10/0.jpg)](http://www.youtube.com/watch?v=sCIegfIcl10 "Лекция 01 vol 1: введение в ML. Изучаем линейную регрессию")
