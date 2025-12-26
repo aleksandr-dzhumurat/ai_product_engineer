@@ -42,3 +42,32 @@
 
 
 [![Лекция 02 vol 2: Вывод модели в продакшн: упаковка Docker. Streamlit](http://img.youtube.com/vi/przsL26slSA/0.jpg)](http://www.youtube.com/watch?v=przsL26slSA "Лекция 02 vol 2: Вывод модели в продакшн: упаковка Docker. Streamlit")
+
+## Лекция 03 vol 1 Векторизация текста Bag of Words
+
+
+[![Лекция 03 vol 1 Векторизация текста Bag of Words](http://img.youtube.com/vi/h0XiVQ-OvOI/0.jpg)](http://www.youtube.com/watch?v=h0XiVQ-OvOI "Лекция 03 vol 1 Векторизация текста Bag of Words")
+
+## Лекция 03 vol 2. Векторизация текста Word2Vec Transformers
+
+
+[![Лекция 03 vol 2. Векторизация текста Word2Vec Transformers](http://img.youtube.com/vi/csqW3HF_3p8/0.jpg)](http://www.youtube.com/watch?v=csqW3HF_3p8 "Лекция 03 vol 2. Векторизация текста Word2Vec Transformers")
+
+## Лекция 04 vol 1: Организация кода в ML проектах
+
+
+[![Лекция 04 vol 1: Организация кода в ML проектах](http://img.youtube.com/vi/yFGYz8XAw30/0.jpg)](http://www.youtube.com/watch?v=yFGYz8XAw30 "Лекция 04 vol 1: Организация кода в ML проектах")
+
+## Лекция 04 vol 2: Стадии CRISP-DM, создаем систему модерации контента
+
+
+[![Лекция 04 vol 2: Стадии CRISP-DM, создаем систему модерации контента](http://img.youtube.com/vi/NZrgApPYkpk/0.jpg)](http://www.youtube.com/watch?v=NZrgApPYkpk "Лекция 04 vol 2: Стадии CRISP-DM, создаем систему модерации контента")
+
+## Лекция 05: Трекинг экспериментов. MLFlow.
+
+[![Лекция 05: Трекинг экспериментов. MLFlow. MlOps.](http://img.youtube.com/vi/Zeo6fqrTc1A/0.jpg)](http://www.youtube.com/watch?v=Zeo6fqrTc1A "Лекция 05: Трекинг экспериментов. MLFlow.")
+
+
+## Лекция 06 vol 01: Поиск. ElasticSearch
+
+[![Лекция 06 vol 01: Поиск. ElasticSearch](http://img.youtube.com/vi/aD6q_KAq6LU/0.jpg)](http://www.youtube.com/watch?v=aD6q_KAq6LU "Лекция 06 vol 01: Поиск. ElasticSearch")
