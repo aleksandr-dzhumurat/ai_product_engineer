@@ -46,6 +46,8 @@ TG канал где я [пишу о продуктовом ML](https://t.me/loc
 
 **Дополнительные материалы** - если нужно освежить базовые знания:
 
+* [Основы вероятности](jupyter_notebooks/vol_04_deep_dive_00_probability.ipynb)
+    * [применение для system design](slides/probability_and_statistics.md)
 * [Validation, generalization, overfitting](jupyter_notebooks/vol_00_pre_requirements_05_machine_learning_validation_generalization_overfitting.ipynb)
 * [Classification](jupyter_notebooks/vol_00_pre_requirements_02_machine_learning_classification.ipynb)
 * [cracking classification interview](slides/lecture_02_classification.md)
