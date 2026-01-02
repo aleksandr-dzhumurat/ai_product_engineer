@@ -292,13 +292,9 @@ $$\eta^2 = \frac{SS_{between}}{SS_{total}} = \frac{\sum n_k(\bar{y}_k - \bar{y})
 
 ## Q2C — Simpson's Paradox
 
-### Visual Interpretation
+**Visual Interpretation** Simpson's Paradox occurs when a trend appears in several groups of data but disappears or reverses when the groups are combined.
 
-**Simpson's Paradox** occurs when a trend appears in several groups of data but disappears or reverses when the groups are combined.
-
-### Classic Example: UC Berkeley Admissions
-
-**Overall:** Men admitted at 40%, Women at 25% → appears biased toward men
+**Classic Example: UC Berkeley Admissions**: Men admitted at 40%, Women at 25% → appears biased toward men (overall)
 
 **By Department:**
 - Natural Sciences: High acceptance rate, more men applied
@@ -306,17 +302,16 @@ $$\eta^2 = \frac{SS_{between}}{SS_{total}} = \frac{\sum n_k(\bar{y}_k - \bar{y})
 
 **Within each department:** Women accepted at equal or higher rates!
 
-### Why It Happens
+**Why It Happens**
 
 **Two effects occur together:**
 1. **Group sizes are very different**
 2. **Confounding variable** (e.g., department choice) affects both variables
 
-### Visual Example
+**Visual Example**
 
-**Before grouping:** Negative correlation (as X increases, Y decreases)
-
-**After revealing groups:** Each group shows positive correlation!
+* Before grouping: Negative correlation (as X increases, Y decreases)
+* After revealing groups: Each group shows positive correlation!
 
 The aggregated data obscured the true relationship within subgroups.
 
@@ -373,7 +368,7 @@ $$H(X) = -\sum_{x \in \mathcal{X}} p(x) \log p(x) = E[-\log p(X)]$$
 - ln → **nats**
 - log₁₀ → **dits**
 
-### Why Logarithm?
+**Why Logarithm?**
 
 **1. Additivity Property:**
 For independent events A and B:
@@ -454,7 +449,7 @@ Since H(p) is constant (true labels), minimizing H(p,q) = minimizing KL divergen
 
 ## Q4 — Type I and Type II Errors
 
-### Definitions
+**Definitions**
 
 **Type I Error (False Positive):**
 - Reject true $H_0$
@@ -473,33 +468,31 @@ Since H(p) is constant (true labels), minimizing H(p,q) = minimizing KL divergen
 | **Reject H₀** | Type I Error (α) | Correct ✓ |
 | **Fail to Reject H₀** | Correct ✓ | Type II Error (β) |
 
-### Power of a Test
+
+**Power of a Test** = Probability of correctly rejecting false H₀
 
 $$\text{Power} = 1 - \beta$$
 
-**Power** = Probability of correctly rejecting false H₀
+Which Error is More Serious - it depends on context.
 
-### Which Error is More Serious?
+#### Type I more serious
 
-**It depends on context!**
-
-#### Medical Screening
-**Type II more serious:** Missing a sick patient
-- Disease progresses untreated
-- **Solution:** Set low threshold (high sensitivity/recall)
-
-#### Criminal Justice
-**Type I more serious:** Convicting innocent person
+Criminal Justice - Convicting innocent person
 - "Better 10 guilty go free than 1 innocent convicted"
 - **Solution:** High burden of proof (beyond reasonable doubt)
 
-#### Spam Filter
-**Type I more serious:** Marking important email as spam
+Spam Filter - Marking important email as spam
 - Might miss critical communication
 - **Solution:** Conservative threshold
 
-#### Security Screening
-**Type II more serious:** Missing a threat
+
+#### Type II more serious
+
+Medical Screening - missing a sick patient
+- Disease progresses untreated
+- **Solution:** Set low threshold (high sensitivity/recall)
+
+Security Screening - Missing a threat
 - Security breach
 - **Solution:** Sensitive detection (accept more false alarms)
 
@@ -534,7 +527,7 @@ Set threshold to minimize total cost.
 
 ## Q5 — Classification Algorithms
 
-### Algorithm Comparison
+Algorithm Comparison
 
 
 | Algorithm | Training Speed | Interpretability | Noise Resistance | Data Requirements |
