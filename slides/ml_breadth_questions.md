@@ -1307,8 +1307,17 @@ Where:
 **1. Initialize:** $F_0(x) = \text{constant}$ (e.g., mean for regression)
 
 
-For MSE: F₀(x) = mean(y)  
-For log-loss: F₀(x) = log(p/(1-p)) where p = mean(y)
+For MSE:
+
+$$
+F_0(x) = \mathbb{E}[y]
+$$
+
+For log-loss:
+
+$$
+F_0(x) = \log\left(\frac{p}{1 - p}\right), \quad \text{where } p = \mathbb{E}[y]
+$$
 
 **2. For m = 1 to M:**
    - **Compute pseudo-residuals:** 
