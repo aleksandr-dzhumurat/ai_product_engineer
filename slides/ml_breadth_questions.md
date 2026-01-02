@@ -1321,7 +1321,8 @@ $$
 
 **2. For m = 1 to M:**
    - **Compute pseudo-residuals:** 
-     $$r_{im} = -\frac{\partial L(y_i, F(x_i))}{\partial F(x_i)}\bigg|_{F=F_{m-1}}$$
+
+$$r_{im} = -\frac{\partial L(y_i, F(x_i))}{\partial F(x_i)}\bigg|_{F=F_{m-1}}$$
    
    - **Fit tree** h_m to residuals r_im
    
