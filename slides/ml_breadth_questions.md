@@ -549,7 +549,7 @@ Set threshold to minimize total cost.
 | Neural Networks | Very Slow | Very Low | Medium | Very High |
 
 
-#### Logistic Regression
+### Logistic Regression
 
 **Advantages:**
 - Highly interpretable (coefficients = log-odds)
@@ -583,7 +583,7 @@ $$J(\beta) = -\frac{1}{n}\sum_{i=1}^{n}\left[y_i \log(p_i) + (1-y_i)\log(1-p_i)\
 **Best For:** Binary classification with interpretability requirements, high-dimensional sparse data
 
 
-#### SVM (Support Vector Machine)
+### SVM (Support Vector Machine)
 
 **Advantages:**
 - Effective in high dimensions
@@ -598,7 +598,7 @@ $$J(\beta) = -\frac{1}{n}\sum_{i=1}^{n}\left[y_i \log(p_i) + (1-y_i)\log(1-p_i)\
 
 **Best For:** Text classification, high-dimensional data with clear margins
 
-#### Decision Trees
+### Decision Trees
 
 **Splitting Criteria:**
 - **Gini**:
@@ -621,7 +621,7 @@ $$H = -\sum p_i \log_2(p_i)$$
 - Cannot extrapolate
 - Greedy algorithm (may not find global optimum)
 
-#### Random Forest
+### Random Forest
 
 **Advantages:**
 - Reduces overfitting vs single tree (variance reduction)
@@ -650,7 +650,7 @@ $$H = -\sum p_i \log_2(p_i)$$
 - Many hyperparameters to tune
 - Less interpretable
 
-#### KNN (K-Nearest Neighbors)
+### KNN (K-Nearest Neighbors)
 
 **Advantages:**
 - Simple, intuitive
@@ -663,7 +663,7 @@ $$H = -\sum p_i \log_2(p_i)$$
 - Sensitive to irrelevant features
 - Requires distance metric choice
 
-#### Naive Bayes
+### Naive Bayes
 
 **Advantages:**
 - Very fast training and inference
@@ -675,7 +675,7 @@ $$H = -\sum p_i \log_2(p_i)$$
 - Strong independence assumption (rarely true)
 - Poor probability estimates
 
-#### Neural Networks
+### Neural Networks
 
 **Advantages:**
 - Universal function approximator
@@ -860,17 +860,14 @@ Decision Guide
 
 ## Q7 — Handling Unknown Categories in Production
 
-### Problem
-
-Model encounters category it never saw during training.
+**Problem**: Model encounters category it never saw during training.
 
 **Example:**
 - Training: categories [A, B, C]
 - Production: new category D appears
 
-### Solutions
 
-#### 1. OneHotEncoder with `handle_unknown='ignore'`
+### 1. OneHotEncoder with `handle_unknown='ignore'`
 
 ```python
 from sklearn.preprocessing import OneHotEncoder
@@ -882,7 +879,7 @@ encoder = OneHotEncoder(handle_unknown='ignore')
 - Effectively treats as "neutral"
 - Model uses only other features
 
-#### 2. Fallback to Most Frequent Category
+### 2. Fallback to Most Frequent Category
 
 **During inference:**
 ```python
@@ -892,7 +889,7 @@ if category not in known_categories:
 
 **When to use:** When categories are similar enough
 
-#### 3. Add 'Unknown' Category During Training
+### 3. Add 'Unknown' Category During Training
 
 **Strategy:**
 - During training, add synthetic "unknown" category
@@ -901,7 +898,7 @@ if category not in known_categories:
 
 **Benefit:** Model learns to handle unknowns explicitly
 
-#### 4. Target Encoding with Global Mean Fallback
+### 4. Target Encoding with Global Mean Fallback
 
 **Target Encoding:**
 ```python
@@ -916,14 +913,14 @@ else:
     value = global_mean  # Fallback
 ```
 
-#### 5. Embedding-Based Approach
+### 5. Embedding-Based Approach
 
 **For high-cardinality categoricals:**
 - Use entity embeddings (neural networks)
 - Approximate unknown with nearest known embedding
 - OR: Use hash trick to map to fixed space
 
-#### 6. Hierarchical Categories
+### 6. Hierarchical Categories
 
 **If categories have hierarchy:**
 ```
@@ -948,12 +945,10 @@ Product → Category → Subcategory
 
 ## Q6 — Linear Regression
 
-### Model Formulation
-
-**Matrix Form:**
+**Model Formulation**: Matrix Form
 $$\mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\epsilon}$$
 
-### Assumptions (LINE)
+Assumptions (LINE)
 
 | Assumption | Description | Diagnostic |
 |------------|-------------|------------|
@@ -962,14 +957,14 @@ $$\mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\epsilon}$$
 | **N**ormality | Normal errors | Q-Q plot |
 | **E**qual variance | Homoscedasticity | Breusch-Pagan test |
 
-### Coefficient Interpretation
+Coefficient Interpretation
 
-- **β₀ (Intercept):** Expected y when all predictors = 0
-- **β_j (Slope):** Expected change in y for one-unit increase in x_j, holding others constant
+- $\beta_0$ (Intercept): Expected y when all predictors = 0
+- $\beta_j$ (Slope): Expected change in y for one-unit increase in x_j, holding others constant
 
-### Optimization Methods
+## Optimization Methods
 
-#### OLS (Closed-Form)
+### OLS (Closed-Form)
 
 $$\hat{\boldsymbol{\beta}} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}$$
 
@@ -977,7 +972,7 @@ $$\hat{\boldsymbol{\beta}} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}
 
 **Use when:** n < 10,000, p < 1,000
 
-#### Gradient Descent
+### Gradient Descent
 
 $$\boldsymbol{\beta}^{(t+1)} = \boldsymbol{\beta}^{(t)} - \eta \nabla_{\boldsymbol{\beta}} J$$
 
@@ -988,9 +983,9 @@ $$\nabla_{\boldsymbol{\beta}} J = -\frac{2}{n}\mathbf{X}^T(\mathbf{y} - \mathbf{
 
 **Use when:** Very large datasets, sparse data
 
-### Regularization
+## Regularization
 
-#### Ridge (L2)
+**Ridge (L2)**
 $$\min \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2 + \lambda\|\boldsymbol{\beta}\|_2^2$$
 
 **Closed-form solution:**
@@ -1000,14 +995,14 @@ $$\hat{\boldsymbol{\beta}}_{ridge} = (\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I}
 - Handles multicollinearity
 - Never eliminates features
 
-#### Lasso (L1)
+**Lasso (L1)**
 $$\min \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2 + \lambda\|\boldsymbol{\beta}\|_1$$
 
 - Produces sparse solutions (some β = 0)
 - Automatic feature selection
 - No closed-form solution
 
-#### ElasticNet
+**ElasticNet**
 $$\min \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2 + \lambda_1\|\boldsymbol{\beta}\|_1 + \lambda_2\|\boldsymbol{\beta}\|_2^2$$
 
 - Combines selection (L1) with stability (L2)
@@ -1019,9 +1014,9 @@ $$\min \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2 + \lambda_1\|\boldsymbol{
 | Lasso | Yes | Poor | Iterative |
 | ElasticNet | Yes | Good | Iterative |
 
-### Geometric Interpretation
+Geometric Interpretation
 
-OLS solution ŷ = Xβ̂ is the **orthogonal projection** of y onto the column space of X. Residuals are orthogonal to this space: X^T e = 0.
+OLS solution $\hat{y} = X \hat{\beta}$ is the **orthogonal projection** of y onto the column space of X. Residuals are orthogonal to this space: $X^{\top} e = 0$.
 
 **Visual:** In p+1 dimensional space, the fitted values lie in the p-dimensional subspace spanned by X columns. The residual vector is perpendicular to this subspace.
 
@@ -1143,13 +1138,13 @@ $$\text{Loss} + \lambda_1 \sum_i |w_i| + \lambda_2 \sum_i w_i^2$$
 
 ## Q9 — Linear Regression Metrics
 
-
 | Metric | Formula | When to Use |
 |--------|---------|-------------|
-| **RMSE** | √(Σ(y-ŷ)²/n) | Default; sensitive to outliers |
-| **MAE** | Σ\|y-ŷ\|/n | Robust to outliers |
-| **MAPE** | 100%·Σ\|(y-ŷ)/y\|/n | Cross-scale comparison |
-| **R²** | 1 - SS_res/SS_tot | Variance explained |
+| **RMSE** | $\sqrt{\frac{1}{n}\sum (y - \hat{y})^2}$ | Default choice; sensitive to outliers |
+| **MAE** | $\frac{1}{n}\sum |y - \hat{y}|$ | More robust to outliers |
+| **MAPE** | $100\% \cdot \frac{1}{n}\sum \left|\frac{y - \hat{y}}{y}\right|$ | Comparing errors across scales |
+| **R²** | $1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}}$ | Explained variance |
+
 
 **R² Interpretation:**
 - R² = 0: Model no better than mean
