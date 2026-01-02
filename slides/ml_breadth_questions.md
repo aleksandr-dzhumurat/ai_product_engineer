@@ -1141,7 +1141,7 @@ $$\text{Loss} + \lambda_1 \sum_i |w_i| + \lambda_2 \sum_i w_i^2$$
 | Metric | Formula | When to Use |
 |--------|---------|-------------|
 | **RMSE** | $\sqrt{\frac{1}{n}\sum (y - \hat{y})^2}$ | Default choice; sensitive to outliers |
-| **MAE** | $\frac{1}{n}\sum |y - \hat{y}|$ | More robust to outliers |
+| **MAE** | $\frac{1}{n}\sum |y - \hat{y}$ | More robust to outliers |
 | **MAPE** | $100\% \cdot \frac{1}{n}\sum \left|\frac{y - \hat{y}}{y}\right|$ | Comparing errors across scales |
 | **R²** | $1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}}$ | Explained variance |
 
