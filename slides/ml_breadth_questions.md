@@ -54,40 +54,31 @@ $$\frac{\sum X_i - n\mathbb{E}[X]}{\sqrt{n\text{Var}(X)}} \xrightarrow{d} N(0,1)
 
 ### Practical Applications in ML
 
-#### SGD Convergence (LLN)
+**SGD Convergence (LLN)**
+
 Mini-batch gradients converge to true gradient:
 
 $$\frac{1}{B}\sum_{i=1}^{B} \nabla L(x_i, \theta) \xrightarrow{P} E[\nabla L(X, \theta)]$$
 
 This justifies why SGD finds (local) minima despite noisy estimates.
 
-#### SGD Distribution (CLT)
+**SGD Distribution (CLT)**
 
 Explains that SGD iterates follow Gaussian distribution around optimum:
 
 $$\sqrt{n}(\bar{\theta}_n - \theta^*) \xrightarrow{d} N(0, \Sigma_\infty)$$
 
-#### Bootstrap Methods
-- **LLN:** Empirical distribution converges to true distribution
-- **CLT:** Justifies confidence interval construction
+**Bootstrap Methods**
 
-#### Confidence Intervals
+- LLN: Empirical distribution converges to true distribution
+- CLT: Justifies confidence interval construction
+
+**Confidence Intervals**
 CLT enables:
 
 $$\bar{X} \pm z_{\alpha/2} \cdot \frac{s}{\sqrt{n}}$$
 
 Valid regardless of population distribution (for large n).
-
-
-### ML Applications
-
-**Stochastic Gradient Descent (SGD):**
-- **LLN:** Mini-batch gradient → true gradient
-- **CLT:** SGD iterates are approximately normal around optimum
-
-**Bootstrap Methods:**
-- **LLN:** Empirical distribution → true distribution
-- **CLT:** Justifies confidence intervals
 
 **References:**
 - [Law of Large Numbers - Wikipedia](https://en.wikipedia.org/wiki/Law_of_large_numbers)
@@ -134,7 +125,18 @@ $$Q_3 - Q_1$$
 - Q-Q plot (normality check)
 - Violin plot
 
-### How "Multiply values above threshold by 3" Affects Median
+
+**Simple case 1**: Effect of Multiplying by Constant k on Variance
+
+**If all values multiplied by k:**
+
+$$\text{Var}(kX) = k^2 \cdot \text{Var}(X)$$
+
+**Example:** Multiply by 2 → variance increases by 4×
+
+**Why:** Variance measures spread, which scales quadratically.
+
+**Simple case 2**: How "Multiply values above threshold by 3" Affects Median
 
 **Median changes only if:**
 1. Threshold falls on median element, OR
@@ -182,16 +184,6 @@ $$p(1-p) \text{ where } p = \text{mean}$$
 - **Chi-square test:** Compare proportions
 - **Fisher's exact test:** Small samples
 - **Z-test for proportions:** Large samples
-
-### Effect of Multiplying by Constant k on Variance
-
-**If all values multiplied by k:**
-
-$$\text{Var}(kX) = k^2 \cdot \text{Var}(X)$$
-
-**Example:** Multiply by 2 → variance increases by 4×
-
-**Why:** Variance measures spread, which scales quadratically.
 
 **References:**
 - [Exploratory Data Analysis - Wikipedia](https://en.wikipedia.org/wiki/Exploratory_data_analysis)
@@ -328,9 +320,7 @@ $$\eta^2 = \frac{SS_{between}}{SS_{total}} = \frac{\sum n_k(\bar{y}_k - \bar{y})
 
 The aggregated data obscured the true relationship within subgroups.
 
-### Key Lesson
-
-**Always check for confounding variables!**
+**Key Lesson**: Always check for confounding variables!
 
 When analyzing data:
 1. Look at overall trends
@@ -352,9 +342,7 @@ When analyzing data:
 
 ## Q3 — Entropy
 
-### Intuitive Explanation
-
-**Entropy = Measure of Uncertainty**
+**Intuitive Explanation**: Entropy = Measure of Uncertainty
 
 **Simple test:** How hard is it to guess the next element?
 
@@ -404,7 +392,7 @@ $$I(x) = -\log p(x)$$
 **3. Bits Interpretation:**
 log₂(n) = minimum bits needed to distinguish n outcomes
 
-### Properties
+**Properties**
 
 - **Non-negative:** H(X) ≥ 0
 - **Maximum:** H(X) ≤ log₂(n) for n outcomes
@@ -422,10 +410,9 @@ $$H(X) = -p\log_2 p - (1-p)\log_2(1-p)$$
 
 ### Applications in ML
 
-#### Decision Trees (Information Gain)
+**Decision Trees** (Information Gain)
 
 **Node Entropy:** $H(t) = -\sum p_c \log_2 p_c$
-
 
 **Information Gain:**
 
@@ -433,15 +420,11 @@ $$IG(S, A) = H(S) - \sum_{v \in Values(A)} \frac{|S_v|}{|S|} H(S_v)$$
 
 Select attribute maximizing IG for each split - Greedy algorithm builds tree
 
-#### Random Forest
-Uses entropy in individual tree splits, aggregates for variance reduction
+**Random Forest**: Uses entropy in individual tree splits, aggregates for variance reduction
 
-#### Gradient Boosting
-Loss functions often related to cross-entropy (classification)
+**Gradient Boosting** Loss functions often related to cross-entropy (classification)
 
-#### LLMs (Cross-Entropy Loss)
-
-**Cross-Entropy:**
+**LLMs (Cross-Entropy Loss)**
 
 $$H(p, q) = -\sum_x p(x) \log q(x)$$
 
@@ -474,16 +457,16 @@ Since H(p) is constant (true labels), minimizing H(p,q) = minimizing KL divergen
 ### Definitions
 
 **Type I Error (False Positive):**
-- Reject true H₀
-- Probability = α (significance level)
+- Reject true $H_0$
+- Probability = $\alpha$ (significance level)
 - **Example:** Healthy patient diagnosed as sick
 
 **Type II Error (False Negative):**
-- Fail to reject false H₀
-- Probability = β
+- Fail to reject false $H_0$
+- Probability = $\beta$
 - **Example:** Sick patient diagnosed as healthy
 
-### Confusion Matrix Analogy
+**Confusion Matrix Analogy**
 
 |  | H₀ True | H₀ False |
 |--|---------|----------|
