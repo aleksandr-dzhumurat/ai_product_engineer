@@ -1327,25 +1327,26 @@ $$F_m = F_{m-1} + \eta \cdot h_m, \quad 0 < \eta \leq 1$$
 
 #### 2. Tree Constraints
 
-- **Max depth:** 3-8 (shallow trees prevent overfitting)
-- **Min samples per leaf**
-- **Max leaf nodes**
+- Max depth: 3-8 (shallow trees prevent overfitting)
+- Min samples per leaf
+- Max leaf nodes
 
 #### 3. Subsampling (Stochastic GB)
 
-- **Row sampling:** Use random 50-80% of data per tree
-- **Column sampling:** Use random features per tree/split
-- **Reduces overfitting, adds randomness**
+ Reduces overfitting, adds randomness
+
+- Row sampling: Use random 50-80% of data per tree
+- Column sampling: Use random features per tree/split
 
 #### 4. XGBoost Regularization
 
 $$\Omega(h) = \gamma T + \frac{1}{2}\lambda \sum_{j=1}^{T} w_j^2$$
 
 Where:
-- $T$ = number of leaves
+- $T$ = number of leaves, penalizes tree size
 - $w_j$ = leaf weights
-- γ = complexity penalty
-- λ = L2 on weights
+- $\gamma$ = complexity penalty, discourages adding new leaves: split must reduce loss by at least $\gamma$
+- $\lambda$ = L2 on weights, shrinks predictions and prevents extreme leaf outputs
 
 ### Gradient Boosting vs Random Forest
 
@@ -1387,11 +1388,10 @@ Where:
 
 ## Q11 — Bias-Variance Tradeoff
 
-[bias-variance decomposition](https://education.yandex.ru/handbook/ml/article/bias-variance-decomposition
+* [bias-variance decomposition](https://education.yandex.ru/handbook/ml/article/bias-variance-decomposition)
+* [bias-variance tradeoff explained](https://www.linkedin.com/feed/update/groupPost:961087-7266231655042838528)
 
-[bias-variance tradeoff explained](https://www.linkedin.com/feed/update/groupPost:961087-7266231655042838528))
-
-### TL;DR:
+TL;DR:
 
 - **Bias** = error from **wrong assumptions** in the model.
 - **Variance** = error from **sensitivity to small changes** in the training data.
@@ -1435,9 +1435,9 @@ For squared error loss, the expected prediction error decomposes as:
 $$\text{EPE}(x) = \underbrace{(f(x) - E[\hat{f}(x)])^2}_{\text{Bias}^2} + \underbrace{E[(\hat{f}(x) - E[\hat{f}(x)])^2]}_{\text{Variance}} + \underbrace{\sigma^2}_{\text{Irreducible}}$$
 
 Where:
-- **Bias²:** How far the average prediction is from the true function
-- **Variance:** How much predictions vary across different training sets
-- **Irreducible error:** Inherent noise in the data (σ²)
+- Bias²: How far the average prediction is from the true function
+- Variance: How much predictions vary across different training sets
+- Irreducible error: Inherent noise in the data (σ²)
 
 **Bias:** Error from wrong assumptions
 - High bias = underfitting
@@ -1524,9 +1524,9 @@ Each tree is trained on ~63% of data, can validate on remaining ~37% without sep
 **Principle:** Train meta-learner on predictions of base models
 
 
-**Architecture:**
-- **Level-0:** Train multiple diverse base models h₁(x), ..., h_K(x)
-- **Level-1:** Train meta-learner g on Level-0 predictions
+Architecture:
+- Level-0: Train multiple diverse base models h₁(x), ..., h_K(x)
+- Level-1: Train meta-learner g on Level-0 predictions
 
 $$\hat{y}_{stack} = g(h_1(x), h_2(x), ..., h_K(x))$$
 
@@ -1595,23 +1595,20 @@ Usually simple model (Logistic Regression, Ridge) to avoid overfitting.
 - Entries: Ratings, clicks, purchases, or implicit feedback
 
 **Challenges:**
-- **Sparsity:** Typically >99% missing values
-- **Cold start:** New users/items with no history
-- **Scalability:** Millions of users × items
+- Sparsity: Typically >99% missing values
+- Cold start: New users/items with no history
+- Scalability: Millions of users × items
 
 ### Core Approaches
 
-#### Collaborative Filtering
-- **User-based:** Find similar users
-- **Item-based:** Find similar items
-- **Matrix Factorization:** Latent factor models
+Collaborative Filtering
+- User-based: Find similar users
+- Item-based: Find similar items
+- Matrix Factorization: Latent factor models
 
-#### Content-Based
+Content-Based
 - Recommend items similar to those user liked
 - Based on item features
-
-
-**Approach:** Recommend items similar to those user liked
 
 **Method:** Cosine similarity between item feature vectors
 
@@ -1630,20 +1627,16 @@ $$\text{sim}(i, j) = \frac{\mathbf{v}_i \cdot \mathbf{v}_j}{||\mathbf{v}_i|| \cd
 #### Hybrid
 - Combine collaborative + content-based
 
-### Key Algorithms
+### Key RecSys Algorithms
 
 #### K-Nearest Neighbors (KNN)
 
-**User-based:**
-Find K most similar users, predict rating as weighted average
+* User-based: Find K most similar users, predict rating as weighted average
+* Item-based: Find K most similar items user rated, predict as weighted average
+* Similarity: Cosine, Pearson correlation, Jaccard
 
-**Item-based:**
-Find K most similar items user rated, predict as weighted average
-
-**Similarity:** Cosine, Pearson correlation, Jaccard
-
-**Pros:** Simple, interpretable  
-**Cons:** Doesn't scale, sensitive to sparsity
+Pros: Simple, interpretable  
+Cons: Doesn't scale, sensitive to sparsity
 
 
 #### Matrix Factorization
@@ -1665,8 +1658,8 @@ $$\min \sum_{(u,i) \in observed} (r_{ui} - \hat{r}_{ui})^2 + \lambda(||p_u||^2 +
 2. Fix P, solve for Q (closed-form)
 3. Alternate until convergence
 
-**Pros:** Parallelizable, handles implicit feedback  
-**Cons:** Assumes all missing = negative
+Pros: Parallelizable, handles implicit feedback  
+Cons: Assumes all missing = negative
 
 #### BPR (Bayesian Personalized Ranking)
 
@@ -1689,12 +1682,12 @@ Where:
 - Transformers (self-attention over session)
 - Graph Neural Networks (session as graph)
 
-**Use Cases:**
+Use Cases:
 - E-commerce browsing
 - Music streaming (next song)
 - Video recommendations
 
-**Advantages:**
+Advantages:
 - Captures short-term intent
 - No user profile needed
 - Works for anonymous users
