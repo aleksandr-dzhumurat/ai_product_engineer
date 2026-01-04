@@ -1400,7 +1400,45 @@ Where:
 
 ## Q11 — Bias-Variance Tradeoff
 
-### Mathematical Decomposition
+[bias-variance decomposition](https://education.yandex.ru/handbook/ml/article/bias-variance-decomposition
+
+[bias-variance tradeoff explained](https://www.linkedin.com/feed/update/groupPost:961087-7266231655042838528))
+
+### TL;DR:
+
+- **Bias** = error from **wrong assumptions** in the model.
+- **Variance** = error from **sensitivity to small changes** in the training data.
+- You want to **balance** both for the best performance.
+
+
+**High bias (underfitting):** (classification)
+
+- Model is too simple to capture patterns.
+- Misclassifies many samples — poor performance on **both training and test sets**.
+- Example: Using logistic regression on data that has complex non-linear boundaries.
+
+**High variance (overfitting):**  (classification)
+
+- Model is too complex and fits noise in the training data.
+- Very good performance on **training data**, but poor generalization on **test data**.
+- Example: A deep decision tree perfectly classifying training data but failing on new data.
+
+| Model Complexity | Bias ↓ | Variance ↑ |
+|------------------|--------|------------|
+| Simple model     | High   | Low        |
+| Complex model    | Low    | High       |
+
+The goal is to find the sweet spot where both are low enough to give good generalization.
+
+**In practice**:
+
+- Use **cross-validation** to estimate generalization error.
+- Techniques like **regularization**, **pruning**, or using **ensemble methods** (e.g. random forests) help control this trade-off.
+- Visualization tools like **learning curves** can show if you're dealing with high bias or high variance.
+
+Random forrest - low bias (deep trees), high variance
+
+**Mathematical Decomposition**
 
 $$\text{Expected Error} = \text{Bias}^2 + \text{Variance} + \text{Irreducible Error}$$
 
@@ -1428,9 +1466,9 @@ Where:
 
 **High Bias Models:**
 - Linear regression on non-linear data
-- Shallow decision trees
 - Naive Bayes with strong assumptions
 - Logistic regression with insufficient features
+- Shallow decision trees
 
 **High Variance Models:**
 - Deep decision trees without pruning
