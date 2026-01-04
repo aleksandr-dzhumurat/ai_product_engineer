@@ -18,13 +18,14 @@
 4️⃣ Чтобы приземлить теорию — курс по LLM (https://huggingface.co/learn/llm-course/en/chapter6/1) от HuggingFace, особенно классная часть про токенайзеры + много практики про деплой джобов в HuggingFace Cloud.
 
 5️⃣ Если хочется побольше инженерных деталей:
-• Nebius LLM Engineering (https://github.com/Nebius-Academy/LLM-Engineering-Essentials) — упор на метрики
-• LLMOps Essential (https://github.com/Nebius-Academy/LLMOps-Essentials) — полезный материал ( прикольные штуки типа деплоя в Kubernetes)
+* Nebius LLM Engineering (https://github.com/Nebius-Academy/LLM-Engineering-Essentials) — упор на метрики
+* LLMOps Essential (https://github.com/Nebius-Academy/LLMOps-Essentials) — полезный материал ( прикольные штуки типа деплоя в Kubernetes)
+* Unsloth [fine-tuning guide](https://unsloth.ai/docs/get-started/fine-tuning-llms-guide)
 
 6️⃣ Если вкатывани в LLM тяжело идет, начните с базы.
 Стэнфорд выложил CS230 — отличный фундаментальный курс по DL
-• слайды (https://cs230.stanford.edu/syllabus/)
-• видосы (https://www.youtube.com/playlist?list=PLoROMvodv4rNRRGdS0rBbXOUGA0wjdh1X)
+* слайды (https://cs230.stanford.edu/syllabus/)
+* видосы (https://www.youtube.com/playlist?list=PLoROMvodv4rNRRGdS0rBbXOUGA0wjdh1X)
 
 ---
 

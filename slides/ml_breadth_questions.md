@@ -684,7 +684,6 @@ $$H = -\sum p_i \log_2(p_i)$$
 - Prone to overfitting without regularization
 
 **References:**
-- See Q2 from original ML exam guide for detailed comparison table
 - [Comparison of Statistical Classification Algorithms - Wikipedia](https://en.wikipedia.org/wiki/Statistical_classification)
 
 ---
@@ -821,7 +820,7 @@ Decision Guide
 - Highly imbalanced datasets (positive < 10%)
 - When true negatives are not meaningful
 
-### Handling Class Imbalance
+## Q8 Handling Class Imbalance
 
 **Methods:**
 1. **Resampling:**
@@ -845,13 +844,12 @@ Decision Guide
    - PR-AUC instead of ROC-AUC
 
 **References:**
-- See Q3 from original ML exam guide for detailed metric explanation
 - [Confusion Matrix - Wikipedia](https://en.wikipedia.org/wiki/Confusion_matrix)
 - [Receiver Operating Characteristic - Wikipedia](https://en.wikipedia.org/wiki/Receiver_operating_characteristic)
 
 ---
 
-## Q7 — Handling Unknown Categories in Production
+## Q9 — Handling Unknown Categories in Production
 
 **Problem**: Model encounters category it never saw during training.
 
@@ -1131,15 +1129,8 @@ $$\text{Loss} + \lambda_1 \sum_i |w_i| + \lambda_2 \sum_i w_i^2$$
 
 ## Q9 — Linear Regression Metrics
 
-| Metric | Formula | When to Use |
-|--------|---------|-------------|
-| **RMSE** | $\sqrt{\frac{1}{n}\sum (y - \hat{y})^2}$ | Default choice; sensitive to outliers |
-| **MAE** | $\frac{1}{n}\sum |y - \hat{y}$ | More robust to outliers |
-| **MAPE** | $100\% \cdot \frac{1}{n}\sum \left|\frac{y - \hat{y}}{y}\right|$ | Comparing errors across scales |
-| **R²** | $1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}}$ | Explained variance |
 
-
-**R² Interpretation:**
+$R^2$ Interpretation:
 - R² = 0: Model no better than mean
 - R² = 1: Perfect fit
 - R² < 0: Model worse than mean (overfitting)
@@ -1277,7 +1268,6 @@ $$L_\delta(y, \hat{y}) = \begin{cases}
 | Model comparison | R², Adjusted R² |
 
 **References:**
-- See Q6 from original ML exam guide
 - [Regression Validation Metrics - scikit-learn](https://scikit-learn.org/stable/modules/model_evaluation.html#regression-metrics)
 
 ---
@@ -1403,7 +1393,6 @@ Where:
 - Symmetric trees
 
 **References:**
-- See Q7 from original ML exam guide
 - [Gradient Boosting - Wikipedia](https://en.wikipedia.org/wiki/Gradient_boosting)
 - [XGBoost Documentation](https://xgboost.readthedocs.io/)
 
@@ -1566,7 +1555,6 @@ Usually simple model (Logistic Regression, Ridge) to avoid overfitting.
 - **Solution:** Regularization, more data, reduce complexity
 
 **References:**
-- See Q8 from original ML exam guide
 - [Bias-Variance Tradeoff - Wikipedia](https://en.wikipedia.org/wiki/Bias%E2%80%93variance_tradeoff)
 
 ---
@@ -1745,7 +1733,6 @@ Where IDCG = ideal DCG (perfect ranking)
 - Expert curation
 
 **References:**
-- See Q9 from original ML exam guide
 - [Recommender Systems - Wikipedia](https://en.wikipedia.org/wiki/Recommender_system)
 
 ---
@@ -1931,7 +1918,6 @@ Paris - France + Italy ≈ Rome
 
 
 **References:**
-- See Q10 from original ML exam guide
 - [TF-IDF - Wikipedia](https://en.wikipedia.org/wiki/Tf%E2%80%93idf)
 - [BM25 - Wikipedia](https://en.wikipedia.org/wiki/Okapi_BM25)
 
@@ -2128,7 +2114,6 @@ $$d_1(\mathbf{A}, \mathbf{B}) = \sum_{i=1}^{n} |A_i - B_i|$$
 - **<100K vectors:** Consider flat search
 
 **References:**
-- See Q11 from original ML exam guide
 - [Approximate Nearest Neighbor - Wikipedia](https://en.wikipedia.org/wiki/Nearest_neighbor_search)
 
 ---
@@ -2306,7 +2291,6 @@ Merges based on likelihood increase, not frequency
 - Reversible
 
 **References:**
-- See Q12 from original ML exam guide
 - [Attention Is All You Need - Paper](https://arxiv.org/abs/1706.03762)
 
 ---
@@ -2394,7 +2378,6 @@ Keep smallest set of tokens with cumulative probability ≥ p
 
 
 **References:**
-- See Q13 from original ML exam guide
 - [Temperature Sampling - Hugging Face](https://huggingface.co/blog/how-to-generate)
 
 ---
@@ -2459,7 +2442,6 @@ $$\text{softmax}(QK^T + m \cdot [-1, -2, -3, ..., -n])$$
 - Can train on 2K, inference on 10K+
 
 **References:**
-- See Q13 from original ML exam guide
 - [RoPE - Paper](https://arxiv.org/abs/2104.09864)
 
 ---
@@ -2510,7 +2492,6 @@ Final vocab: ["low", "er", " ", "wide", "st"]
 **Used by:** T5, XLNet, multilingual models
 
 **References:**
-- See Q12 from original ML exam guide
 - [BPE - Neural Machine Translation](https://arxiv.org/abs/1508.07909)
 
 ---
@@ -2523,9 +2504,11 @@ Final vocab: ["low", "er", " ", "wide", "st"]
 **Architecture:** Decoder-only with causal (masked) attention
 
 **Attention:** Can only attend to previous tokens
+
 $$\text{Mask}_{ij} = \begin{cases} 0 & \text{if } i \geq j \\ -\infty & \text{if } i < j \end{cases}$$
 
 **Training Objective:**
+
 $$\mathcal{L} = -\sum_{t=1}^{T} \log P(x_t | x_1, ..., x_{t-1})$$
 
 Next token prediction (left-to-right language modeling)
@@ -2553,7 +2536,8 @@ Next token prediction (left-to-right language modeling)
 1. **MLM (Masked Language Modeling):**
    - Randomly mask 15% of tokens
    - Predict masked tokens using context
-   $$\mathcal{L}_{MLM} = -\sum_{i \in \text{masked}} \log P(x_i | x_{\backslash i})$$
+
+$$\mathcal{L}_{MLM} = -\sum_{i \in \text{masked}} \log P(x_i | x_{\backslash i})$$
 
 2. **NSP (Next Sentence Prediction):**
    - Given [CLS] Sent_A [SEP] Sent_B [SEP]
@@ -2590,7 +2574,7 @@ Next token prediction (left-to-right language modeling)
 **Encoder-Decoder Models:** T5, BART combine both
 
 
-### Comparison Table
+Comparison Table
 
 | Aspect | GPT | BERT |
 |--------|-----|------|
@@ -2601,7 +2585,6 @@ Next token prediction (left-to-right language modeling)
 | **Use case** | Chat, completion | Classification, QA |
 
 **References:**
-- See Q12 from original ML exam guide
 - [BERT Paper](https://arxiv.org/abs/1810.04805)
 - [GPT-2 Paper](https://d4mucfpksywv.cloudfront.net/better-language-models/language_models_are_unsupervised_multitask_learners.pdf)
 
@@ -2622,6 +2605,7 @@ Next token prediction (left-to-right language modeling)
 - Total: Trillions of tokens
 
 **Loss:** Next-token prediction
+
 $$\mathcal{L} = -\sum_{t=1}^{T} \log P_\theta(x_t | x_{<t})$$
 
 **Result:** Base model with strong language understanding but:
@@ -2646,6 +2630,7 @@ $$\mathcal{L} = -\sum_{t=1}^{T} \log P_\theta(x_t | x_{<t})$$
 ```
 
 **Training:** Standard supervised learning
+
 $$\mathcal{L}_{SFT} = -\sum_i \log P_\theta(y_i | x_i)$$
 
 **Dataset Size:** 10K - 100K high-quality examples
@@ -2689,9 +2674,11 @@ $$\mathcal{L}_{SFT} = -\sum_i \log P_\theta(y_i | x_i)$$
 3. Humans rank responses (A > B > C)
 
 **Model:** Classifier predicting human preference
+
 $$r_\theta(x, y) \in \mathbb{R}$$
 
 **Loss (Bradley-Terry Model):**
+
 $$\mathcal{L}_r = -E \left[\log \sigma(r_\theta(x, y_w) - r_\theta(x, y_l))\right]$$
 
 Where y_w = preferred (winner), y_l = less preferred (loser)
@@ -2702,6 +2689,7 @@ Where y_w = preferred (winner), y_l = less preferred (loser)
 **Stage 2: RL Fine-tuning (PPO)**
 
 **Objective:**
+
 $$\mathcal{J}(\theta) = E_{x \sim D, y \sim \pi_\theta}[r_\theta(x, y)] - \beta \cdot D_{KL}(\pi_\theta || \pi_{ref})$$
 
 **Components:**
@@ -2776,7 +2764,6 @@ $$\mathcal{L}_{DPO} = -E\left[\log \sigma\left(\beta \log \frac{\pi_\theta(y_w|x
 
 
 **References:**
-- See Q14 from original ML exam guide
 - [InstructGPT Paper](https://arxiv.org/abs/2203.02155)
 - [DPO Paper](https://arxiv.org/abs/2305.18290)
 
@@ -3114,7 +3101,6 @@ project/
 ```
 
 **References:**
-- See Q1 from original ML exam guide
 - [Cookiecutter Data Science](https://drivendata.github.io/cookiecutter-data-science/)
 
 ---
@@ -3665,7 +3651,6 @@ crew = Crew(agents=[researcher, writer], process="sequential")
 
 
 **References:**
-- See Q15 from original ML exam guide
 - [RAG - Paper](https://arxiv.org/abs/2005.11401)
 
 ---
@@ -3801,7 +3786,6 @@ Agent:
 ```
 
 **References:**
-- See Q16 from original ML exam guide
 - [ReAct Paper](https://arxiv.org/abs/2210.03629)
 - [LangChain Documentation](https://python.langchain.com/)
 
@@ -3825,9 +3809,11 @@ Agent:
 - E[FP] = 910 × 0.5 = 455
 
 **Precision:**
+
 $$\text{Precision} = \frac{TP}{TP + FP} = \frac{45}{45 + 455} = \frac{45}{500} = 0.09 = 9\%$$
 
 **Recall:**
+
 $$\text{Recall} = \frac{TP}{TP + FN} = \frac{45}{45 + 45} = \frac{45}{90} = 0.5 = 50\%$$
 
 **Answer:**
@@ -3857,6 +3843,7 @@ $$P(\text{burn}) = 0.5^{10} = \frac{1}{1024} \approx 0.000977 = 0.0977\%$$
 **Answer: ~0.1%** (very low probability)
 
 **Alternatively:**
+
 $$P(\text{at least one accepts}) = 1 - 0.5^{10} = 1 - \frac{1}{1024} = \frac{1023}{1024} \approx 99.9\%$$
 
 ---
