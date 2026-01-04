@@ -1664,13 +1664,14 @@ Cons: Assumes all missing = negative
 #### BPR (Bayesian Personalized Ranking)
 
 **Objective:** Maximize pairwise ranking
+
 $$\max \sum_{(u,i,j)} \log \sigma(\hat{r}_{ui} - \hat{r}_{uj})$$
 
 Where:
 - i = positive item (observed)
 - j = negative item (unobserved)
 
-**Better for implicit feedback** (clicks, views)
+Better for implicit feedback (clicks, views)
 
 
 #### Session-Based
@@ -1833,18 +1834,20 @@ $$\text{IDF}(t) = \log\frac{N}{|\{d : t \in d\}|}$$
 
 ### BM25 (Best Matching 25)
 
-**Formula:**
+Formula:
+
 $$\text{score}(D, Q) = \sum_{i=1}^{n} \text{IDF}(q_i) \cdot \frac{f(q_i, D) \cdot (k_1 + 1)}{f(q_i, D) + k_1 \cdot (1 - b + b \cdot \frac{|D|}{\text{avgdl}})}$$
 
 Where:
-- q_i: Query terms
-- f(q_i, D): Term frequency of q_i in document D
-- |D|: Document length
+- $q_i$: Query terms
+- $f(q_i, D)$: Term frequency of q_i in document D
+- $\|D\|$: Document length
 - avgdl: Average document length in corpus
 - **k₁:** Term frequency saturation parameter (typical: 1.2-2.0)
 - **b:** Length normalization parameter (typical: 0.75)
 
 **IDF Component:**
+
 $$\text{IDF}(q_i) = \log \frac{N - n(q_i) + 0.5}{n(q_i) + 0.5}$$
 
 Where N = total documents, n(q_i) = documents containing q_i
@@ -1860,12 +1863,12 @@ Where N = total documents, n(q_i) = documents containing q_i
    - b=0: No normalization
    - b=1: Full normalization
 
-**Improvements over TF-IDF:**
+Improvements over TF-IDF:
 - Non-linear term frequency (saturation)
 - Better length normalization
 - Tunable parameters
 
-**Use Case:** Standard baseline for text search, used in Elasticsearch, Lucene
+Use Case: Standard baseline for text search, used in Elasticsearch, Lucene
 
 For  High-dimensional sparse data Cosine Similarity works good
 
@@ -1873,26 +1876,27 @@ For  High-dimensional sparse data Cosine Similarity works good
 
 **Structure:** Term → List of (DocID, metadata)
 
-**Example:**
+Example:
 ```
 "cat": [(Doc1, TF=2, positions=[5,12]), (Doc3, TF=1, positions=[7])]
 "dog": [(Doc2, TF=1, positions=[3]), (Doc3, TF=3, positions=[2,8,15])]
 ```
 
-**Query Processing:**
+Query Processing:
 1. Look up query terms in index
 2. Retrieve posting lists
 3. Compute scores (BM25, TF-IDF)
 4. Rank and return top-K
 
-**Optimizations:**
-- **Skip pointers:** Jump over documents that can't match
-- **Compression:** Varbyte encoding, delta encoding
-- **Caching:** Frequently queried terms
+Optimizations:
+- Skip pointers: Jump over documents that can't match
+- Compression: Varbyte encoding, delta encoding
+- Caching: Frequently queried terms
 
-**Complexity:**
-- Without index: O(N × M) where N = docs, M = avg doc length
-- With index: O(K × L) where K = query terms, L = avg posting list length
+**Complexity:**  
+- Without index: $\( O(N \times M) \)$, where $\( N \)$ = number of documents and $\( M \)$ = average document length  
+- With index: $\( O(K \times L) \)$, where $\( K \)$ = number of query terms and $\( L \)$ = average posting list length
+
 
 ---
 
