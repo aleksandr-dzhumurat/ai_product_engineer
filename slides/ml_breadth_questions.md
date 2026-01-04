@@ -1123,36 +1123,6 @@ Best of both worlds - combines:
 ## Q9 — Linear Regression Metrics
 
 
-$R^2$ Interpretation:
-- $R^2 = 0$: Model no better than mean
-- $R^2 = 1$: Perfect fit
-- $R^2 < 0$: Model worse than mean (overfitting)
-
-### Multicollinearity
-
-**Detection - VIF (Variance Inflation Factor):**
-$$VIF_j = \frac{1}{1 - R_j^2}$$
-
-Where $R_j^2$ is $R^2$ from regressing X_j on all other predictors.
-
-| VIF | Interpretation |
-|-----|---------------|
-| 1 | No correlation |
-| 1-5 | Moderate |
-| 5-10 | High |
-| >10 | Severe |
-
-**Problems Caused:**
-- Inflated standard errors
-- Unstable coefficient estimates
-- Difficult interpretation
-
-**Solutions:**
-- Remove redundant variables
-- Use PCA
-- Apply Ridge/ElasticNet regularization
-
-
 ### Mean Absolute Error (MAE)
 
 $$\text{MAE} = \frac{1}{n}\sum_{i=1}^{n}|y_i - \hat{y}_i|$$
@@ -1183,6 +1153,8 @@ $$\text{MSE} = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2$$
 
 ### Root Mean Squared Error (RMSE)
 
+Most common regression metric
+
 $$\text{RMSE} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2}$$
 
 **Advantages:**
@@ -1193,7 +1165,6 @@ $$\text{RMSE} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2}$$
 **Disadvantages:**
 - Still sensitive to outliers
 
-**Most common regression metric**
 
 ### Mean Absolute Percentage Error (MAPE)
 
@@ -1204,20 +1175,45 @@ $$\text{MAPE} = \frac{100\%}{n}\sum_{i=1}^{n}\left|\frac{y_i - \hat{y}_i}{y_i}\r
 - Easy to interpret (percentage)
 
 **Disadvantages:**
-- **Undefined when y=0**
-- **Asymmetric:** Penalizes over-predictions more than under-predictions
+- Undefined when y=0
+- Asymmetric: Penalizes over-predictions more than under-predictions
 - Biased toward under-predictions
 
 **When to use:** When relative error matters more than absolute
 
-### R² (Coefficient of Determination)
+### $R^2$ (Coefficient of Determination)
 
 $$R^2 = 1 - \frac{SS_{res}}{SS_{tot}} = 1 - \frac{\sum(y_i - \hat{y}_i)^2}{\sum(y_i - \bar{y})^2}$$
 
-**Interpretation:**
-- **R² = 1:** Perfect fit
-- **R² = 0:** Model no better than mean
-- **R² < 0:** Model worse than mean (overfitting!)
+
+$R^2$ Interpretation:
+- $R^2 = 0$: Model no better than mean
+- $R^2 = 1$: Perfect fit
+- $R^2 < 0$: Model worse than mean (overfitting)
+
+Multicollinearity Detection - VIF (Variance Inflation Factor):
+
+$$VIF_j = \frac{1}{1 - R_j^2}$$
+
+Where $R_j^2$ is $R^2$ from regressing $X_j$ on all other predictors.
+
+| VIF | Interpretation |
+|-----|---------------|
+| 1 | No correlation |
+| 1-5 | Moderate |
+| 5-10 | High |
+| >10 | Severe |
+
+Problems Caused:
+- Inflated standard errors
+- Unstable coefficient estimates
+- Difficult interpretation
+
+Solutions:
+- Remove redundant variables
+- Use PCA
+- Apply Ridge/ElasticNet regularization
+
 
 **Advantages:**
 - Normalized (0-1 range... usually)
@@ -1227,7 +1223,7 @@ $$R^2 = 1 - \frac{SS_{res}}{SS_{tot}} = 1 - \frac{\sum(y_i - \hat{y}_i)^2}{\sum(
 - Always increases with more features (use Adjusted R²)
 - Can be negative on test set
 
-### Adjusted R²
+### Adjusted $R^2$
 
 $$R_{adj}^2 = 1 - \frac{(1-R^2)(n-1)}{n-p-1}$$
 
@@ -1267,18 +1263,16 @@ $$L_\delta(y, \hat{y}) = \begin{cases}
 
 ## Q10 — Gradient Boosting
 
-### Core Principle
-
-**Sequentially add weak learners**, each correcting errors of previous ensemble, Additive Model Principle
+Core Principle - **Sequentially add weak learners**, each correcting errors of previous ensemble, Additive Model Principle
 
 $$F_m(x) = F_{m-1}(x) + \eta \cdot h_m(x)$$
 
 Where:
-- F_m = ensemble after m trees
-- η = learning rate (shrinkage)
-- h_m = new tree fitted to pseudo-residuals
+- $F_m$ = ensemble after m trees
+- $\eta$ = learning rate (shrinkage)
+- $h_m$ = new tree fitted to pseudo-residuals
 
-### Algorithm
+Algorithm
 
 **1. Initialize:** $F_0(x) = \text{constant}$ (e.g., mean for regression)
 
@@ -1300,25 +1294,25 @@ $$
 
 $$r_{im} = -\frac{\partial L(y_i, F(x_i))}{\partial F(x_i)}\bigg|_{F=F_{m-1}}$$
    
-   - **Fit tree** h_m to residuals r_im
+   - Fit tree $h_m$ to residuals $r_{im}$
    
-   - **Update:** $F_m = F_{m-1} + \eta \cdot h_m$
+   - Update: $F_m = F_{m-1} + \eta \cdot h_m$
 
-**3. Output:** $F_M(x)$
+3. Output: $F_M(x)$
 
-### For MSE Loss
+**For MSE Loss**
 
-**Loss:** $L(y, F) = \frac{1}{2}(y - F)^2$
+Loss: $L(y, F) = \frac{1}{2}(y - F)^2$
 
-**Pseudo-residual:** $r = y - F_{m-1}(x)$ (ordinary residual)
+Pseudo-residual: $r = y - F_{m-1}(x)$ (ordinary residual)
 
-**Intuition:** Fit next tree to what we got wrong so far
+Intuition: Fit next tree to what we got wrong so far
 
-### For Log-Loss (Classification)
+**For Log-Loss (Classification)**
 
-**Loss:** $L(y, F) = -[y\log(p) + (1-y)\log(1-p)]$ where $p = \sigma(F)$
+Loss: $L(y, F) = -[y\log(p) + (1-y)\log(1-p)]$ where $p = \sigma(F)$
 
-**Pseudo-residual:** $r = y - \sigma(F_{m-1}(x))$
+Pseudo-residual: $r = y - \sigma(F_{m-1}(x))$
 
 ### Regularization Techniques
 
@@ -1348,8 +1342,8 @@ $$F_m = F_{m-1} + \eta \cdot h_m, \quad 0 < \eta \leq 1$$
 $$\Omega(h) = \gamma T + \frac{1}{2}\lambda \sum_{j=1}^{T} w_j^2$$
 
 Where:
-- T = number of leaves
-- w_j = leaf weights
+- $T$ = number of leaves
+- $w_j$ = leaf weights
 - γ = complexity penalty
 - λ = L2 on weights
 
@@ -1364,8 +1358,8 @@ Where:
 | **Accuracy** | Often better | Good |
 | **Speed** | Slower training | Faster training |
 
-**When to use GB:** Maximum accuracy, willing to tune  
-**When to use RF:** Quick baseline, less tuning needed
+* When to use GB: Maximum accuracy, willing to tune  
+* When to use RF: Quick baseline, less tuning needed
 
 ### Modern Implementations
 
