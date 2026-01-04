@@ -399,15 +399,15 @@ For coin flip with p(heads) = p:
 
 $$H(X) = -p\log_2 p - (1-p)\log_2(1-p)$$
 
-**Maximum at p = 0.5 → 1 bit of entropy**
+Maximum at p = 0.5 → 1 bit of entropy
 
 ### Applications in ML
 
 **Decision Trees** (Information Gain)
 
-**Node Entropy:** $H(t) = -\sum p_c \log_2 p_c$
+Node Entropy: $H(t) = -\sum p_c \log_2 p_c$
 
-**Information Gain:**
+Information Gain:
 
 $$IG(S, A) = H(S) - \sum_{v \in Values(A)} \frac{|S_v|}{|S|} H(S_v)$$
 
@@ -422,19 +422,20 @@ Select attribute maximizing IG for each split - Greedy algorithm builds tree
 $$H(p, q) = -\sum_x p(x) \log q(x)$$
 
 Where:
-- p = true distribution (one-hot encoded token)
-- q = model prediction (softmax output)
+- $p$ = true distribution (one-hot encoded token)
+- $q$ = model prediction (softmax output)
 
-**Minimizing cross-entropy = Minimizing KL divergence:**
+Minimizing cross-entropy = Minimizing KL divergence:
 
 $$D_{KL}(P \| Q) = \sum_x P(x) \log \frac{P(x)}{Q(x)}$$
 
-**Key Properties:**
+Key Properties:
 - Non-negative: D_KL ≥ 0
 - Zero iff P = Q
 - Asymmetric: D_KL(P||Q) ≠ D_KL(Q||P)
 
-**Fundamental Relationship:**
+Fundamental Relationship:
+
 $$H(p, q) = H(p) + D_{KL}(p \| q)$$
 
 Since H(p) is constant (true labels), minimizing H(p,q) = minimizing KL divergence
@@ -447,7 +448,7 @@ Since H(p) is constant (true labels), minimizing H(p,q) = minimizing KL divergen
 
 ## Q4 — Type I and Type II Errors
 
-**Definitions**
+Definitions
 
 Type I Error (False Positive):
 - Reject true $H_0$
@@ -496,11 +497,11 @@ Security Screening - Missing a threat
 
 ### Tradeoff
 
-**Fundamental relationship:**
+Fundamental relationship:
 - Decreasing α (Type I) → Increases β (Type II)
 - More strict threshold → Fewer false positives, more false negatives
 
-**How to decrease both:**
+How to decrease both:
 - **Increase sample size** (n ↑)
 - Use more powerful test
 - Reduce noise in data
@@ -511,7 +512,7 @@ Security Screening - Missing a threat
 - Helps visualize tradeoff
 - Choose threshold based on cost of errors
 
-**Cost-Sensitive Learning:**
+Cost-Sensitive Learning:
 
 $$\text{Cost} = C_{FP} \cdot FP + C_{FN} \cdot FN$$
 
@@ -561,10 +562,9 @@ $$P(y=1|x) = \frac{1}{1 + e^{-(\beta_0 + \beta_1x_1 + ... + \beta_nx_n)}}$$
 $$J(\beta) = -\frac{1}{n}\sum_{i=1}^{n}\left[y_i \log(p_i) + (1-y_i)\log(1-p_i)\right]$$
 
 **Regularized Versions:**
-- **L2 (Ridge):** $J(\beta) + \lambda\|\beta\|_2^2$ - shrinks coefficients, handles multicollinearity
-- **L1 (Lasso):** $J(\beta) + \lambda\|\beta\|_1$ - produces sparse solutions, feature selection
-- **ElasticNet:** $J(\beta) + \lambda_1\|\beta\|_1 + \lambda_2\|\beta\|_2^2$ - combines both
-
+- L2 (Ridge): $J(\beta) + \lambda\|\beta\|_2^2$ - shrinks coefficients, handles multicollinearity
+- L1 (Lasso): $J(\beta) + \lambda\|\beta\|_1$ - produces sparse solutions, feature selection
+- ElasticNet: $J(\beta) + \lambda_1\|\beta\|_1 + \lambda_2\|\beta\|_2^2$ - combines both
 
 **Disadvantages:**
 - Cannot capture non-linear relationships
@@ -592,11 +592,11 @@ $$J(\beta) = -\frac{1}{n}\sum_{i=1}^{n}\left[y_i \log(p_i) + (1-y_i)\log(1-p_i)\
 ### Decision Trees
 
 **Splitting Criteria:**
-- **Gini**:
+- Gini:
 
 $$G = 1 - \sum p_i^2$$
 
-- **Entropy**:
+- Entropy:
 
 $$H = -\sum p_i \log_2(p_i)$$
 
@@ -749,8 +749,9 @@ $$F_\beta = (1 + \beta^2) \times \frac{\text{Precision} \times \text{Recall}}{(\
 - β < 1: More weight to precision
 - β > 1: More weight to recall
 
+### Advanced metrics
 
-### ROC-AUC
+#### ROC-AUC
 
 ROC Curve: Plots TPR (y-axis) vs FPR (x-axis) across all thresholds
 
@@ -759,7 +760,7 @@ ROC Curve: Plots TPR (y-axis) vs FPR (x-axis) across all thresholds
 - AUC = 0.5: Random guessing
 - AUC > 0.9: Excellent
 
-### PR-AUC vs ROC-AUC
+#### PR-AUC vs ROC-AUC
 
 **Key Difference:**
 - ROC uses TN in FPR calculation
@@ -772,7 +773,7 @@ ROC Curve: Plots TPR (y-axis) vs FPR (x-axis) across all thresholds
 
 Probabilistic interpretation: Probability that random positive ranks higher than random negative
 
-### ROC-AUC vs F1
+#### ROC-AUC vs F1
 
 | Aspect | ROC-AUC | F1-Score |
 |--------|---------|----------|
@@ -795,17 +796,14 @@ When to Use What: decision Guide
 
 ---
 
-**Accuracy:** Balanced classes, equal costs
+**Resume:**
 
-**Precision:** Minimize false positives (spam filter, drug approval)
-
-**Recall:** Minimize false negatives (cancer screening, fraud detection)
-
-**F1:** Balance precision and recall, imbalanced data
-
-**Macro F1:** Multi-class, treat all classes equally
-
-**Micro F1:** Multi-class, weight by class frequency
+* Accuracy: Balanced classes, equal costs
+* Precision Minimize false positives (spam filter, drug approval)
+* Recall: Minimize false negatives (cancer screening, fraud detection)
+* F1: Balance precision and recall, imbalanced data
+* Macro F1: Multi-class, treat all classes equally
+* Micro F1: Multi-class, weight by class frequency
 
 **ROC-AUC:** 
 - Model comparison
@@ -818,7 +816,7 @@ When to Use What: decision Guide
 
 ## Q8 Handling Class Imbalance
 
-**Methods:**
+Methods:
 1. **Resampling:**
    - SMOTE (oversampling minority)
    - Random undersampling majority
@@ -902,27 +900,27 @@ else:
 
 ### 5. Embedding-Based Approach
 
-**For high-cardinality categoricals:**
+For high-cardinality categoricals:
 - Use entity embeddings (neural networks)
 - Approximate unknown with nearest known embedding
 - OR: Use hash trick to map to fixed space
 
 ### 6. Hierarchical Categories
 
-**If categories have hierarchy:**
+If categories have hierarchy:
 ```
 Product → Category → Subcategory
 "New Phone Model" → "Electronics" → "Phones"
 ```
 
-**Fallback to parent category if specific subcategory unknown**
+Fallback to parent category if specific subcategory unknown
 
 ### Best Practices
 
-✅ **Monitor:** Track frequency of unknown categories  
-✅ **Retrain:** Periodically retrain with new categories  
-✅ **Alert:** Set up alerts when unknowns exceed threshold  
-✅ **A/B Test:** Compare different handling strategies  
+✅ Monitor: Track frequency of unknown categories  
+✅ Retrain: Periodically retrain with new categories  
+✅ Alert: Set up alerts when unknowns exceed threshold  
+✅ A/B Test: Compare different handling strategies  
 
 **References:**
 - [OneHotEncoder Documentation - sklearn](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html)
@@ -933,6 +931,7 @@ Product → Category → Subcategory
 ## Q6 — Linear Regression
 
 **Model Formulation**: Matrix Form
+
 $$\mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\epsilon}$$
 
 Assumptions (LINE)
@@ -973,9 +972,11 @@ Use when: Very large datasets
 ## Regularization
 
 **Ridge (L2)**
+
 $$\min \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2 + \lambda\|\boldsymbol{\beta}\|_2^2$$
 
 **Closed-form solution:**
+
 $$\hat{\boldsymbol{\beta}}_{ridge} = (\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I})^{-1}\mathbf{X}^T\mathbf{y}$$
 
 - Shrinks coefficients toward zero
@@ -983,6 +984,7 @@ $$\hat{\boldsymbol{\beta}}_{ridge} = (\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I}
 - Never eliminates features
 
 **Lasso (L1)**
+
 $$\min \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2 + \lambda\|\boldsymbol{\beta}\|_1$$
 
 - Produces sparse solutions (some β = 0)
@@ -990,6 +992,7 @@ $$\min \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2 + \lambda\|\boldsymbol{\b
 - No closed-form solution
 
 **ElasticNet**
+
 $$\min \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2 + \lambda_1\|\boldsymbol{\beta}\|_1 + \lambda_2\|\boldsymbol{\beta}\|_2^2$$
 
 - Combines selection (L1) with stability (L2)
@@ -1019,24 +1022,28 @@ Why Regularization - **without regularization, models can:**
 ### L1 (Lasso) Regularization
 
 **Loss Function:**
+
 $$\text{Loss} + \lambda \sum_i |w_i|$$
 
 Gradient:
+
 $$\frac{\partial}{\partial w_i} = \lambda \cdot \text{sign}(w_i)$$
 
 Constant gradient (magnitude λ) regardless of weight size
 
 Effect:
-- **Sparse solutions:** Many weights exactly zero
-- **Feature selection:** Automatically eliminates unimportant features
-- **Interpretability:** Fewer features in final model
+- Sparse solutions: Many weights exactly zero
+- Feature selection: Automatically eliminates unimportant features
+- Interpretability: Fewer features in final model
 
 ### L2 (Ridge) Regularization
 
 Loss Function:
+
 $$\text{Loss} + \lambda \sum_i w_i^2$$
 
 Gradient:
+
 $$\frac{\partial}{\partial w_i} = 2\lambda w_i$$
 
 Proportional gradient (decreases as w → 0)
@@ -1086,7 +1093,6 @@ Best of both worlds - combines:
 - Stability and multicollinearity handling (L2)
 
 
-
 ### Comparison Table
 
 | Property | L1 (Lasso) | L2 (Ridge) |
@@ -1099,18 +1105,18 @@ Best of both worlds - combines:
 | **Gradient** | Constant magnitude | Proportional to weight |
 
 
-**Use L1 when:**
+Use L1 when:
 - Want automatic feature selection
 - Many irrelevant features
 - Interpretability is crucial
 - Sparse models needed (memory/speed)
 
-**Use L2 when:**
+Use L2 when:
 - All features potentially useful
 - Multicollinearity present
 - Smooth weight distribution preferred
 
-**Use ElasticNet when:**
+Use ElasticNet when:
 - Best of both needed
 - High-dimensional data with groups of correlated features
 
@@ -1231,7 +1237,7 @@ Where:
 - n = sample size
 - p = number of predictors
 
-**Penalizes adding features that don't improve fit significantly**
+Penalizes adding features that don't improve fit significantly
 
 ### Huber Loss (Robust Alternative)
 
@@ -1276,7 +1282,6 @@ Algorithm
 
 **1. Initialize:** $F_0(x) = \text{constant}$ (e.g., mean for regression)
 
-
 For MSE:
 
 $$
@@ -1295,7 +1300,6 @@ $$
 $$r_{im} = -\frac{\partial L(y_i, F(x_i))}{\partial F(x_i)}\bigg|_{F=F_{m-1}}$$
    
    - Fit tree $h_m$ to residuals $r_{im}$
-   
    - Update: $F_m = F_{m-1} + \eta \cdot h_m$
 
 3. Output: $F_M(x)$
@@ -1320,7 +1324,7 @@ Pseudo-residual: $r = y - \sigma(F_{m-1}(x))$
 
 $$F_m = F_{m-1} + \eta \cdot h_m, \quad 0 < \eta \leq 1$$
 
-**Smaller η:**
+Smaller $\eta$:
 - Need more trees
 - Better generalization
 - **Typical:** 0.01 - 0.3
