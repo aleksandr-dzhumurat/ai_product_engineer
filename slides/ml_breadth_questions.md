@@ -40,7 +40,7 @@ $$\frac{\sum X_i - n\mathbb{E}[X]}{\sqrt{n\text{Var}(X)}} \xrightarrow{d} N(0,1)
 - **Finite variance** (excludes Cauchy distribution)
 - n ≥ 30 (rule of thumb)
 
-### Key Differences
+Key Differences
 
 
 | Aspect | LLN | CLT |
@@ -128,13 +128,13 @@ $$Q_3 - Q_1$$
 
 **Simple case 1**: Effect of Multiplying by Constant k on Variance
 
-**If all values multiplied by k:**
+If all values multiplied by k:
 
 $$\text{Var}(kX) = k^2 \cdot \text{Var}(X)$$
 
-**Example:** Multiply by 2 → variance increases by 4×
+Example: Multiply by 2 → variance increases by 4×
 
-**Why:** Variance measures spread, which scales quadratically.
+Why: Variance measures spread, which scales quadratically.
 
 **Simple case 2**: How "Multiply values above threshold by 3" Affects Median
 
@@ -292,19 +292,19 @@ $$\eta^2 = \frac{SS_{between}}{SS_{total}} = \frac{\sum n_k(\bar{y}_k - \bar{y})
 
 ## Q2C — Simpson's Paradox
 
-**Visual Interpretation** Simpson's Paradox occurs when a trend appears in several groups of data but disappears or reverses when the groups are combined.
+Visual Interpretation: Simpson's Paradox occurs when a trend appears in several groups of data but disappears or reverses when the groups are combined.
 
 **Classic Example: UC Berkeley Admissions**: Men admitted at 40%, Women at 25% → appears biased toward men (overall)
 
-**By Department:**
+By Department:
 - Natural Sciences: High acceptance rate, more men applied
 - Social Sciences: Low acceptance rate, more women applied
 
-**Within each department:** Women accepted at equal or higher rates!
+Within each department: Women accepted at equal or higher rates!
 
 **Why It Happens**
 
-**Two effects occur together:**
+Two effects occur together:
 1. **Group sizes are very different**
 2. **Confounding variable** (e.g., department choice) affects both variables
 
@@ -322,9 +322,9 @@ When analyzing data:
 2. **Also** stratify by potential confounders
 3. Understand causal relationships, not just correlations
 
-**Causal interpretation matters:** Statistical associations can reverse depending on what variables you condition on.
+Causal interpretation matters: Statistical associations can reverse depending on what variables you condition on.
 
-**Famous Examples:**
+Famous Examples:
 - Kidney stone treatment: New treatment appeared worse overall but was better for both small and large stones
 - Restaurant ratings: Higher overall rating but lower rating in each age subgroup
 
@@ -339,7 +339,7 @@ When analyzing data:
 
 **Intuitive Explanation**: Entropy = Measure of Uncertainty
 
-**Simple test:** How hard is it to guess the next element?
+Simple test: How hard is it to guess the next element?
 
 **Low Entropy:**
 ```
@@ -359,18 +359,16 @@ For discrete random variable X:
 
 $$H(X) = -\sum_{x \in \mathcal{X}} p(x) \log p(x) = E[-\log p(X)]$$
 
-**Units:** bits (log₂), nats (ln), dits (log₁₀)
+**Convention:** $0 \log 0 = 0$
 
-**Convention:** 0 log 0 = 0
-
-**Units:**
+Units:
 - log₂ → **bits**
 - ln → **nats**
 - log₁₀ → **dits**
 
 **Why Logarithm?**
 
-**1. Additivity Property:**
+1. Additivity Property:
 For independent events A and B:
 
 $$I(A \cap B) = I(A) + I(B)$$
@@ -379,21 +377,21 @@ Only logarithm satisfies:
 
 $$\log(p_A \cdot p_B) = \log p_A + \log p_B$$
 
-**2. Information Content:**
+2. Information Content:
 Rare event → High information:
 
 $$I(x) = -\log p(x)$$
 
-**3. Bits Interpretation:**
+3. Bits Interpretation:
 log₂(n) = minimum bits needed to distinguish n outcomes
 
 **Properties**
 
-- **Non-negative:** H(X) ≥ 0
-- **Maximum:** H(X) ≤ log₂(n) for n outcomes
+- Non-negative: H(X) ≥ 0
+- Maximum: H(X) ≤ log₂(n) for n outcomes
   - Maximum when uniform distribution
-- **Minimum:** H(X) = 0 when deterministic
-- **Conditioning reduces entropy:** H(X|Y) ≤ H(X)
+- Minimum: H(X) = 0 when deterministic
+- Conditioning reduces entropy: H(X|Y) ≤ H(X)
 
 ### Binary Entropy
 
@@ -451,17 +449,17 @@ Since H(p) is constant (true labels), minimizing H(p,q) = minimizing KL divergen
 
 **Definitions**
 
-**Type I Error (False Positive):**
+Type I Error (False Positive):
 - Reject true $H_0$
 - Probability = $\alpha$ (significance level)
 - **Example:** Healthy patient diagnosed as sick
 
-**Type II Error (False Negative):**
+Type II Error (False Negative):
 - Fail to reject false $H_0$
 - Probability = $\beta$
 - **Example:** Sick patient diagnosed as healthy
 
-**Confusion Matrix Analogy**
+Confusion Matrix Analogy
 
 |  | H₀ True | H₀ False |
 |--|---------|----------|
@@ -704,31 +702,31 @@ Confusion Matrix
 
 $$\text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}$$
 
-**Limitation:** Misleading on imbalanced data—95% accuracy means nothing if 95% of data is one class
+Limitation: Misleading on imbalanced data—95% accuracy means nothing if 95% of data is one class
 
 
 **Precision:**
 
 $$\text{Precision} = \frac{TP}{TP + FP}$$
 
-**Intuition:** "When model predicts positive, how often is it correct?"
+Intuition: "When model predicts positive, how often is it correct?"
 
-**Use when:** False positives are costly (spam filter, drug approval)
+Use when: False positives are costly (spam filter, drug approval)
 
 
 **Recall (Sensitivity):**
 
 $$\text{Recall} = \frac{TP}{TP + FN}$$
 
-**Intuition:** "Of all actual positives, how many did we catch?"
+Intuition: "Of all actual positives, how many did we catch?"
 
-**Use when:** False negatives are costly (cancer screening, fraud detection)
+Use when: False negatives are costly (cancer screening, fraud detection)
 
 #### Specificity
 
 $$\text{Specificity} = \frac{TN}{TN + FP}$$
 
-**Use when:** Correctly identifying negatives matters (confirming absence of disease)
+Use when: Correctly identifying negatives matters (confirming absence of disease)
 
 **F1-Score:**
 
@@ -737,9 +735,9 @@ $$F1 = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + 
 Harmonic mean (penalizes extreme values)
 
 
-**Why Harmonic Mean?** Penalizes extreme values—cannot achieve high F1 by excelling in only one metric.
+Why Harmonic Mean? Penalizes extreme values—cannot achieve high F1 by excelling in only one metric.
 
-**Why F1 is Needed:**
+*Why F1 is Needed:
 - Precision and recall have inverse relationship
 - Single balanced score for model comparison
 - Essential for imbalanced datasets
@@ -754,12 +752,12 @@ $$F_\beta = (1 + \beta^2) \times \frac{\text{Precision} \times \text{Recall}}{(\
 
 ### ROC-AUC
 
-**ROC Curve:** Plots TPR (y-axis) vs FPR (x-axis) across all thresholds
+ROC Curve: Plots TPR (y-axis) vs FPR (x-axis) across all thresholds
 
 **AUC (Area Under Curve):**
-- **AUC = 1.0:** Perfect classifier
-- **AUC = 0.5:** Random guessing
-- **AUC > 0.9:** Excellent
+- AUC = 1.0: Perfect classifier
+- AUC = 0.5: Random guessing
+- AUC > 0.9: Excellent
 
 ### PR-AUC vs ROC-AUC
 
@@ -772,7 +770,7 @@ $$F_\beta = (1 + \beta^2) \times \frac{\text{Precision} \times \text{Recall}}{(\
 - When true negatives aren't meaningful
 - Fraud detection, anomaly detection
 
-**Probabilistic interpretation:** Probability that random positive ranks higher than random negative
+Probabilistic interpretation: Probability that random positive ranks higher than random negative
 
 ### ROC-AUC vs F1
 
@@ -784,9 +782,7 @@ $$F_\beta = (1 + \beta^2) \times \frac{\text{Precision} \times \text{Recall}}{(\
 | **Uses TN** | Yes (in FPR) | No |
 | **Best for** | Model comparison, ranking | Specific threshold, imbalanced data |
 
-### When to Use What
-
-Decision Guide
+When to Use What: decision Guide
 
 | Scenario | Recommended Metric |
 |----------|-------------------|
@@ -851,9 +847,9 @@ Decision Guide
 
 ## Q9 — Handling Unknown Categories in Production
 
-**Problem**: Model encounters category it never saw during training.
+Problem: Model encounters category it never saw during training.
 
-**Example:**
+Example:
 - Training: categories [A, B, C]
 - Production: new category D appears
 
@@ -866,37 +862,37 @@ from sklearn.preprocessing import OneHotEncoder
 encoder = OneHotEncoder(handle_unknown='ignore')
 ```
 
-**Behavior:** Unknown category → all zeros vector
+Behavior: Unknown category → all zeros vector
 - Effectively treats as "neutral"
 - Model uses only other features
 
 ### 2. Fallback to Most Frequent Category
 
-**During inference:**
+During inference:
 ```python
 if category not in known_categories:
     category = most_frequent_category
 ```
 
-**When to use:** When categories are similar enough
+When to use: When categories are similar enough
 
 ### 3. Add 'Unknown' Category During Training
 
-**Strategy:**
+Strategy:
 - During training, add synthetic "unknown" category
 - Assign small fraction of training data to it
 - OR: Hold out some categories as "unknown"
 
-**Benefit:** Model learns to handle unknowns explicitly
+Benefit: Model learns to handle unknowns explicitly
 
 ### 4. Target Encoding with Global Mean Fallback
 
-**Target Encoding:**
+Target Encoding:
 ```python
 category_means = df.groupby('category')['target'].mean()
 ```
 
-**For unknown category:**
+For unknown category:
 ```python
 if category in category_means:
     value = category_means[category]
@@ -959,9 +955,9 @@ Coefficient Interpretation
 
 $$\hat{\boldsymbol{\beta}} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}$$
 
-**Complexity:** O(np² + p³)
+Complexity: O(np² + p³)
 
-**Use when:** n < 10,000, p < 1,000
+Use when: n < 10,000, p < 1,000
 
 ### Gradient Descent
 
@@ -970,9 +966,9 @@ $$\boldsymbol{\beta}^{(t+1)} = \boldsymbol{\beta}^{(t)} - \eta \nabla_{\boldsymb
 **Gradient for MSE:**
 $$\nabla_{\boldsymbol{\beta}} J = -\frac{2}{n}\mathbf{X}^T(\mathbf{y} - \mathbf{X}\boldsymbol{\beta})$$
 
-**Variants:** Batch GD, Stochastic GD, Mini-batch GD
+Variants: Batch GD, Stochastic GD, Mini-batch GD
 
-**Use when:** Very large datasets, sparse data
+Use when: Very large datasets
 
 ## Regularization
 
@@ -1014,9 +1010,7 @@ OLS solution $\hat{y} = X \hat{\beta}$ is the **orthogonal projection** of y ont
 
 ## Q8 — Regularization: L1 vs L2
 
-### Why Regularization?
-
-**Without regularization, models can:**
+Why Regularization - **without regularization, models can:**
 - Memorize training data (overfitting)
 - Learn noise instead of patterns
 - Have unstable, large weights
@@ -1027,71 +1021,71 @@ OLS solution $\hat{y} = X \hat{\beta}$ is the **orthogonal projection** of y ont
 **Loss Function:**
 $$\text{Loss} + \lambda \sum_i |w_i|$$
 
-**Gradient:**
+Gradient:
 $$\frac{\partial}{\partial w_i} = \lambda \cdot \text{sign}(w_i)$$
 
-**Constant gradient** (magnitude λ) regardless of weight size
+Constant gradient (magnitude λ) regardless of weight size
 
-**Effect:**
+Effect:
 - **Sparse solutions:** Many weights exactly zero
 - **Feature selection:** Automatically eliminates unimportant features
 - **Interpretability:** Fewer features in final model
 
 ### L2 (Ridge) Regularization
 
-**Loss Function:**
+Loss Function:
 $$\text{Loss} + \lambda \sum_i w_i^2$$
 
-**Gradient:**
+Gradient:
 $$\frac{\partial}{\partial w_i} = 2\lambda w_i$$
 
-**Proportional gradient** (decreases as w → 0)
+Proportional gradient (decreases as w → 0)
 
 **Effect:**
-- **Shrinks all weights** toward zero
-- **Rarely exactly zero**
-- **Handles multicollinearity** well
-- **All features remain** in model
+- Shrinks all weights toward zero
+- Rarely exactly zero
+- Handles multicollinearity well
+- All features remain in model
 
 ### WHY L1 Produces Sparsity, L2 Doesn't
 
-#### Algebraic Intuition
+**Algebraic Intuition**
 
-**L1:**
+L1:
 - Constant "push" toward zero:
 
 $$\lambda \cdot \text{sign}(w)$$
 
 - Even tiny weights get same push → reach zero
 
-**L2:**
+L2:
 - Proportional "pull":
 
 $$2\lambda w$$
 
 - Small weights get tiny pull → rarely reach zero
 
-#### Geometric Intuition
+**Geometric Intuition**
 
-**Constraint regions:**
-- **L1:** Diamond shape (has corners at axes)
-- **L2:** Circle shape (smooth, no corners)
+Constraint regions:
+- L1: Diamond shape (has corners at axes)
+- L2: Circle shape (smooth, no corners)
 
-**Optimization:**
+Optimization:
 - Contours of loss function intersect L1 diamond **often at corners** (where w=0 for some dimensions)
 - Contours rarely hit exactly on axis for L2 circle
 
-**Visual:** L1's sharp corners encourage solutions where many weights = 0
+Visual: L1's sharp corners encourage solutions where many weights = 0
 
 ### ElasticNet (L1 + L2)
 
 $$\text{Loss} + \lambda_1 \sum_i |w_i| + \lambda_2 \sum_i w_i^2$$
 
-**Combines:**
+Best of both worlds - combines:
 - Feature selection (L1)
 - Stability and multicollinearity handling (L2)
 
-**Best of both worlds**
+
 
 ### Comparison Table
 
@@ -1104,7 +1098,6 @@ $$\text{Loss} + \lambda_1 \sum_i |w_i| + \lambda_2 \sum_i w_i^2$$
 | **Optimization** | Iterative (no closed form) | Closed form solution |
 | **Gradient** | Constant magnitude | Proportional to weight |
 
-### When to Use
 
 **Use L1 when:**
 - Want automatic feature selection
@@ -1131,16 +1124,16 @@ $$\text{Loss} + \lambda_1 \sum_i |w_i| + \lambda_2 \sum_i w_i^2$$
 
 
 $R^2$ Interpretation:
-- R² = 0: Model no better than mean
-- R² = 1: Perfect fit
-- R² < 0: Model worse than mean (overfitting)
+- $R^2 = 0$: Model no better than mean
+- $R^2 = 1$: Perfect fit
+- $R^2 < 0$: Model worse than mean (overfitting)
 
 ### Multicollinearity
 
 **Detection - VIF (Variance Inflation Factor):**
 $$VIF_j = \frac{1}{1 - R_j^2}$$
 
-Where R_j² is R² from regressing X_j on all other predictors.
+Where $R_j^2$ is $R^2$ from regressing X_j on all other predictors.
 
 | VIF | Interpretation |
 |-----|---------------|
@@ -3831,7 +3824,7 @@ Agent:
 
 ## Bonus Tasks
 
-### Task 2: Fair Coin Predictions
+### Task 1: Fair Coin Predictions
 
 **Dataset:**
 - 1000 samples
@@ -3861,7 +3854,7 @@ $$\text{Recall} = \frac{TP}{TP + FN} = \frac{45}{45 + 45} = \frac{45}{90} = 0.5 
 ---
 
 
-### Task 3: Order Acceptance Probability
+### Task 2: Order Acceptance Probability
 
 **Setup:**
 - 10 drivers
