@@ -737,7 +737,7 @@ Harmonic mean (penalizes extreme values)
 
 Why Harmonic Mean? Penalizes extreme values—cannot achieve high F1 by excelling in only one metric.
 
-*Why F1 is Needed:
+*Why F1 is Needed*:
 - Precision and recall have inverse relationship
 - Single balanced score for model comparison
 - Essential for imbalanced datasets
@@ -794,9 +794,12 @@ When to Use What: decision Guide
 | Model comparison, ranking ability | ROC-AUC |
 | Threshold-specific performance | F1 at threshold |
 
+
 ---
 
 **Resume:**
+
+Drawbacks of ROC-AUC: it does not account for the costs of Type I and Type II errors. Instead, one should use cost-sensitive precision or cost-sensitive recall.
 
 * Accuracy: Balanced classes, equal costs
 * Precision Minimize false positives (spam filter, drug approval)

@@ -87,3 +87,28 @@ $$\text{Final\_Score} = w_1 \cdot \text{Model\_Prediction} + w_2 \cdot \text{Com
 Serving layer должен решать:
 - ✅ Как балансировать цели компании
 - ✅ Как реагировать на рыночные события
+
+# Metrics
+
+[Evaluating Recommendation Systems](https://tzin.bgu.ac.il/~shanigu/Publications/EvaluationMetrics.17.pdf)
+
+Code
+
+```python
+def mean_precision_at_k(y_true, y_score, group, k=3):
+    df = pd.DataFrame({'group_id': group, 'y_score': y_score, 'y_true': y_true})
+    df['rank'] = df.groupby("group_id")["y_score"].rank(ascending=False)
+    return df[df['rank'] <= k].groupby("group_id").y_true.sum().mean()
+
+
+def mean_reciprocal_rank(y_true, y_score, group):
+    df = pd.DataFrame({'group_id': group, 'y_score': y_score, 'y_true': y_true})
+    df['rank'] = df.groupby("group_id")["y_score"].rank(ascending=False)
+    return (1 / df.query("y_true==1")['rank']).mean()
+
+
+def mean_rank(y_true, y_score, group):
+    df = pd.DataFrame({'group_id': group, 'y_score': y_score, 'y_true': y_true})
+    df['rank'] = df.groupby("group_id")["y_score"].rank(ascending=False)
+    return (df.query("y_true==1")['rank']).mean()
+```
