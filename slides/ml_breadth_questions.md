@@ -3329,6 +3329,8 @@ If responses differ significantly, flag uncertainty
 
 ### What Are Agents?
 
+[complex agents intro](https://cold-scallion-5b8.notion.site/AI-agents-1979c76f79e8808291a4e463e8224bfc?pvs=74)
+
 **Definition:** Autonomous systems that can:
 1. **Perceive:** Understand environment/task
 2. **Reason:** Plan and decide actions
