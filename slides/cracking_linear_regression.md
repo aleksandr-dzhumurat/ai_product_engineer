@@ -546,3 +546,4 @@ $$
 - [What Is F1-score? (GetYourGuide)](https://medium.com/tech-getyourguide/whats-a-good-f1-score-b460caf27c90)
 - [Ranking Metrics Explained](https://www.linkedin.com/posts/shirin-khosravi-jam_give-me-3-minutes-and-let-me-explain-the-activity-7315630687129157632-tI6X)
 - [ROC-AUC Criticism](https://www.linkedin.com/posts/activity-7312050694616719360-OFS1/)
+- [Roc_AUC](https://www.linkedin.com/posts/hoang-van-hao_machinelearning-deeplearning-mlengineering-activity-7400323682717528064-6etR)

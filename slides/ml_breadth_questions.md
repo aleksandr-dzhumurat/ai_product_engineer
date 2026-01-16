@@ -1632,6 +1632,7 @@ $$\text{sim}(i, j) = \frac{\mathbf{v}_i \cdot \mathbf{v}_j}{||\mathbf{v}_i|| \cd
 
 
 #### Hybrid
+
 - Combine collaborative + content-based
 
 ### Key RecSys Algorithms
@@ -2041,6 +2042,22 @@ $$d_1(\mathbf{A}, \mathbf{B}) = \sum_{i=1}^{n} |A_i - B_i|$$
 
 ### ANN (Approximate Nearest Neighbor) Indices
 
+Curse of dimensionality: Why is the Nearest Neighbor in 100D Almost as Far as the Farthest Neighbor? 
+
+This phenomenon occurs due to data sparsity in high-dimensional space, which makes all distances converge (i.e., the difference between the closest and farthest neighbors becomes negligible).
+
+In low dimensions (e.g., 2D or 3D), points are **relatively close together**, and the nearest neighbor is **much closer** than the farthest. However, in **high-dimensional space (100D+), data spreads out exponentially**, causing all distances to become similar.
+
+🔹 **Key reason:**
+
+- As dimensions increase, data points occupy a larger volume.
+- The average distance between points increases.
+- The difference between the closest and farthest points becomes **negligibly small** relative to the total distance range.
+
+Which kind of graph is best suited for visualizing outliers in your training data? → Box and Whisker plot
+
+What sort of data distribution would be relevant to flipping heads or tails on a coin? → binomial distribution
+
 #### HNSW (Hierarchical Navigable Small World)
 
 **Structure:** Multi-layer graph
@@ -2446,6 +2463,28 @@ Where θ is frequency parameter
 **Benefits:**
 - Relative position preserved in inner products
 - Better extrapolation than learned embeddings
+
+Rotary Positional Embeddings (RoPE) quietly power most modern LLMs.
+They’re one of the reasons long-context models actually work.
+
+Why this matters
+- Attention cares about relative distance, not absolute position
+- RoPE makes long-context generalization far more stable than learned position embeddings
+
+How RoPE works
+- Queries and keys are split into pairs of dimensions
+- Each pair is treated as a 2D vector
+- These vectors are rotated by an angle based on token position
+- Rotation preserves magnitude but changes direction
+- Tokens close together have similar rotations
+- Tokens far apart have larger phase differences
+- During Q·K attention, these phase differences encode relative distance naturally
+
+Why RoPE beats absolute positional embeddings
+- No fixed lookup table for positions
+- Encodes relative offsets directly inside attention
+- Extrapolates better to longer sequences
+- Adds a strong inductive bias aligned with how attention works
 
 **Extension Techniques:**
 

@@ -63,7 +63,7 @@ The **decoder** takes the encoder's output and generates the target sequence (e.
     - **Example**: Llama from Meta
     - **Use Cases**: Text generation, chatbots, code generation
     - **Typical Size**: Billions (in the US sense, i.e., 10^9) of parameters
-    
+
 3. **Seq2Seq (Encoder–Decoder)**
     
     A sequence-to-sequence Transformer *combines* an encoder and a decoder. The encoder first processes the input sequence into a context representation, then the decoder generates an output sequence.
@@ -458,8 +458,122 @@ Quantization reduces the **precision** of weights (from FP32 to INT8, INT4, etc.
 | Efficient training on multiple GPUs | DeepSpeed, FlashAttention, FSDP |
 | Serve 4-bit quantized models | ExLlama, llama.cpp (GGUF) |
 
+# Model inference
+
+| Формат | Где уместен | Преимущества |
+| --- | --- | --- |
+| GGUF | Локальный запуск LLM, без GPU | Быстро, мало памяти, легко запускать |
+| ONNX | Кросс-фреймворк, production-инфраструктура | Универсальность, поддержка оптимизаций |
+| TorchScript | PyTorch-only продакшен | Высокая скорость, вне Python |
+| SavedModel | TensorFlow-проекты | Полная поддержка TF-фичей |
+| TFLite | Мобильные и IoT | Минимальный размер, низкое потребление |
+| OpenVINO IR | Intel устройства, edge inference | Отличная производительность на Intel |
+
+## 🔧 **BentoML**, **LitAPI**, and **LitServe** Explained
+
+These are modern tools in the **LLM deployment ecosystem**—each focused on **model serving**, **scaling**, and **production readiness**. Let’s go through them one by one and then tie them together with your example of using **vLLM** with **LitServe**.
+
+---
+
+### 🥡 **BentoML**
+
+**What it is:**
+
+A **framework for serving ML models** in production. Think of it as a full-service platform to:
+
+- Package ML models (from PyTorch, TensorFlow, HuggingFace, etc.)
+- Build **inference APIs**
+- Deploy models to **local**, **cloud**, **Kubernetes**, or even **serverless** environments
+
+**Key features:**
+
+- Model packaging (`bentoml.Model`)
+- API definition using FastAPI or Starlette-style syntax
+- Supports custom runners (for things like Triton or vLLM)
+- Scalable serving with containerization and Yatai (its model registry & deployment platform)
+
+📦 *BentoML = model packaging + serving + deployment infrastructure*
+
+---
+
+### ⚡ **LitAPI** & **LitServe** (from **Lightning AI**)
+
+These are **newer, lightweight serving components** built by the creators of PyTorch Lightning.
+
+### 🔹 **LitAPI**
+
+- A **minimal web server framework** to define your model’s HTTP interface.
+- You define "endpoints" (`@app.get("/generate")`, etc.), very similar to FastAPI.
+- Focused on being fast, lightweight, and production-ready.
+
+### 🔹 **LitServe**
+
+- A **serving layer** that wraps your LitAPI into a **scalable inference server**.
+- Supports autoscaling, batching, and request queueing.
+- Can integrate with **different inference engines**, like HuggingFace pipelines, Triton, or **vLLM**.
+
+📡 *LitServe = production-grade wrapper for LitAPI apps with scaling & performance optimizations*
+
+---
+
+### 🤖 **vLLM** — the Inference Engine
+
+- Highly optimized **inference engine for LLMs** (like LLaMA, Mistral, etc.).
+- Known for:
+    - **PagedAttention** – efficient memory usage
+    - **Continuous batching** – serving multiple users concurrently
+    - Native HuggingFace support
+
+💡 *Think of it like a high-performance engine under the hood, built for fast LLM inference.*
+
+---
+
+## 🔄 Putting It All Together
+
+Here’s what your sentence is saying, with explanation:
+
+> "LitServe is not a replacement of vLLM, but you could use vLLM as the Inference Engine, and LitServe as the Inference Server, serving that engine."
+> 
+- vLLM does **fast inference** (engine).
+- LitServe **wraps it in a scalable HTTP server** (inference API + request routing).
+- This means you can:
+    - Load your model using `from vllm import LLM`
+    - Wrap it with a **LitAPI**
+    - Deploy it using **LitServe** for **autoscaling, batching, and endpoint serving**
+
+---
+
+## ✅ Summary
+
+| Component | Role in Pipeline | Example Tool |
+| --- | --- | --- |
+| Inference Engine | Runs the model fast | `vLLM`, `Transformers`, `Triton` |
+| Inference API | Defines HTTP/REST interface | `LitAPI`, `FastAPI`, `Flask` |
+| Inference Server | Scales and serves the API | `LitServe`, `BentoML`, `TGI` |
+| Deployment | Sends it to cloud / prod | `Lightning`, `BentoML`, `Kubernetes` |
+
+---
+
+Let me know if you want a working code example of wrapping `vLLM` with `LitAPI` + `LitServe`, or a comparison with **BentoML** vs **LitServe**!
+
+Regarding ONNX
+
+| Role | Tool/Format |
+| --- | --- |
+| **Model Format** | ✅ ONNX, TorchScript, SavedModel |
+| **Inference Engine** | ✅ ONNX Runtime, TensorRT, vLLM |
+| **API Layer** | ✅ FastAPI, LitAPI, BentoML APIs |
+| **Inference Server** | ✅ BentoML, LitServe, TGI, Triton |
+| **Deployment Infra** | ✅ Kubernetes, Docker, Lightning AI |
+
 ---
 
 # Refs
 
 LoRA fine tuning: [Collab notebook](https://colab.research.google.com/#fileId=https://huggingface.co/agents-course/notebooks/blob/main/bonus-unit1/bonus-unit1.ipynb)
+
+[Designing Data-Intensive applications](https://cloud.mail.ru/public/Xwje/GsKPVbagV)
+
+[DevOps for data science](https://do4ds.com/chapters/intro.html)
+
+[Prompt handbook](https://www.linkedin.com/feed/update/ugcPost:7208896181089808384)
