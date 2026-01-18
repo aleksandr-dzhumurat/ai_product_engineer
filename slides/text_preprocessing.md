@@ -62,3 +62,15 @@ tfidf = StemmedTfidfVectorizer(
 print('Model fit')
 tfidf = tfidf.fit(res_df['processed_txt'].values)
 ```
+
+# References
+
+- [NLP CookBook: Yermakov](https://youtu.be/-2O0ODmnw1ohttps://youtu.be/-2O0ODmnw1o)
+- [Ермаков и базовые NLP понятия](https://youtu.be/-2O0ODmnw1o)
+- NLP на ODS [раз](https://ods.ai/hubs/nlp) и [два](https://ods.ai/tracks/nlp-df2020)
+- [spacy POS tagging](https://medium.com/mlearning-ai/nlp-04-part-of-speech-tagging-in-spacy-dc3e239c2726)
+- [NER with spacy](https://towardsdatascience.com/named-entity-recognition-ner-using-spacy-nlp-part-4-28da2ece57c6)
+- [NLP in Yandex Browser](https://www.youtube.com/watch?v=vLDhXct-2lg&ab_channel=YfD)
+- [spacy+gensim](https://www.shanelynn.ie/word-embeddings-in-python-with-spacy-and-gensim/) для тенировки Word2Vec
+    - [spacy tools](https://spacy.io/usage/spacy-101#annotations-pos-deps)
+    - [spacy POS tagging](https://spacy.io/usage/linguistic-features#mappings-exceptions) & [Spacy POS list](https://stackoverflow.com/questions/40288323/what-do-spacys-part-of-speech-and-dependency-tags-mean)

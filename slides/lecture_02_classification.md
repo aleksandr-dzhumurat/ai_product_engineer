@@ -454,3 +454,21 @@ def prepare_evaluation_df(input_df, negatives_per_one_positive=2):
     print(f"Num negatives {user_item_df.to_pandas()['target'].value_counts(normalize=True).to_dict().get(0)}")
     return user_item_df
 ```
+
+ROC-AUC can be deceptive on imbalanced datasets because it does not reflect how the model performs on the minority (often the most important) class.
+
+Key reasons:
+
+* Insensitive to class imbalance. ROC-AUC is based on true positive rate (TPR) and false positive rate (FPR). When the negative class dominates, even a large number of false positives can result in a small FPR, making the model look better than it actually is.
+
+* Good ranking ≠ good predictions ROC-AUC measures how well the model ranks positives above negatives, not how well it predicts the positive class at a usable threshold. A model can have a high ROC-AUC while producing very poor precision or recall for the minority class.
+
+* Ignores real operating point. In practice, you care about performance at a specific decision threshold (e.g., alert rate, cost constraint). ROC-AUC averages performance over all thresholds, many of which are irrelevant in highly imbalanced settings.
+
+* Can hide poor minority-class performance. A classifier that almost always predicts the majority class can still achieve a deceptively high ROC-AUC if it slightly separates the classes.
+
+Better alternatives for imbalanced problems
+
+* Precision–Recall AUC (PR-AUC)
+* Recall, Precision, F1-score at a chosen threshold
+* Cost-sensitive metrics aligned with business impact

@@ -1272,7 +1272,28 @@ $$L_\delta(y, \hat{y}) = \begin{cases}
 
 ## Q10 — Gradient Boosting
 
-Core Principle - **Sequentially add weak learners**, each correcting errors of previous ensemble, Additive Model Principle
+Gradient boosting recap
+
+The gradient descent update rule is:
+
+$$\theta_{new} = \theta_{old} - \eta \cdot \nabla L(\theta)$$
+
+Where:
+- $\theta_{new}$ is the updated parameter value
+- $\theta_{old}$ is the current parameter value
+- $\eta$ is the learning rate
+- $\nabla L(\theta)$ is the gradient of the loss function with respect to $\theta$
+
+Если функция потерь зависит от нескольких параметров $L(\theta_1, \ldots, \theta_n)$ то градиент - это вектор
+
+
+$$\nabla L = \left(\frac{\partial L}{\partial \theta_1}, \frac{\partial L}{\partial \theta_2}, \ldots, \frac{\partial L}{\partial \theta_n}\right)$$
+
+Каждая компонента показывает, насколько чувствительна ошибка к изменению конкретного параметра
+
+The **gradient** is a mathematical concept that indicates the direction and rate of steepest increase of a function.
+
+Now about boosting: core principle - **Sequentially add weak learners**, each correcting errors of previous ensemble, Additive Model Principle
 
 $$F_m(x) = F_{m-1}(x) + \eta \cdot h_m(x)$$
 
@@ -2485,6 +2506,8 @@ Why RoPE beats absolute positional embeddings
 - Encodes relative offsets directly inside attention
 - Extrapolates better to longer sequences
 - Adds a strong inductive bias aligned with how attention works
+
+[RoPe explain](https://www.linkedin.com/posts/hoang-van-hao_machinelearning-llm-llama3-activity-7408475024220835840-7M7Y)
 
 **Extension Techniques:**
 

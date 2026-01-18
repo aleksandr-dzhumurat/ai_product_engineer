@@ -30,6 +30,7 @@ Boosting in depth
 - [boosting for regression](https://towardsdatascience.com/all-you-need-to-know-about-gradient-boosting-algorithm-part-1-regression-2520a34a502)
 - [boosting for classification](https://towardsdatascience.com/all-you-need-to-know-about-gradient-boosting-algorithm-part-2-classification-d3ed8f56541e)
 - [boosting in russian](https://kstu.kg/fileadmin/user_upload/lecture11_machine_learning_orozobekova_a.k..pdf)
+- [Catboost fights data leak](https://www.linkedin.com/posts/activity-7404928168773693440-IojW)
 
 # Gradient boosting
 

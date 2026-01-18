@@ -48,6 +48,7 @@ Transformers
 "River bank is beautiful" → [0.23, -0.45, 0.67, ...]  # Тот же!
 
 # BERT: "bank" зависит от контекста
+```
 "I went to the bank" → [0.12, 0.89, -0.34, ...]  # Финансы
 "River bank is beautiful" → [-0.45, 0.23, 0.91, ...]  # Берег
 ```
@@ -66,6 +67,7 @@ Transformers
 **BERT (Encoder-only)** vs **GPT (Decoder-only)** — это не просто "разные модели", это разные философии.
 
 #### BERT: Bidirectional Attention
+
 ```
 Input: "The cat [MASK] on the mat"
 
@@ -84,6 +86,7 @@ mat   ●────●────●────●────●───�
 ```
 
 #### GPT: Causal Attention
+
 ```
 Input: "The cat sits on the"
 
@@ -123,6 +126,7 @@ the      ●────●────●────●────●
 Многие путают bidirectional attention и cross-attention. Это **разные** механизмы!
 
 #### 1. Self-Attention (Bidirectional) — BERT
+
 ```
 Q, K, V все из ОДНОЙ последовательности
 
@@ -133,6 +137,7 @@ Value из: "The cat sits"
 ```
 
 #### 2. Self-Attention (Causal) — GPT
+
 ```
 Q, K, V из одной последовательности + causal mask
 
@@ -140,6 +145,7 @@ Q, K, V из одной последовательности + causal mask
 ```
 
 #### 3. Cross-Attention — Encoder-Decoder
+
 ```
 Query из DECODER
 Key, Value из ENCODER (другая последовательность!)
@@ -157,9 +163,21 @@ Decoder: "Le chat" → Cross-Attention → смотрит на Encoder outputs
 | Causal Self | Той же seq | Той же seq | Треугольная | GPT |
 | Cross | Decoder | Encoder | Нет | T5, BART |
 
-📚 **Источники:**
+
+
 - [Attention Is All You Need](https://arxiv.org/abs/1706.03762) — описание всех трёх типов
 - [The Annotated Transformer](http://nlp.seas.harvard.edu/2018/04/03/attention.html) — код с комментариями
+- [Transformers explained](https://www.linkedin.com/posts/nicole-koenigstein_transformers-the-definitive-guide-activity-7411413196646846466-PZpQ?utm_source=share&utm_medium=member_ios&rcm=ACoAABHcLTkB9ZRrPOB4NW-jmLGXwC1oz0SS_hY)
+- [CS25 Transformers intro](https://youtu.be/XfpMkf4rD6E?si=A0ckxe7ZkndQxWEe)
+- [NLP interview questions](https://www.linkedin.com/posts/sumanth077_top-50-llm-interview-questions-a-comprehensive-activity-7400863663253028864-2oPM)
+- [encoders vs decoders](https://www.linkedin.com/posts/mary-newhauser_not-all-llms-generate-text-most-people-share-7402121282898739201-mOSi/)
+- [self-attention-from-scratch](https://sebastianraschka.com/blog/2023/self-attention-from-scratch.html?utm_source=substack&utm_medium=email)
+- [Self attention](https://youtu.be/Bg8Y5q1OiP0)
+- [Transformers cheatsheet](https://github.com/afshinea/stanford-cme-295-transformers-large-language-models/blob/main/en/cheatsheet-transformers-large-language-models.pdf)
+
+## LLM datasets
+
+- [amazon-reviews-2023](https://amazon-reviews-2023.github.io/)
 
 
 ---

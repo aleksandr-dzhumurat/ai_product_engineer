@@ -529,6 +529,7 @@ $$
 - [ROC Curve Drawbacks](https://stats.stackexchange.com/questions/193138/roc-curve-drawbacks)
 - [Understanding ROC-AUC: Pros and Cons. Why Brier Score Is a Good Supplement](https://medium.com/@penggongting/understanding-roc-auc-pros-and-cons-why-is-bier-score-a-great-supplement-c7a0c976b679)
 - [Evaluation Metrics, ROC Curves, and Imbalanced Datasets](https://aman.ai/primers/ai/evaluation-metrics/#area-under-the-roc-curve-auroc)
+- [Imbalanced datasets tricks](https://datascience.stackexchange.com/questions/134389/is-class-imbalance-really-a-problem-in-machine-learning)
 - [Disadvantages of Using the Area Under the ROC Curve](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4356897/pdf/330_2014_Article_3487.pdf)
 - [Indifference Curve](https://nicolas.kruchten.com/content/2016/01/ml-meets-economics/)
 - [Метрики качества ранжирования](https://habr.com/ru/company/econtenta/blog/303458/)
