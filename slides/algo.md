@@ -1,9 +1,8 @@
-# Python programming
+[datasketch](https://github.com/ekzhu/datasketch): MinHash, LSH, LSH Forest, Weighted MinHash, HyperLogLog, HyperLogLog++, LSH Ensemble and HNSW
 
+# 2. Algorithms & Python Concepts (15 min)
 
-## 2. Algorithms & Python Concepts (15 min)
-
-### 2.1 Algorithm Complexity
+## 2.1 Algorithm Complexity
 
 | Algorithm / Structure | Average Case | Worst Case | Notes |
 |---|---|---|---|
@@ -20,7 +19,3 @@
 QuickSort is generally faster in practice than MergeSort due to cache locality (operates in-place), but its worst case is dangerous in adversarial settings. Python avoids this entirely by using TimSort. For nearly-sorted data, insertion sort (O(n) best case) or TimSort's natural-run detection is optimal.
 
 For hashing, the key trade-offs are: (a) collision resolution strategy — separate chaining vs open addressing; (b) load factor threshold triggering a resize; (c) hash function quality. Python's `dict` uses open addressing with a compact table design.
-
-
-[Expert Python programming](https://cloud.mail.ru/public/BkKr/tEis9Thqu)
-[asyncio for LLM calls](https://www.linkedin.com/posts/jimi-vaubien_ai-asyncio-llm-activity-7323270031750983681-MnYJ/)
