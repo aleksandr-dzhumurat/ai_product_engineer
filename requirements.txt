@@ -5,7 +5,7 @@ seaborn
 plotly
 # serve
 fastapi
-uvicorn==0.17.6
+uvicorn
 # experiments
 mlflow-skinny==2.16.2
 hyperopt
@@ -24,17 +24,19 @@ openai==1.57.0
 
 backoff==2.2.1
 pyarrow==18.1.0
-torch==2.3.1
-transformers==4.41.2
-sentence-transformers==2.7.0
+torch
+transformers
+sentence-transformers
 torchvision
 nltk==3.6.7
 gensim
 implicit
 google-genai
-label-studio
 catalyst
 chromadb
 langchain
 langchain-text-splitters
 langchain_huggingface
+
+google-cloud-storage
+gcsfs

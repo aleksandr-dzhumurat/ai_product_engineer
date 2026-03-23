@@ -5,6 +5,10 @@
 
 [slides](https://docs.google.com/presentation/d/1GS2_QXwMtLdmgfZPF4rzYWYUjdEh_gRZK9hwyCMpHKg/edit?usp=sharing)
 
+[MVP](https://github.com/aleksandr-dzhumurat/multi_armed_bandit_service)
+
+![multi_armed_bandit](img/multi_armed_bandit.png)
+
 Вопросы для самопроверки
 * Основные алгоритмы многоруких бандитов: eps-greedy, UCB1.
 * контекстуальные многорукие бандиты. Байесовские бандиты.

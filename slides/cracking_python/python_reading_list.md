@@ -1,3 +1,13 @@
+### Courses
+
+* [Python Mastery](https://github.com/dabeaz-course/python-mastery)
+* [Алгоритмы и структуры данных поиска](https://www.youtube.com/playlist?list=PLJOzdkh8T5koEPv-R5W0ovmL_T2BjB1HX)
+* [Machine learning course](https://github.com/girafe-ai/ml-course)
+* [Дьяконов - методы машинного обучения](https://www.youtube.com/playlist?list=PLaRUeIuewv8BFD3UwCDBetM89c2uRPpcj)
+* [Дьяконов - прикладные задачи анализа данных](https://www.youtube.com/playlist?list=PLaRUeIuewv8CMFox0oEjlyePUhUmo-x0h)
+* [Yandex algorithms training](https://www.youtube.com/playlist?list=PLXtiZNKIobF6oMvumNTZDf20F_FdvdAf-)
+* [VSCode python](https://github.com/RamiKrispin/vscode-python)
+
 ### Code best prectices
 
 * [Kagge notebooks with code](https://www.linkedin.com/feed/update/urn:li:activity:7240040270203936768)
@@ -8,6 +18,23 @@
 * [“Faster python” course](https://www.linkedin.com/learning/faster-python-code/welcome)
 * [Full speed python](https://www.linkedin.com/posts/artemryblov_armbooks-python-programming-activity-7320178495450472448-MeIe)
 * [Taking Python to Production](https://ericriddoch.notion.site/Taking-Python-to-Production-A-Professional-Onboarding-Guide-799409731bf14c78a531ac779f1bd76d)
+* [Top 50 Python interview questions and answers.](https://www.linkedin.com/feed/update/urn:li:activity:7040254467098714113/)
+* [20 coding patterns to rescue](https://designgurus.org/blog/dont-just-leetcode)
+* [Another 20 coding patterns](https://www.linkedin.com/posts/arslanahmad_20-coding-patterns-to-master-maang-interviews-ugcPost-6981312033149399040-hjaw/)
+* [coding patterns](https://www.linkedin.com/feed/update/activity:7284804655019130881?trk=feed_main-feed-card_comment-cta)
+* [[coding] 50 most asked questions](https://www.linkedin.com/feed/update/urn:li:activity:7070978978617901056)
+* [Google Sheet: 100 Python problems](https://docs.google.com/spreadsheets/d/1LYEaZAjF0ClQPklISPUxH7_JOEb3cdI-0y2ykWQ2zsg/edit?usp=sharing)
+* [Yandex Problems Short List](https://www.notion.so/78eeaf37759141b09bd1adc3795221e0?pvs=21)
+* [Two files merge](https://carloarg02.medium.com/my-favorite-coding-question-to-give-candidates-17ea4758880c?source=email-7eae5e3bc0f3-1700445226400-digest.reader--17ea4758880c----0-102------------------36d449a4_b38d_48e8_91ad_097e15fa0ca3-1) (real world task)
+* [neetcode](https://neetcode.io/courses/advanced-algorithms/6)
+* [Yandex interview process](https://yandex.ru/jobs/pages/mldev-interview)
+* [Interview preparation](https://www.linkedin.com/posts/santhoshresearchscientist_systemsexpert-activity-7122995965073973249-sSvb?utm_source=share&utm_medium=member_desktop)
+* [Udemy algorithms course](https://www.udemy.com/course/leetcode-in-python-50-algorithms-coding-interview-questions/learn/lecture/30341738#overview)
+* [interview-tips-preparation-activity](https://www.linkedin.com/posts/mohitsehrawat_interview-tips-preparation-activity-6993448355041284096-ydjw/)
+* [Hackerrank interview preparation](https://www.hackerrank.com/interview/preparation-kits/three-month-preparation-kit/three-month-week-one/challenges)
+* [100 Python interview Questions](https://www.linkedin.com/feed/update/urn:li:activity:7086370513668710400/)
+* [Python clean architecture](https://www.linkedin.com/feed/update/urn:li:activity:7083472938640834560/)
+* [Booking onsite interview (code task)](https://leetcode.com/discuss/interview-question/1581894/Booking.com)
 
 ### Decorators
 
@@ -81,3 +108,11 @@ AsyncIO
 * [Faster PyTorch](https://sebastianraschka.com/blog/2023/pytorch-faster.html)
 * [python-tricky-question](https://programming.earthonline.us/interviewer-what-is-the-difference-between-0-3-and-0-0-0-in-python-f642a0c93a11)
 * [python-tricks-activity](https://www.linkedin.com/posts/martinroberts_python-tricks-activity-7117940186159742976-kWp3)
+
+### Unit testing
+
+* [pytest-with-eric.com/pytest-best-practices/pytest-conftest/#Defining-Pytest-Fixtures-Old-Way](https://pytest-with-eric.com/pytest-best-practices/pytest-conftest/#Defining-Pytest-Fixtures-Old-Way)
+* [copyprogramming.com/howto/better-way-to-mock-class-attribute-in-python-unit-test#mocking-a-class-attribute](https://copyprogramming.com/howto/better-way-to-mock-class-attribute-in-python-unit-test#mocking-a-class-attribute)
+* [pytest-mock.readthedocs.io/en/latest/usage.html](https://pytest-mock.readthedocs.io/en/latest/usage.html)
+* [pytest-conftest-py](https://medium.com/@BuzonXXXX/pytest-conftest-py-44903c4c5046)
+* [docs.pytest.org/en/7.1.x/reference/fixtures.html](https://docs.pytest.org/en/7.1.x/reference/fixtures.html)

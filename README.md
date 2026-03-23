@@ -2,6 +2,11 @@
 
 Всем привет! Вы в репозитории курса AI product engineer.
 
+Who am I?
+
+* [linkedin](https://www.linkedin.com/in/aleksandr-dzhumurat/)
+* [tg: Машинист продакшна](https://t.me/locomotive_production_driver)
+
 Курс включает
 
 * базовый ML - разбираем основые основные алгоримы (c формулами!) и ML библитеки (от scikit-learn до sentence-transformers)

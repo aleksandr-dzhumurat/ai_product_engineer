@@ -384,6 +384,8 @@ Why Regularization - **without regularization, models can:**
 - Have unstable, large weights
 - Poor generalization to new data
 
+**Note**: Adding many new features to the model makes it more likely to overfit the training set (polynomic features in linear regression).
+
 
 ### L1 (Lasso) Regularization
 
@@ -1255,6 +1257,19 @@ Interaction Matrix R:
 - Columns: Items (n items)
 - Entries: Ratings, clicks, purchases, or implicit feedback
 
+Implicit Feedback
+
+| Aspect | Description |
+|--------|-------------|
+| **Positives** | All interactions (clicks, views, purchases) |
+| **Negatives** | Absent — we don't know true negatives |
+
+**Key insight**: In implicit feedback, a "negative" is everything the user did **not** interact with.
+
+- No explicit dislikes or ratings
+- Absence of interaction ≠ dislike (user may not have seen the item)
+- This is why models like ALS use **confidence weighting** and BPR uses **pairwise ranking**
+
 Challenges:
 - Sparsity: Typically >99% missing values
 - Cold start: New users/items with no history
@@ -1285,6 +1300,29 @@ Disadvantages:
 Hybrid: Combine collaborative + content-based
 
 ### Key RecSys Algorithms
+
+#### Wilson Score Lower Bound
+
+Wilson Score Lower Bound — ranking formula that accounts for sample size uncertainty (better than raw CR for small n_views)
+
+For ranking by **action rate** (e.g., CTR, conversion rate):
+
+$$
+\text{rank} = \frac{p + \frac{z^2}{2n}} {1 + \frac{z^2}{n}} - \frac{z}{1 + \frac{z^2}{n}} \sqrt{\frac{p(1-p)}{n} + \frac{z^2}{4n^2}}
+$$
+
+Simplified form (with $z = 2.32$ for 99% confidence):
+
+$$
+\text{rank} = \frac{p + \frac{2.32^2}{2n_{\text{views}}} - 2.32\sqrt{\frac{p(1-p)}{n_{\text{views}}} + \frac{2.32^2}{4n_{\text{views}}^2}}}{1 + \frac{2.32^2}{n_{\text{views}}}}
+$$
+
+Where:
+- **p** — observed action rate (conversions / views)
+- **n_views** — number of views (sample size)
+- **z** — z-score for confidence level (2.32 ≈ 99%)
+
+> **Note**: For a small number of views, this is better than ranking by raw CR (conversion rate), as it accounts for uncertainty.
 
 #### K-Nearest Neighbors (KNN)
 
@@ -1318,6 +1356,45 @@ Algorithm:
 Pros: Parallelizable, handles implicit feedback  
 Cons: Assumes all missing = negative
 
+Preference Indicator
+
+$$
+p_{ui} = \begin{cases} 
+1, & \text{if } r_{ui} > 0 \\
+0, & \text{if } r_{ui} = 0 
+\end{cases}
+$$
+
+Where:
+- **r** — feedback (implicit signal, e.g., clicks, views, purchases)
+- **p_ui** — preference (binary indicator: did user interact with item?)
+
+Confidence
+
+$$
+c_{ui} = 1 + \alpha \cdot r_{ui}
+$$
+
+Where:
+- **c_ui** — confidence (how confident are we in the preference?)
+- **α** — confidence scaling parameter
+
+Latent Factors
+
+- **x_u** — user factors (latent vector for user *u*)
+- **y_i** — item factors (latent vector for item *i*)
+
+Loss Function
+
+$$
+\mathcal{L} = \sum_{u,i} c_{ui} \left( p_{ui} - x_u^T y_i \right)^2 + \lambda \left( \sum_u \|x_u\|^2 + \sum_i \|y_i\|^2 \right)
+$$
+
+Where:
+- First term: weighted squared error between predicted and actual preferences
+- Second term: L2 regularization to prevent overfitting
+- **λ** — regularization parameter
+
 #### BPR (Bayesian Personalized Ranking)
 
 Objective: Maximize pairwise ranking
@@ -1329,6 +1406,58 @@ Where:
 - j = negative item (unobserved)
 
 Better for implicit feedback (clicks, views)
+
+BPR (Bayesian Personalized Ranking)
+
+Ranking optimization that involves **pairs of items**. Optimizes **ROC AUC**.
+
+
+Training Dataset
+
+**Triplets**: $(u, i, j) \in D_S$
+
+Where:
+- **u** — user
+- **i** — positive item (user interacted with)
+- **j** — negative item (user did not interact with)
+
+Core Assumption
+
+$$
+p(i >_u j \mid \Theta) = \sigma\left( \hat{x}_{uij}(\Theta) \right)
+$$
+
+Where:
+- $i >_u j$ — correct order for pair $(i, j)$ for user $u$ (user prefers item $i$ over item $j$)
+
+Sigmoid Function
+
+$$
+\sigma(x) = \frac{1}{1 + e^{-x}}
+$$
+
+User Preference Difference
+
+$$
+\hat{x}_{uij}(\Theta) = \hat{x}_{ui} - \hat{x}_{uj}
+$$
+
+Where:
+- $\hat{x}_{ui}$ — predicted score for user $u$ and item $i$
+- $\hat{x}_{uj}$ — predicted score for user $u$ and item $j$
+- Computed using **user factors** (matrix factorization)
+
+Loss Function (BPR-OPT)
+
+$$
+\mathcal{L} = \sum_{(u,i,j) \in D_S} \ln \sigma\left( \hat{x}_{uij} \right) - \lambda_\Theta \|\Theta\|^2
+$$
+
+Where:
+- First term: log-likelihood of correct pairwise rankings
+- Second term: L2 regularization (**matrix factorization**)
+- $\Theta$ — model parameters (user and item latent factors)
+- $\lambda_\Theta$ — regularization parameter
 
 
 #### Session-Based
