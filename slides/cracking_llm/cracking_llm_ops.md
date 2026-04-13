@@ -314,3 +314,4 @@ Regarding ONNX
 * [DevOps for data science](https://do4ds.com/chapters/intro.html)
 * [Prompt handbook](https://www.linkedin.com/feed/update/ugcPost:7208896181089808384)
 * [GGUF](https://www.linkedin.com/posts/arazvant_want-to-run-ai-models-locally-learn-about-activity-7421484687052845057-Km_D)
+* [GGUF](https://www.linkedin.com/posts/raj-abhijit-dandekar-67a33118a_just-quantize-your-model-to-int4-sure-share-7447946236428505088-E-qD)

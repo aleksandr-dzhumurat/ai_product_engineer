@@ -7,8 +7,7 @@ import argparse
 from typing import List, Sequence
 
 import requests
-from chromadb.api.models.Collection import Collection
-from connections import get_chroma_client
+from connections import BaseConnection, ChromaConnection
 
 
 def fetch_query_embedding(query: str, host: str, model: str, timeout: float = 60.0) -> List[float]:
@@ -41,43 +40,22 @@ def fetch_query_embedding(query: str, host: str, model: str, timeout: float = 60
 
 
 def query_collection(
-    collection: Collection,
-    query: str,
+    client: BaseConnection,
+    collection_name: str,
     limit: int,
     include_distances: bool,
-    query_embedding: List[float] | None = None,
+    query_embedding: List[float],
 ) -> dict:
-    """
-    Query the collection with either text or embedding.
-
-    Args:
-        collection: ChromaDB collection
-        query: Query text (used if query_embedding is None)
-        limit: Number of results
-        include_distances: Whether to include distances
-        query_embedding: Pre-computed embedding vector (optional)
-
-    Returns:
-        Query results dictionary
-    """
     include = ["documents", "metadatas"]
     if include_distances:
         include.append("distances")
 
-    if query_embedding:
-        # Use embedding-based query (more accurate)
-        return collection.query(
-            query_embeddings=[query_embedding],
-            n_results=limit,
-            include=include,
-        )
-    else:
-        # Fallback to text query (ChromaDB will use its default embedding)
-        return collection.query(
-            query_texts=[query],
-            n_results=limit,
-            include=include,
-        )
+    return client.query(
+        collection_name=collection_name,
+        query_embeddings=[query_embedding],
+        n_results=limit,
+        include=include,
+    )
 
 
 def print_results(results: dict, include_distances: bool) -> None:
@@ -146,17 +124,16 @@ def build_arg_parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> None:
     parser = build_arg_parser()
     args = parser.parse_args(argv)
-    client = get_chroma_client()
+    client = ChromaConnection()
 
     try:
-        collection = client.get_collection(args.collection)
+        client.get_collection(args.collection)
     except Exception as exc:
         raise SystemExit(
             f"Collection '{args.collection}' was not found. "
             "Ingest documents first using src/rag/ingestion.py."
         ) from exc
 
-    # Fetch query embedding from Ollama
     print(f"Generating embedding for query: '{args.query}'")
     query_embedding = fetch_query_embedding(
         args.query,
@@ -167,10 +144,9 @@ def main(argv: Sequence[str] | None = None) -> None:
     print(f"Searching in collection: {args.collection}")
     print()
 
-    # Query the collection
     results = query_collection(
-        collection,
-        args.query,
+        client,
+        args.collection,
         args.limit,
         include_distances=not args.no_distances,
         query_embedding=query_embedding,

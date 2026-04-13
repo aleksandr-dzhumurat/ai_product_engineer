@@ -1,0 +1,9 @@
+jupyter
+torch>=2.1
+transformers>=4.45
+peft>=0.13
+trl>=0.20
+datasets>=2.20
+detoxify>=0.5
+torchao>=0.16
+scikit-learn

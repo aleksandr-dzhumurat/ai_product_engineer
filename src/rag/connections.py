@@ -1,40 +1,109 @@
 """
-Shared helpers for working with external services (e.g., ChromaDB).
+Shared helpers for working with external services (ChromaDB, Qdrant).
 """
 from __future__ import annotations
 
 import os
+from abc import ABC, abstractmethod
+from typing import List
 
 import chromadb
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
-def get_chroma_client(
-    host: str | None = None,
-    port: int = 8000,
-) -> chromadb.Client:
-    """
-    Create a ChromaDB HTTP client to connect to the service.
+class BaseConnection(ABC):
+    @abstractmethod
+    def get_collection(self, name: str) -> None:
+        ...
 
-    Args:
-        host: ChromaDB service host (default: from CHROMA_HOST env or 'localhost').
-        port: ChromaDB service port (default: from CHROMA_PORT env or 8000).
+    @abstractmethod
+    def create_collection(self, name: str) -> None:
+        ...
 
-    Returns:
-        Configured ``chromadb.HttpClient`` instance.
+    @abstractmethod
+    def delete_collection(self, name: str) -> None:
+        ...
 
-    Examples:
-        # Connect to Chroma service
-        client = get_chroma_client(host="chroma", port=8000)
+    @abstractmethod
+    def upsert(
+        self,
+        collection_name: str,
+        documents: List[str],
+        metadatas: List[dict],
+        ids: List[str],
+        embeddings: List[List[float]],
+    ) -> None:
+        ...
 
-        # Auto-detect from environment (CHROMA_HOST, CHROMA_PORT)
-        client = get_chroma_client()
-    """
-    # Get host from parameter or environment
-    if host is None:
-        host = os.getenv('CHROMA_HOST', 'localhost')
+    @abstractmethod
+    def query(
+        self,
+        collection_name: str,
+        query_embeddings: List[List[float]],
+        n_results: int,
+        include: List[str],
+    ) -> dict:
+        ...
 
-    # Get port from environment or use default
-    chroma_port = int(os.getenv('CHROMA_PORT', str(port)))
 
-    print(f"Connecting to ChromaDB service at http://{host}:{chroma_port}")
-    return chromadb.HttpClient(host=host, port=chroma_port)
+class ChromaConnection(BaseConnection):
+    def __init__(self, host: str | None = None, port: int = 8000):
+        if host is None:
+            host = os.getenv('CHROMA_HOST', 'localhost')
+        chroma_port = int(os.getenv('CHROMA_PORT', str(port)))
+        print(f"Connecting to ChromaDB service at http://{host}:{chroma_port}")
+        self.client = chromadb.HttpClient(host=host, port=chroma_port)
+
+    def get_collection(self, name: str):
+        return self.client.get_collection(name)
+
+    def create_collection(self, name: str):
+        return self.client.create_collection(name)
+
+    def delete_collection(self, name: str) -> None:
+        self.client.delete_collection(name)
+
+    def upsert(
+        self,
+        collection_name: str,
+        documents: List[str],
+        metadatas: List[dict],
+        ids: List[str],
+        embeddings: List[List[float]],
+    ) -> None:
+        collection = self.client.get_collection(collection_name)
+        collection.upsert(
+            documents=documents,
+            metadatas=metadatas,
+            ids=ids,
+            embeddings=embeddings,
+        )
+
+    def query(
+        self,
+        collection_name: str,
+        query_embeddings: List[List[float]],
+        n_results: int,
+        include: List[str],
+    ) -> dict:
+        collection = self.client.get_collection(collection_name)
+        return collection.query(
+            query_embeddings=query_embeddings,
+            n_results=n_results,
+            include=include,
+        )
+
+
+def get_qdrant_client(
+    url: str | None = None,
+    api_key: str | None = None,
+):
+    from qdrant_client import QdrantClient
+
+    if url is None:
+        url = os.environ["QDRANT_URL"]
+    if api_key is None:
+        api_key = os.environ["QDRANT_API_KEY"]
+    return QdrantClient(url=url, api_key=api_key)

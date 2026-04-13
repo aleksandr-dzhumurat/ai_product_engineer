@@ -188,7 +188,7 @@ Sequence: AG4l9Pq!D8...
 Hard to predict → High uncertainty → High entropy
 ```
 
-[deep dive to entropy](../jupyter_notebooks/vol_04_deep_dive_09_trees_boosting.ipynb)
+[deep dive to entropy](https://github.com/aleksandr-dzhumurat/ai_product_engineer/blob/main/jupyter_notebooks/vol_04_deep_dive_09_trees_boosting.ipynb)
 
 ### Shannon Entropy Formula
 
@@ -457,6 +457,8 @@ Optimization:
 - Contours rarely hit exactly on an axis for L2 circle
 
 Visual: L1's sharp corners encourage solutions where many weights = 0
+
+![l1_l2_regularization](img/l1_l2_regularization.png)
 
 
 ### Comparison Table
@@ -866,6 +868,23 @@ Methods:
    - F1-score instead of accuracy
    - PR-AUC instead of ROC-AUC
 
+Your imbalanced dataset probably doesn't need SMOTE.
+
+Assume a fraud detection model. 99.2% non-fraud. The team had spent two weeks tuning SMOTE variants. Best F1: 0.34.
+
+Ask, "What's your business cost ratio for false positives vs false negatives?"
+
+Here's the playbook before you touch synthetic samples:
+
+→ Set the right loss function — class weights in XGBoost, focal loss for deep models
+→ Tune the threshold; 0.5 is almost never optimal for rare events
+→ Pick a metric that matches the business. PR-AUC beats ROC-AUC for imbalanced problems
+→ Look at per-class precision and recall, not a single number
+
+Same model. Same data. F1 jumped to 0.61. No SMOTE. No new features.
+
+Resampling is a tool, not a default. Most "imbalance problems" are actually loss-function and threshold problems wearing a costume.
+
 **References:**
 - [Confusion Matrix - Wikipedia](https://en.wikipedia.org/wiki/Confusion_matrix)
 - [Receiver Operating Characteristic - Wikipedia](https://en.wikipedia.org/wiki/Receiver_operating_characteristic)
@@ -958,7 +977,7 @@ Fallback to parent category if specific subcategory unknown
 
 ## Q13 — Gradient Boosting
 
-[Gradient boosting recap](../jupyter_notebooks/vol_04_deep_dive_09_trees_boosting.ipynb)
+[Gradient boosting recap](https://github.com/aleksandr-dzhumurat/ai_product_engineer/blob/main/jupyter_notebooks/vol_04_deep_dive_09_trees_boosting.ipynb)
 
 The gradient descent update rule is:
 
@@ -1688,6 +1707,8 @@ Optimizations:
 **CBOW:** Predict target word from context  
 **Skip-gram:** Predict context from target word
 
+Mnemonic: CBOW is like fill-in-the-blank — "The ___ sat on the mat." Skip-gram is the reverse — given "cat", predict "The", "sat", "on", etc.
+
 Key difference from BoW:
 - BoW: Sparse, high-dimensional, no semantics
 - Word2Vec: Dense (50-300d), captures semantic similarity
@@ -1706,6 +1727,11 @@ Limitations:
 Training Tricks:
 - Negative sampling: Instead of softmax over full vocabulary, sample K negative words
 - Hierarchical softmax: Binary tree structure for efficient training
+
+| Method | Pros | Cons |
+|---|---|---|
+| **Word2vec** (e.g. CBOW, Skip-gram) | Very simple, yet powerful; Intuitive embeddings | Word order does not count; Embeddings not context aware |
+| **Recurrent Neural Networks** (e.g. traditional RNN, LSTM) | Word order matters; State-of-the-art results | Vanishing gradient problem; Slow computations |
 
 ---
 
@@ -1974,11 +2000,46 @@ Compression: 32× smaller
 Speed: Hamming distance = POPCNT instruction  
 Quality: Significant degradation (use for filtering, then rerank)
 
+Yes, but it's not a direct one-step conversion. The typical workflow is:
+
+**PyTorch → Hugging Face format → GGUF**
+
+Here's the general process:
+
+1. **Save your PyTorch model in Hugging Face format** (safetensors or standard PyTorch bins with proper config.json)
+
+2. **Use llama.cpp conversion scripts** to convert to GGUF:
+```bash
+# Clone llama.cpp
+git clone https://github.com/ggerganov/llama.cpp
+cd llama.cpp
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Convert (example for LLaMA-style models)
+python convert_hf_to_gguf.py /path/to/your/model --outtype f16
+```
+
+3. **Optionally quantize** to reduce size:
+```bash
+./llama-quantize model.gguf model-q4_0.gguf q4_0
+```
+
+**Important caveats:**
+
+- **Architecture matters**: GGUF works best with LLaMA-based architectures (LLaMA, Mistral, Qwen, etc.). If your model uses a different architecture, you may need to check if llama.cpp supports it or modify the conversion script
+- **Not all models are sup`ported**: Check the llama.cpp documentation for supported architectures
+- **Custom architectures**: If you built a custom PyTorch model, you'd likely need to write custom conversion logic
+
+Is your model based on a standard architecture like LLaMA, or is it a custom architecture? That will determine how straightforward the conversion will be.
+
 **References:**
 - [Approximate Nearest Neighbor - Wikipedia](https://en.wikipedia.org/wiki/Nearest_neighbor_search)
 - [vector similarity](https://redis.io/blog/vector-similarity/)
 - [HNSW params](https://www.linkedin.com/posts/sarthakrastogi_ai-genai-aiagents-activity-7377665823470968832--0WB)
 - [DataBricks scaled vector search](https://www.databricks.com/blog/decoupled-design-billion-scale-vector-search)
+- [Qdrant](https://qdrant.tech/course/essentials/day-3/sparse-retrieval-demo/)
 
 ---
 
@@ -2161,6 +2222,7 @@ Why RoPE beats absolute positional embeddings
 
 * [RoPe explain](https://www.linkedin.com/posts/hoang-van-hao_machinelearning-llm-llama3-activity-7408475024220835840-7M7Y)
 * [How RoPE work](https://www.linkedin.com/posts/sarthakrastogi_ai-llms-genai-activity-7423159922256809984-ou9b)
+* [Rotary embeddings visualizations](https://blog.eleuther.ai/rotary-embeddings/)
 
 **Extension Techniques:**
 
@@ -2200,6 +2262,8 @@ Algorithm:
 3. Merge most frequent pair
 4. Add to vocabulary
 5. Repeat until desired vocab size
+
+Doesn't learn morphology explicitly — BPE is purely statistical, it finds frequent byte pairs, not linguistically meaningful stems/prefixes
 
 Example:
 ```
@@ -2860,7 +2924,7 @@ Example:
 
 ### What Are Agents?
 
-[complex agents intro](https://cold-scallion-5b8.notion.site/AI-agents-1979c76f79e8808291a4e463e8224bfc?pvs=74)
+[complex agents intro](slides/lecture_08_ai_agents.md)
 
 **Definition:** Autonomous systems that can:
 1. **Perceive:** Understand environment/task

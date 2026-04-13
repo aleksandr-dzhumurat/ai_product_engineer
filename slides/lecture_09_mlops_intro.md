@@ -254,6 +254,9 @@ Something is always failing in a big system. We need to integrate fault toleranc
 
 ### LLMOps
 
+* [A Practical Guide to LLM Inference](https://theneuralmaze.substack.com/p/a-practical-guide-to-llm-inference)
+* [NVIDIA models](https://build.nvidia.com/models)
+* [Pay as you go inference](https://inferx.net/)
 * [open-webui](https://github.com/open-webui/open-webui)
 * [production-agentic-rag](https://decodingml.substack.com/p/llmops-for-production-agentic-rag)
 * [LLM and RAG evaluation framework](https://medium.com/decodingml/the-engineers-framework-for-llm-rag-evaluation-59897381c326)
@@ -285,7 +288,6 @@ Something is always failing in a big system. We need to integrate fault toleranc
 * [MLOps AWS](https://ai.gopubby.com/mlops-setup-on-aws-with-sagemaker-bff8b8300b53)
 * [mlops-in-a-nutshell-model-registry-metadata-store-and-model-pipeline](https://www.notion.so/MLOps-Zoomcamp-2024-1ccfb057164b4778bd9019fd46dd792a?pvs=21)
 * [a-simple-ci-cd-setup-for-ml-projects](https://medium.com/towards-data-science/a-simple-ci-cd-setup-for-ml-projects-604de7fd64cd)
-* [scraping Medium with python](https://dorianlazar.medium.com/scraping-medium-with-python-beautiful-soup-3314f898bbf5)
 * [AWS sagemaker](https://docs.aws.amazon.com/sagemaker/latest/dg/deploy-models-frameworks-triton.html)
 * [triton inference](https://youtu.be/ljqyuDxd_H0?si=Vpi4PiGrmHKSbKqg)
 * [nebius token factory](https://www.linkedin.com/pulse/inside-nebius-token-factory-architecture-behind-scalable-helen-yu-u8yzc)
@@ -308,6 +310,7 @@ Something is always failing in a big system. We need to integrate fault toleranc
 * [platform.openai.com/docs/guides/fine-tuning/use-a-fine-tuned-model](https://platform.openai.com/docs/guides/fine-tuning/use-a-fine-tuned-model)
 * [fine tune LLaMA on 7b Titanium](https://www.philschmid.de/fine-tune-llama-7b-trainium)
 * [Dialog mode fine tuning](https://www.kaggle.com/code/danielhanchen/kaggle-llama-3-1-8b-conversational-unsloth/notebook)
+* [Gemma 4 fine tune](https://www.linkedin.com/posts/sarthakrastogi_ai-llms-genai-share-7451889809469591552-RndI)
 * [self-hosting-llama-3-1-70b](https://medium.com/@abhinand05/self-hosting-llama-3-1-70b-or-any-70b-llm-affordably-2bd323d72f8d)
 
 ### Microsoft stack

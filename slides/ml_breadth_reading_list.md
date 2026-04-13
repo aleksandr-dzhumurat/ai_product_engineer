@@ -1,5 +1,6 @@
 # ML interviews resources
 
+* [ML research engineer interview](https://asmekal.github.io/blog/posts/interviews-2025-ml-research-engineer-uk)
 * [ML interview preparation](https://huyenchip.com/ml-interviews-book/)
 * [ML interview preparation](https://github.com/neonwatty/machine-learning-refined)
 * [AI interview](https://aiinterviewprep.substack.com/archive?sort=new)
@@ -29,6 +30,7 @@
 * [google-software-engineer-ml-interview-experience](https://medium.com/@akashshah59/google-software-engineer-ml-interview-experience-9312d1f6f521)
 * [MyGames preparation](https://docs.google.com/document/d/1VaZ9zzut3XuPQJtaVa3vvkTDPDVXo7DZcBqIDrtGtMI/edit)
 * [Logistic regression multiclass](https://www.linkedin.com/feed/update/groupPost:6744146-7177267533807325187)
+* [ML basics course](https://github.com/Zhanarik/Machine-Learning)
 
 
 # Shap values

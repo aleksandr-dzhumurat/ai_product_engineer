@@ -37,9 +37,7 @@ a = relu(z)          # активация
 
 Данные проходят слой за слоем: вход → скрытые слои → выход.
 
----
-
-## Функции активации
+Функции активации
 
 | Функция | Формула | Где |
 |---------|---------|-----|
@@ -53,9 +51,9 @@ a = relu(z)          # активация
 
 ## Обратное распространение (Backpropagation)
 
-1. Считаем ошибку (loss) на выходе — например, CrossEntropy (y — истинные метки, ŷ — предсказания модели)
+1. Считаем ошибку (loss) на выходе — например, CrossEntropy (y — истинные метки, $\hat{y}$ — предсказания модели)
 
-   $$L = - \sum(y \cdot \log(\hat{y}))$$
+   $$L = -\sum \left[ y \cdot \log(\hat{y}) + (1 - y) \cdot \log(1 - \hat{y}) \right]$$
 
 2. Берём производную loss по каждому параметру ($W, b$) через chain rule
 3. Обновляем параметры ($W, b$) в сторону уменьшения loss
@@ -63,6 +61,43 @@ a = relu(z)          # активация
 Chain rule:
 
 $$\frac{\partial L}{\partial w} = \frac{\partial L}{\partial a} \cdot \frac{\partial a}{\partial z} \cdot \frac{\partial z}{\partial w}$$
+
+**Example**
+ 
+$$
+f(x, z) = \sin(x \cdot z)^2
+$$
+
+Render in mermaid diagram
+
+```mermaid
+```mermaid
+graph LR
+    x["x"] --> mul(("*"))
+    z["z"] --> mul
+    mul --> sq(("^2"))
+    sq --> sinnode(("sin"))
+    sinnode --> y["y"]
+```
+ 
+Partial derivatives (chain rule)
+ 
+$$
+\frac{\partial f}{\partial x} = \cos\!\left((x \cdot z)^2\right) \cdot 2(x \cdot z) \cdot z
+$$
+ 
+$$
+\frac{\partial f}{\partial z} = \cos\!\left((x \cdot z)^2\right) \cdot 2(x \cdot z) \cdot x
+$$
+ 
+Numerical evaluation at $x = 1,\ z = 2$
+ 
+$$
+\left.\frac{\partial f}{\partial x}\right|_{x=1,\, z=2}
+= \cos(4) \cdot 2(1 \cdot 2) \cdot 2
+= 8\cos 4
+\approx -5.23
+$$
 
 Шаг градиентного спуска:
 
@@ -74,6 +109,24 @@ $$b \gets b - \eta \frac{\partial L}{\partial b}$$
 Проблемы:
 - Затухающий градиент — в глубоких сетях градиент умножается много раз и стремится к 0. Решение: ReLU, batch norm, residual connections.
 - Взрывной градиент — Градиенты очень большие, веса обновляются слишком сильно → обучение нестабильно.
+
+Opetimization method - способ обновления весов (градиентный спуск и разные его вариации: adam, etc).
+
+Epoch: перемешиваем датасет и разбиваем на батчи. Далее считаем градиенты по батчам и обновляем веса, каждая эпоха - это один проход по всему датасету.
+
+Momentum helps gradient descent move in a smoother, more consistent direction by remembering where it was going before.
+
+AdaGrad adapts the learning rate for each parameter individually, increasing it for infrequent features and decreasing it for frequent ones.
+
+Adam combines the benefits of both momentum and AdaGrad, making it a popular choice for deep learning.
+
+Это похоже на методы второго порядка, когда используем не только направление но и кривизну.
+
+DNN проблемы:
+
+* Not enough data
+* not enough features or features not expressive
+* model too simple
 
 
 # Exploding/Vanishing Gradients
@@ -617,9 +670,19 @@ Conv2D → Residual Block (skip connection) → Multiple Residual Blocks → Ful
 
 At each time step ttt, the hidden state hth_tht is computed as:
 
- Problem: Vanishing Gradient
+```shell
+h_t = tanh(W_hh · h_(t-1) + W_xh · x_t)
+y_t = W_hy · h_t
+```
 
-- When processing long sequences, information from earlier time steps fades away (vanishing gradients), making it hard for RNNs to remember distant dependencies.
+ Model training using Backpropagation Through Time (BPTT). For a sequence of length T, this means multiplying the same weight matrix W_hh repeatedly — T times. This causes: Vanishing Gradient. When processing long sequences, information from earlier time steps fades away (vanishing gradients), making it hard for RNNs to remember distant dependencies.
+
+ If the eigenvalues of W_hh are < 1, this term decays exponentially with distance. By step 100, the gradient reaching h_1 is effectively zero — the model simply stops learning long-range connections.
+
+ Even without gradient issues, the hidden state h_t has fixed size. The entire history must be compressed into a vector of e.g. 512 dimensions regardless of sequence length.
+
+
+why LSTM/GRU were invented — their gating mechanisms give gradients a more direct path backward (the "highway" through the cell state).
 
 RNN improvenents
 
@@ -635,6 +698,8 @@ RNN improvenents
 | GRU |  Yes |  Medium |  Medium |  Faster |
 | BiRNN |  Yes |  Strong |  Medium |  Slower |
 | Attention |  Yes |  Strongest |  High |  Fast with parallelization |
+
+In plain seq2seq, the decoder only receives the last encoder hidden state h_T — one fixed vector for the whole sentence. In the Attention mechanism, the decoder can directly reach back to any encoder hidden state it finds relevant at each decoding step.
 
 # Refs
 

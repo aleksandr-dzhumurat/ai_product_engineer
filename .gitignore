@@ -170,3 +170,7 @@ jupyter_notebooks/catboost_info/
 .history
 .DS_Store
 jupyter_notebooks/tokenizers/
+.analysis
+src/nebius_batch_llm_inference/*.json
+src/rag/*.json
+src/nebius_batch_llm_inference/*.mhtml

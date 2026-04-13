@@ -1,51 +1,79 @@
-# Utility Scripts
+# RAG Pipeline
+
+### Prerequisites
+
+Pull an embedding model via Ollama:
+```bash
+ollama pull nomic-embed-text
+```
+
+Check available models:
+```bash
+ollama list
+```
+
+Launch Chroma:
+```bash
+make run-chroma
+```
 
 ### Notebook → Markdown
-- Convert a single notebook: `python3 scripts/ipynb2md.py path/to/notebook.ipynb`
-- Convert a directory: `python3 src/rag/ipynb2md.py $(pwd)/jupyter_notebooks` (outputs flat files under `data/md_docs/`)
-- Each conversion appends a JSON entry to `data/md_docs/conversion_log.jsonl` with `source_dir`, `source_file_name`, and `desctination_file` for checkpointing.
+
+Convert a directory of notebooks:
+```bash
+python src/rag/ipynb2md.py $(pwd)/jupyter_notebooks
+```
+Each conversion appends a JSON entry to `data/md_docs/conversion_log.jsonl` with `source_dir`, `source_file_name`, and `desctination_file`.
+
+### HTML → Markdown
+
+Convert downloaded Nebius HTML pages:
+```bash
+python src/rag/nebius_html2md.py --input data/nebius_site/
+```
+Conversion log is saved at the top level of `--input` directory (e.g. `data/nebius_site/conversion_log_811e314c.jsonl`).
 
 ### Text Processing
-- Split text with LangChain splitter:
-  ```bash
-  python3 - <<'PY'
-  from src.text_processing import split_text
-  chunks = split_text("long text goes here", chunk_size=500, chunk_overlap=100)
-  print(chunks)
-  PY
-  ```
-- Chunk-size references:
-  - OpenAI `text-embedding-3-*` models accept up to 8,192 tokens; in practice, ~700–900 tokens (≈3,000–3,600 characters) balances recall and cost.
-  - Gemini embedding models (e.g., `text-embedding-004`) allow up to 32,768 characters; ~1,000–1,200 tokens (≈4,000–5,000 characters) keeps overlap manageable while staying well within limits.
-  - Popular Hugging Face sentence transformers such as `all-MiniLM-L6-v2` work best with shorter passages (≤512 tokens). Using ~350–450 tokens (≈1,400–1,800 characters) per chunk helps avoid truncation and preserves semantic cohesion.
 
-### Quickstart
-- RAG flow overview:
+Chunk a Markdown file and print stats:
+```bash
+python src/rag/files_processing.py --input path/to/file.md
+python src/rag/files_processing.py --input path/to/file.md --chunk-size 500 --chunk-overlap 100
+```
 
-  ```
-      +-----------------------+          +-----------------------+
-      |  Notebook Conversion  |          |       Retrieval       |
-      |  (ipynb2md.py + log)  |          |   (src/retrieve.py)   |
-      +-----------+-----------+          +-----------+-----------+
-                  |                                   ^
-                  v                                   |
-      +-----------------------+          +-----------+-----------+
-      |  Ingestion Pipeline   |--------->|       ChromaDB        |
-      |   (src/ingestion.py)  |   RAG    |   (Vector Database)   |
-      +-----------------------+          +-----------------------+
-  ```
+### Ingestion
 
-- Launch Chroma locally:
-  ```bash
-  make run-chroma
-  ```
-- Ingest converted notebooks (filters by `source_dir` in `data/md_docs/conversion_log.jsonl`):
-  ```bash
-  ./.venv/bin/python src/rag/ingestion.py "ai_product_engineer/jupyter_notebooks" --embedding-model qwen3:0.6b --collection docs1
-  ```
-- `src/ingestion.py` batches chunks (default 50) and for each batch calls Ollama’s embedding API (default model `granite4:350m`) before upserting into Chroma. Tune the batch/embedding parameters via CLI flags (`--batch-size`, `--chunk-size`, `--chunk-overlap`, `--embedding-model`, `--ollama-host`, `--request-timeout`).
+Ingest converted documents into ChromaDB:
+```bash
+DATA_DIR="$(pwd)" python src/rag/ingestion.py --log-path data/nebius_site/conversion_log_811e314c.jsonl --embedding-model nomic-embed-text --reset-collection
+DATA_DIR="$(pwd)" python src/rag/ingestion.py --log-path data/md_docs/conversion_log.jsonl --collection my_collection --embedding-model nomic-embed-text
+```
 
-Check ingestion
-```shell
- .venv/bin/python src/rag/retrieve.py "что такое антиградиент" --limit 3
- ```
+Key flags: `--batch-size`, `--chunk-size`, `--chunk-overlap`, `--embedding-model`, `--ollama-host`, `--request-timeout`, `--reset-collection`.
+
+### Retrieval
+
+Query the collection:
+```bash
+DATA_DIR="$(pwd)" python src/rag/retrieve.py "your query" --embedding-model nomic-embed-text
+DATA_DIR="$(pwd)" python src/rag/retrieve.py "your query" --collection my_collection --limit 10
+```
+
+### LLM Pricing
+
+Nebius Token Factory endpoints and pricing: https://tokenfactory.nebius.com/endpoints
+
+### RAG Flow
+
+```
+    +-----------------------+          +-----------------------+
+    |  Notebook / HTML      |          |       Retrieval       |
+    |  Conversion + log     |          |   (src/retrieve.py)   |
+    +-----------+-----------+          +-----------+-----------+
+                |                                   ^
+                v                                   |
+    +-----------------------+          +-----------+-----------+
+    |  Ingestion Pipeline   |--------->|       ChromaDB        |
+    |  (src/ingestion.py)   |   embed  |   (Vector Database)   |
+    +-----------------------+          +-----------------------+
+```

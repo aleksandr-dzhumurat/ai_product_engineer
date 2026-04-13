@@ -10,7 +10,13 @@ import os
 from pathlib import Path
 from typing import Any, Iterable, List
 
-from text_processing import record_conversion  # noqa: E402
+from files_processing import (  # noqa: E402
+    DEFAULT_OUTPUT_DIR,
+    convert_file,
+    get_directory_tree,
+    log_entry_to_document_index,
+    target_markdown_path,
+)
 
 
 def _to_text(source: Any) -> str:
@@ -87,51 +93,6 @@ def convert_notebook(input_path: Path) -> str:
     return "\n\n".join(trimmed) + ("\n" if trimmed else "")
 
 
-def target_markdown_path(input_path: Path) -> Path:
-    output_dir = Path("data/md_docs")
-    output_dir.mkdir(parents=True, exist_ok=True)
-    return output_dir / (input_path.stem + ".md")
-
-
-def convert_file(input_path: Path) -> Path:
-    markdown = convert_notebook(input_path)
-    output_path = target_markdown_path(input_path)
-    output_path.write_text(markdown, encoding="utf-8")
-    record_conversion(input_path, output_path)
-    return output_path
-
-
-EXCLUDED_DIRS = {
-    ".venv",
-    ".env",
-    ".git",
-    ".cache",
-    "__pycache__",
-    "uv",
-    ".ipynb_checkpoints",
-    "catboost_info",
-}
-EXCLUDED_PREFIXES = (".",)
-
-
-def process_directory(directory: Path) -> List[Path]:
-    converted: List[Path] = []
-    for root, dirs, files in os.walk(directory):
-        filtered_dirs: List[str] = []
-        for d in dirs:
-            full_path = Path(root) / d
-            if d in EXCLUDED_DIRS or d.startswith(EXCLUDED_PREFIXES):
-                print(f"Skipping directory {full_path}")
-                continue
-            filtered_dirs.append(d)
-        dirs[:] = filtered_dirs
-        for name in files:
-            if not name.endswith(".ipynb"):
-                continue
-            source_path = Path(root) / name
-            converted.append(convert_file(source_path))
-    return converted
-
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -139,22 +100,35 @@ def main() -> None:
         "input",
         help="Path to the source .ipynb notebook or directory containing notebooks.",
     )
+    parser.add_argument(
+        "--output-dir",
+        default=str(DEFAULT_OUTPUT_DIR),
+        help="Directory for converted Markdown files (default: data/md_docs).",
+    )
     args = parser.parse_args()
 
     input_path = Path(args.input).expanduser()
+    output_dir = Path(args.output_dir).expanduser()
     if not input_path.exists():
         raise SystemExit(f"Input path not found: {input_path}")
 
+    log_path = Path(os.environ.get('DATA_DIR', 'data')) / "md_docs/conversion_log.jsonl"
+
     if input_path.is_dir():
-        results = process_directory(input_path)
-        if not results:
+        entries = get_directory_tree(input_path)
+        if not entries:
             print(f"No notebooks found under {input_path}")
         else:
-            for path in results:
-                print(f"Wrote Markdown to {path}")
+            for entry in entries:
+                entry["output_path"] = target_markdown_path(entry["input_path"], output_dir)
+                source_path, out_path = convert_file(entry["input_path"], entry["output_path"], convert_notebook)
+                log_entry_to_document_index(source_path, out_path, log_path=log_path)
+                print(f"Wrote Markdown to {out_path}")
     elif input_path.is_file():
-        output_path = convert_file(input_path)
-        print(f"Wrote Markdown to {output_path}")
+        out_path = target_markdown_path(input_path, output_dir)
+        source_path, out_path = convert_file(input_path, out_path, convert_notebook)
+        log_entry_to_document_index(source_path, out_path, log_path=log_path)
+        print(f"Wrote Markdown to {out_path}")
     else:
         raise SystemExit(f"Unsupported input type: {input_path}")
 

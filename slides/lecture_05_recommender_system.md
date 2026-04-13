@@ -2,7 +2,7 @@
 
 [![Recommender Systems](http://img.youtube.com/vi/fEbwRMnviqA/0.jpg)](http://www.youtube.com/watch?v=fEbwRMnviqA "Recommender Systems")
 
-[Jupyter Notebook](../src/jupyter_notebooks/lecture_05_recommended_system.ipynb)
+[Jupyter Notebook](https://github.com/aleksandr-dzhumurat/ai_product_engineer/blob/main/jupyter_notebooks/vol_03_sys_design_01_recommendation_system.ipynb)
 [Colab notebook](https://drive.google.com/file/d/1z8K06ZiYKPFhOgNkPZX5eCiM7jGvzN-n/view?usp=sharing)
 
 [slides](https://docs.google.com/presentation/d/1_pbTCGMs1Vfnoqe2GroLUnvKFE5uPKI_x87OVdXHH_I/edit?usp=sharing)
@@ -135,6 +135,8 @@ def mean_rank(y_true, y_score, group):
 
 # Common resources
 
+* [Recommender Systems](https://github.com/yandexdataschool/recsys_course/tree/2026_spring)
+* [DeepRecSys](https://github.com/KhrylchenkoKirill/DeepRecSys/tree/main)
 * [Personalized Machine Learning book.pdf](https://cseweb.ucsd.edu/~jmcauley/pml/pml_book.pdf)
 * [Recommendations in Lyft](https://eng.lyft.com/the-recommendation-system-at-lyft-67bc9dcc1793)
 * [Lyft Engineering: geo embeddings](https://eng.lyft.com/lyft2vec-embeddings-at-lyft-d4231a76d219)
@@ -148,6 +150,7 @@ def mean_rank(y_true, y_score, group):
 * [Propensity modeling](https://youtu.be/NdZaM0_mhVM?si=FKOgpcwvnmV_gg8Q)
 * [Beyong propensity](https://www.notion.so/acabce8dc0de4bbdb6d61966432e3e5c?pvs=21)
 * [Counterfactual-evaluation](https://eugeneyan.com/writing/counterfactual-evaluation/)
+* [Propensity score matching](https://youtu.be/eCTqp227xvo?si=Yl5wgtsVbE3ueRi4)
 
 ## Cases
 
@@ -183,6 +186,7 @@ def mean_rank(y_true, y_score, group):
 * [4-stage recommender system](https://www.linkedin.com/feed/update/activity:7235938187540332544)
 * [re-ranking in WB](https://t.me/wildrecsys/45)
 * [RAG in ecom](https://youtu.be/EqUjf5X6IPE?t=3014)
+* [Ecom recsys foundational model TubiFM](https://www.linkedin.com/posts/alexsalle_paper-drop-tubifm-a-foundation-model-approach-share-7465867722334248961-MFZ-/)
 
 # Bandits & RL
 

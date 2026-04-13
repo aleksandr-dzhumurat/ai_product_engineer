@@ -1,26 +1,30 @@
-"""
-Ingest notebook-derived Markdown documents into ChromaDB using the conversion log.
+"""Ingest Markdown documents into ChromaDB using the conversion log.
+
+Usage:
+    DATA_DIR="$(pwd)"python src/rag/ingestion.py --log-path data/nebius_site/conversion_log_811e314c.jsonl
+    python src/rag/ingestion.py --log-path data/md_docs/conversion_log.jsonl --collection my_collection
 """
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
-import os
 import time
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, List, Sequence
 
-import chromadb
 import requests
-from chromadb.api.models.Collection import Collection
-from connections import get_chroma_client
-from text_processing import split_text
-
-DEFAULT_LOG_PATH = Path(os.environ.get('DATA_DIR', 'data')) / "md_docs/conversion_log.jsonl"
+from connections import BaseConnection, ChromaConnection
+from files_processing import chunk_document
 
 
-def load_conversion_log(log_path: Path) -> List[dict]:
+@dataclass
+class EmbeddingModel:
+    name: str
+    embedding_size: int
+
+
+def load_transformation_log(log_path: Path) -> List[dict]:
     if not log_path.exists():
         raise FileNotFoundError(f"Conversion log not found: {log_path}")
     entries: List[dict] = []
@@ -37,30 +41,11 @@ def load_conversion_log(log_path: Path) -> List[dict]:
     return entries
 
 
-def read_text_file(path: Path) -> str | None:
-    try:
-        return path.read_text(encoding="utf-8")
-    except UnicodeDecodeError:
-        try:
-            return path.read_text(encoding="utf-8", errors="replace")
-        except OSError:
-            return None
-    except OSError:
-        return None
-
-
-def chunk_document(path: Path, chunk_size: int, chunk_overlap: int) -> List[str]:
-    content = read_text_file(path)
-    if content is None:
-        return []
-    return split_text(content, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
-
-
 def fetch_embeddings(
     texts: Sequence[str],
     *,
     host: str,
-    model: str,
+    model: EmbeddingModel,
     timeout: float,
 ) -> List[List[float]]:
     """
@@ -76,34 +61,27 @@ def fetch_embeddings(
     embeddings = []
 
     for idx, text in enumerate(texts):
-        # Skip empty texts
         if not text or not text.strip():
             print(f"Warning: Skipping empty text at index {idx}")
-            # Return zero vector for empty text
-            embeddings.append([0.0] * 384)  # Default embedding size
+            embeddings.append([0.0] * model.embedding_size)
             continue
 
         try:
             response = requests.post(
                 url,
-                json={"model": model, "prompt": text},
+                json={"model": model.name, "prompt": text},
                 timeout=timeout,
             )
             response.raise_for_status()
             data = response.json()
 
-            # Ollama returns embedding in "embeddings" or "embedding" field
             embedding = data.get("embedding") or data.get("embeddings")
 
             if not embedding or (isinstance(embedding, list) and len(embedding) == 0):
                 print(f"Warning: Empty embedding for text at index {idx} (length: {len(text)})")
                 print(f"Text preview: {text[:100]}...")
                 print(f"Response: {data}")
-                # Use zero vector as fallback
-                if embeddings:
-                    embedding = [0.0] * len(embeddings[0])
-                else:
-                    embedding = [0.0] * 384  # Default size
+                embedding = [0.0] * model.embedding_size
 
             embeddings.append(embedding)
 
@@ -116,19 +94,21 @@ def fetch_embeddings(
 
 
 def flush_batch(
-    collection: Collection,
+    client: BaseConnection,
+    collection_name: str,
     documents: List[str],
     metadatas: List[dict[str, str]],
     ids: List[str],
     *,
     host: str,
-    model: str,
+    model: EmbeddingModel,
     timeout: float,
 ) -> int:
     if not documents:
         return 0
     embeddings = fetch_embeddings(documents, host=host, model=model, timeout=timeout)
-    collection.upsert(
+    client.upsert(
+        collection_name=collection_name,
         documents=list(documents),
         metadatas=list(metadatas),
         ids=list(ids),
@@ -141,26 +121,24 @@ def flush_batch(
     return count
 
 
-def ingest_from_log(
+def ingest(
     entries: Iterable[dict],
     *,
-    client: chromadb.Client,
+    client: BaseConnection,
     collection_name: str,
     batch_size: int,
     chunk_size: int,
     chunk_overlap: int,
-    embedding_model: str,
+    embedding_model: EmbeddingModel,
     ollama_host: str,
     request_timeout: float,
 ) -> int:
-    # Try to get existing collection, or create new one
     try:
-        collection = client.get_collection(collection_name)
+        client.get_collection(collection_name)
         print(f"Using existing collection: {collection_name}")
     except Exception:
-        # Create new collection - ChromaDB will auto-detect dimensions from first insert
         print(f"Creating new collection: {collection_name}")
-        collection = client.create_collection(collection_name)
+        client.create_collection(collection_name)
 
     documents: List[str] = []
     metadatas: List[dict[str, str]] = []
@@ -170,36 +148,29 @@ def ingest_from_log(
     for n, entry in enumerate(entries):
         if n % 2 == 0:
             print(f'{n} from {len(entries)}')
-        destination = entry.get("desctination_file")
-        source_dir = entry.get("source_dir", "")
-        source_file = entry.get("source_file_name", "")
-
-        if not destination:
-            continue
-
-        file_path = Path(destination)
+        file_path = Path(entry["desctination_file"])
         chunks = chunk_document(file_path, chunk_size, chunk_overlap)
         if not chunks:
             continue
 
-        file_hash = hashlib.md5(str(file_path.resolve()).encode("utf-8")).hexdigest()
-        for idx, chunk in enumerate(chunks):
-            chunk_id = f"{file_hash}_{idx}"
-            documents.append(chunk)
+        for chunk in chunks:
+            documents.append(chunk.body)
             metadatas.append(
                 {
-                    "source": destination,
-                    "chunk_index": str(idx),
-                    "source_dir": source_dir,
-                    "source_file_name": source_file,
+                    "source": str(chunk.source),
+                    "source_dir": str(chunk.source.parent),
+                    "source_file_name": chunk.source.name,
+                    "length_chars": str(chunk.length_chars),
+                    "length_lines": str(chunk.length_lines),
                 }
             )
-            ids.append(chunk_id)
+            ids.append(chunk.id)
             total_chunks += 1
 
             if len(documents) >= batch_size:
                 flush_batch(
-                    collection,
+                    client,
+                    collection_name,
                     documents,
                     metadatas,
                     ids,
@@ -210,7 +181,8 @@ def ingest_from_log(
 
     if documents:
         flush_batch(
-            collection,
+            client,
+            collection_name,
             documents,
             metadatas,
             ids,
@@ -218,21 +190,15 @@ def ingest_from_log(
             model=embedding_model,
             timeout=request_timeout,
         )
-
-    # Note: HttpClient doesn't have persist() - data is automatically persisted by the server
     return total_chunks
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "directory",
-        help="Filter entries from conversion log by matching source_dir (exact string match).",
-    )
-    parser.add_argument(
         "--log-path",
-        default=str(DEFAULT_LOG_PATH),
-        help="Path to conversion log JSONL (default: data/md_docs/conversion_log.jsonl).",
+        required=True,
+        help="Path to conversion log JSONL.",
     )
     parser.add_argument(
         "--persist-dir",
@@ -269,8 +235,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--embedding-model",
-        default="granite4:350m",
-        help="Ollama embedding model to use (default: granite4:350m).",
+        default="nomic-embed-text",
+        help="Ollama embedding model name (default: nomic-embed-text).",
+    )
+    parser.add_argument(
+        "--embedding-size",
+        type=int,
+        default=768,
+        help="Embedding vector size (default: 768).",
     )
     parser.add_argument(
         "--ollama-host",
@@ -291,41 +263,36 @@ def main(argv: Sequence[str] | None = None) -> None:
     args = parser.parse_args(argv)
 
     log_path = Path(args.log_path).expanduser()
-    entries = load_conversion_log(log_path)
+    entries = load_transformation_log(log_path)
+    if not entries:
+        raise SystemExit(f"No entries found in {log_path}.")
 
-    filtered_entries = [entry for entry in entries if args.directory in entry["source_dir"]]
-    if not filtered_entries:
-        raise SystemExit(
-            f"No entries found in {log_path} with source_dir = '{args.directory}'."
-        )
-
-    # Connect to ChromaDB service (persist_dir is no longer used)
-    client = get_chroma_client()
+    model = EmbeddingModel(name=args.embedding_model, embedding_size=args.embedding_size)
+    client = ChromaConnection()
 
     # Handle collection reset if requested
     if args.reset_collection:
         try:
             client.delete_collection(args.collection)
             print(f"Deleted existing collection: {args.collection}")
-            # Give ChromaDB server time to process the deletion
             time.sleep(1)
         except Exception as e:
             print(f"No existing collection to delete: {e}")
 
-    total = ingest_from_log(
-        filtered_entries,
+    total = ingest(
+        entries,
         client=client,
         collection_name=args.collection,
         batch_size=args.batch_size,
         chunk_size=args.chunk_size,
         chunk_overlap=args.chunk_overlap,
-        embedding_model=args.embedding_model,
+        embedding_model=model,
         ollama_host=args.ollama_host,
         request_timeout=args.request_timeout,
     )
 
     print(
-        f"Ingested {total} chunks from {len(filtered_entries)} files into collection "
+        f"Ingested {total} chunks from {len(entries)} files into collection "
         f"'{args.collection}'"
     )
 
