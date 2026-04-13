@@ -2,14 +2,12 @@
 
 * [Python Mastery](https://github.com/dabeaz-course/python-mastery)
 * [Алгоритмы и структуры данных поиска](https://www.youtube.com/playlist?list=PLJOzdkh8T5koEPv-R5W0ovmL_T2BjB1HX)
-* [Machine learning course](https://github.com/girafe-ai/ml-course)
-* [Дьяконов - методы машинного обучения](https://www.youtube.com/playlist?list=PLaRUeIuewv8BFD3UwCDBetM89c2uRPpcj)
-* [Дьяконов - прикладные задачи анализа данных](https://www.youtube.com/playlist?list=PLaRUeIuewv8CMFox0oEjlyePUhUmo-x0h)
 * [Yandex algorithms training](https://www.youtube.com/playlist?list=PLXtiZNKIobF6oMvumNTZDf20F_FdvdAf-)
 * [VSCode python](https://github.com/RamiKrispin/vscode-python)
 
-### Code best prectices
+### Code best practices
 
+* [Modern Python Tooling: uv, ruff, and mypy](https://belderbos.dev/blog/modern-python-tooling-uv-ruff-ty/)
 * [Kagge notebooks with code](https://www.linkedin.com/feed/update/urn:li:activity:7240040270203936768)
 * [Python interview question](https://www.interviewbit.com/python-interview-questions/#memory-management-in-python)
 * [Memory efficient python classes](https://medium.com/towards-data-science/how-to-write-memory-efficient-classes-in-python-beb90811abfa)
@@ -47,7 +45,7 @@
 * [Python Iterators](https://tatyderb.gitbooks.io/python-express-course/content/chapter_generators/1-iterators.html)
 * [Python dictionary implementation](https://www.laurentluce.com/posts/python-dictionary-implementation/)
 
-List
+## List
 
 * [Python List implementation](https://www.laurentluce.com/posts/python-list-implementation/)
 * [Habr: устройство List](https://habr.com/ru/articles/273045/)

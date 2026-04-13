@@ -26,6 +26,7 @@
 * [SberMarket meetup](https://www.youtube.com/watch?v=WQ34cu51VTs)
 * [Avito: cross-category recs](https://www.youtube.com/watch?v=ghzgovrzo7Y)
 * [Price elasticity dynamic pricing](https://arxiv.org/pdf/2208.03135)
+* [Price elasicity](https://ivan-gor.medium.com/the-ml-trap-in-price-elasticity-estimation-d96da4a211f4)
 * [Improved Algorithms for Contextual Dynamic Pricing](https://arxiv.org/pdf/2406.11316)
 * [Contextual Dynamic Pricing with Strategic Buyers](https://arxiv.org/pdf/2307.04055)
 * [Dynamic Pricing and Learning with Long-term Reference Effects](https://arxiv.org/pdf/2402.12562)

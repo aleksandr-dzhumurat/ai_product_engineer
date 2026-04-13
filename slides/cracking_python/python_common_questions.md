@@ -182,3 +182,59 @@ if __name__ == "__main__":
     - Improving performance and reducing memory usage by optimizing cache storage and access patterns.
 
 This question assesses the candidate’s understanding of decorators, custom caching mechanisms, and comparisons with built-in caching solutions. It also tests their ability to analyze and improve caching implementations.
+
+# Google SWE (ML) Interview — Condensed Notes
+
+> Given a distance `d` and a stream of floating-point values arriving one at a time, store the values in memory as they are received. Whenever three values in memory are within `d` of one another, return those three values and remove them from memory.
+
+For real numbers on a line, "three values within `d` of one another" simply means:
+
+$$
+\max(a, b, c) - \min(a, b, c) \le d
+$$
+
+## Key invariant
+
+Because a valid triple is removed **as soon as it appears**, the memory *never* contains a triple within `d` between calls. Every check only needs to ask: **does the newly arrived `x` complete a triple?**
+
+## Solution: keep memory sorted
+
+In sorted order, a triple within `d` exists **iff three consecutive elements** satisfy `arr[i+2] - arr[i] <= d`. So after inserting `x` at position `i`, only the (at most 3) windows containing `x` need checking: those starting at `i-2`, `i-1`, `i`.
+
+```python
+from sortedcontainers import SortedList
+
+class Memory:
+    def __init__(self, d):
+        self.d = d
+        self.mem = SortedList()
+
+    def add(self, x):
+        self.mem.add(x)                      # O(log n)
+        i = self.mem.index(x)
+        for s in range(max(0, i - 2), min(i, len(self.mem) - 3) + 1):
+            a, b, c = self.mem[s], self.mem[s + 1], self.mem[s + 2]
+            if c - a <= self.d:              # triple found
+                for v in (a, b, c):
+                    self.mem.remove(v)       # O(log n) each
+                return (a, b, c)
+        return ()
+```
+
+No candidate generation, no pairwise loops, no index bookkeeping while popping — the sorted order does all the work.
+
+## Complexity analysis
+
+| Operation per incoming value | Cost |
+|---|---|
+| Insert into `SortedList` | $O(\log n)$ |
+| Check ≤ 3 consecutive windows | $O(1)$ |
+| Remove 3 elements (when triple found) | $O(\log n)$ |
+
+- **Per value:** $O(\log n)$; **for a stream of $n$ values:** $O(n \log n)$ total.
+- **Space:** $O(n)$ — in the worst case (e.g., values spaced exactly `d + ε` apart) nothing is ever removed.
+- With a plain Python list + `bisect.insort`, insertion/removal cost $O(n)$ due to element shifting → $O(n)$ per value. Still simpler and faster in practice than the original approach for moderate `n`.
+
+## Why the original O(n) scan is also "O(1) after the scan"
+
+The author's approach scans all of memory to collect candidates within `d` of `x` ($O(n)$), then compares candidates pairwise. The subtle trick he was asked about: the invariant caps the candidate count at **4**. Candidates live in $[x-d,\ x+d]$; each half-interval $[x-d, x]$ and $[x, x+d]$ has length `d` and can hold at most **2** stored values — a third would already have formed a triple and been removed. So the pairwise check is $O(1)$, and the whole method is $O(n)$ per value — dominated by the linear scan, which the sorted-container version eliminates.

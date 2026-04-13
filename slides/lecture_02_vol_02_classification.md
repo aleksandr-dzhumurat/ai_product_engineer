@@ -1,13 +1,13 @@
 # Logistic regression
 
-* [Jupyter Notebook](../jupyter_notebooks/vol_00_pre_requirements_02_machine_learning_classification.ipynb)
-* [Naive bayes classifier](../jupyter_notebooks/vol_04_deep_dive_00_probability_hw_2_naive_bayes_solved.ipynb)
+* [Jupyter Notebook](https://github.com/aleksandr-dzhumurat/ai_product_engineer/blob/main/jupyter_notebooks/vol_00_pre_requirements_02_machine_learning_classification.ipynb)
+* [Naive bayes classifier](https://github.com/aleksandr-dzhumurat/ai_product_engineer/blob/main/jupyter_notebooks/vol_04_deep_dive_00_probability_hw_2_naive_bayes.ipynb)
 
 ## LogLoss
 
 Log Loss это синоним Binary Cross-Entropy (BCE).
 
-Штрафует ли **logloss** корректно предсказанные метки классов? И если да, то зачем?
+Штрафует ли **LogLoss** корректно предсказанные метки классов? И если да, то зачем?
 
 $$L(y, F(x)) = -y \log(p) - (1-y)\log(1-p)$$
 
@@ -17,7 +17,7 @@ $$L(y, F(x)) = -y \log(p) - (1-y)\log(1-p)$$
 
 Для предсказания классов нужен порог (**threshold**), ошибки классификации (precision, recall) - не гладкие.
 
-Модель выдает не метку, а вероятность - при пороге 0.5 правильный прогноз в 0.51 может **наказываться за слабую уверенность**. При $y_{true} = 1$ кривая $−log(p)$ выпуклая и крутая вблизи p = 0,51 — модель сильно наказывается за "неуверенность" в приваильном ответе. По мере того, как p → 1, потери плавно приближаются к 0.
+Модель выдает не метку, а вероятность - при пороге $0.5$ правильный прогноз в $0.51$ может **наказываться за слабую уверенность**. При $y_{true} = 1$ кривая $−log(p)$ выпуклая и крутая вблизи p = 0,51 — модель сильно наказывается за "неуверенность" в приваильном ответе. По мере того, как p → 1, потери плавно приближаются к 0.
 
 # Логистическая регрессия: простой кейс
 
@@ -213,7 +213,7 @@ TN очень много → FPR остаётся маленьким даже п
 
 "Ленивая" модель предсказывает только мажоритарный класс (всегда 1 или всегда 0).
 
-**Проблема**: как обнаружить "ленивую" модель? Диагностика классификации: тест инвертирования классов
+Как обнаружить "ленивую" модель? Диагностика классификации: тест инвертирования классов
 
 Основные метрики
 
@@ -240,8 +240,8 @@ $$\text{F1} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precis
 
 Метрики:
 - TP = 30,000, FP = 6,000, FN = 0, TN = 0
-- Recall = $\frac{30,000}{30,000 + 0} = 1.0$ ✓
-- Precision = $\frac{30,000}{30,000 + 6,000} = 0.833$ ✓
+- Recall = $\frac{30,000}{30,000 + 0} = 1.0$
+- Precision = $\frac{30,000}{30,000 + 6,000} = 0.833$
 
 ⚠️ Метрики выглядят хорошо, но модель бесполезна!
 

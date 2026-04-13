@@ -1,5 +1,7 @@
 # Vector databases
 
+* [Decoupled Design for Billion-Scale Vector Search](https://www.databricks.com/blog/decoupled-design-billion-scale-vector-search)s
+
 # Comparison: Weaviate, Pinecone, and Chroma Vector Databases
 
 ## Overview of Vector Databases

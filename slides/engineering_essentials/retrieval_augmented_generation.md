@@ -2,6 +2,48 @@
 
 ![rag_architecture](../img/rag_architecture.gif)
 
+RAG over course materials
+
+Set up `COLLECTION_NAME=ml_knowledgebase` in `.env` file.
+
+Transform notebooks to .md
+```shell
+PYTHONPATH="$(pwd)" python src/rag/ipynb2md.py "$(pwd)/jupyter_notebooks" --output-dir "$(pwd)/data/md_jupyter_notebooks"
+```
+
+verify chunking
+```shell
+python src/rag/files_processing.py --input "$(pwd)/md_jupyter_notebooks/vol_02_ml_products_02_search_rag.md"
+```
+
+Ingest to VectorStorage
+```shell
+DATA_DIR="$(pwd)" python src/rag/ingestion.py --log-path data/md_docs/conversion_log.jsonl --reset-collection
+```
+
+Prepare ingestion index for `.md` slides
+```shell
+PYTHONPATH="$(pwd)" python src/rag/files_processing.py --build-index --input-dir slides
+```
+
+Ingest to Vector Store (do not add `--reset-collection` this time)
+```shell
+DATA_DIR="$(pwd)" python src/rag/ingestion.py --log-path slides/conversion_log.jsonl
+```
+
+Test in CLI mode
+```shell
+DOTENV_FILE="$(pwd)/.env" DATA_DIR="$(pwd)" python src/rag/chat.py --retrieval-top 10
+```
+
+Set up LLM connection and run REPL (Read-Eval-Print Loop)
+```shell
+DOTENV_FILE="$(pwd)/.env" DATA_DIR="$(pwd)" python src/rag/chat.py --retrieval-top 10
+```
+
+
+# Refs
+
 * [RAG with Weaviate and LLaMAIndex](https://lightning.ai/weaviate/studios/chat-with-your-code-rag-with-weaviate-and-llamaindex)
 * [Azure AI Studio prompt flow](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/prompt-flow)
 * [Advanced RAG pipeline](https://learn.deeplearning.ai/courses/building-evaluating-advanced-rag/lesson/2/advanced-rag-pipeline)

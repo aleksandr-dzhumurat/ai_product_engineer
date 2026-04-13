@@ -4,40 +4,6 @@ start with [installing uv](https://docs.astral.sh/uv/getting-started/installatio
 
 How to code using agents: [learn cursor](https://cursor.com/learn)
 
-## Keys generation
-
-key generation
-```shell
-ssh-keygen -o  -t ed25519 -f ~/.ssh/meaningful_key_name -C "your_terminal_name"
-```
-
-Access restrictions
-```shell
-chmod 600 ~/.ssh/meaningful_key_name
-```
-
-Downloading repo if restricted
-```shell
-GIT_SSH_COMMAND="ssh -i ~/.ssh/meaningful_key_name" git clone ssh://git@gitlab.pvt:442/gapa/recsys/recsys_app.git
-```
-
-OR modify ssh config `nano ~/.ssh/config`
-
-```shell
-Host gitlab.YOURCOMPANY.com
-    HostName gitlab.YOURCOMPANY.com
-    User git
-    IdentityFile ~/.ssh/your_key_name
-    IdentitiesOnly yes
-    
-Host github-personal
-    HostName github.com
-    User git
-    IdentityFile ~/.ssh/id_ed25519
-    IdentitiesOnly yes
-```
-
-
 ## Creating python environment 
  
 ```shell
@@ -112,7 +78,7 @@ Upload jupyter_notebooks from your local machine to google drive. It is just an 
 
 Also upload an src dir to Google Drive.
 
-Open first notebook [vol_00_pre_requirements_01_machine_learning_intro.ipynb](../jupyter_notebooks/vol_00_pre_requirements_01_machine_learning_intro.ipynb) and enjoy!
+Open first notebook [vol_00_pre_requirements_01_machine_learning_intro.ipynb](https://github.com/aleksandr-dzhumurat/ai_product_engineer/blob/main/jupyter_notebooks/vol_00_pre_requirements_01_machine_learning_intro.ipynb) and enjoy!
 
 ## Local option
 
@@ -121,6 +87,8 @@ Open first notebook [vol_00_pre_requirements_01_machine_learning_intro.ipynb](..
 Подробнее про WSL: https://learn.microsoft.com/en-us/windows/wsl/install
 
 ## Remote option
+
+Connect to remote server
 
 edit `~/.ssh/config`
 
@@ -132,7 +100,7 @@ Host remote_dev
     IdentityFile ~/.ssh/id_rsa
 ```
 
-**Connect in VSCode**
+Connect in VSCode
 
 - Click the green icon in the bottom-left corner
 - Select "Connect to Host..."
@@ -166,87 +134,48 @@ Configure with .devcontainr/devcontainer.json
 
 For extension search `Ctrl`+`Shift`+`P`
 
-Плюс действительно интересная опция с Cloud.ru https://cloud.ru/ - есть возможность  Удаленно подключиться к убунте и настроить докер по инструкции для убунты
+Интересная опция с Cloud.ru https://cloud.ru/ - есть возможность  Удаленно подключиться к убунте и настроить докер по инструкции для убунты
 
 Интересная ссылка: [Google collab remote](https://www.linkedin.com/posts/jeremy-arancio_struggling-with-running-llms-for-your-experimentations-activity-7376201218483863552-XIQw)
 
 [Add ssh key to remote machine](https://community.hetzner.com/tutorials/add-ssh-key-to-your-hetzner-cloud)
 
-# Подробнее о курсе
 
-![ml_mindmap](img/ml_mindmap.png)
+## Keys generation
 
-# Цели курса
+key generation
+```shell
+ssh-keygen -o  -t ed25519 -f ~/.ssh/meaningful_key_name -C "your_terminal_name"
+```
 
-Курс построен таким образом чтобы дать максимально широкое понимание темы “Запуск ML продукта” с глубоким пониманием каждого отдельного этапа
+Access restrictions
+```shell
+chmod 600 ~/.ssh/meaningful_key_name
+```
 
-- Business understanding
-- Exploratory data analysis
-- Experiment planning
-- MVP and prepare service for deploy
+Downloading repo if restricted
+```shell
+GIT_SSH_COMMAND="ssh -i ~/.ssh/meaningful_key_name" git clone ssh://git@gitlab.com/ORG/repo.git
+```
 
-# Программа курса
+OR modify ssh config `nano ~/.ssh/config`
 
-Будет шесть занятий (с лабораторными), в каждой из которых разберём одну тему из области ML и один прикладной инструмент
-
-Тема [инструмент]
-
-- [Жизненный цикл ML проекта](https://youtu.be/Fl440k56_yY?si=TKItDIXkxahIB1x2): как собрать идеальную команду [Google Colab]
-- [Применение NLP в ML](https://youtu.be/ahKsCZBTOfM?si=d5VAaeeHMhtS4mQm) [Label Studio]
-- [Многорукие бандиты](https://youtu.be/3jurSlIe2Q8?si=BKfPlgMis6G77ZTg) как пример realtime ML [FastAPI].
-- [Обучение без учителя](https://youtu.be/TT5Kd1Zmwpo?si=WDn0QKIH3yLhNH8m): кластеризация, снижение размерности [Streamlit]
-- [Рекомендательные системы](https://youtu.be/fEbwRMnviqA?si=qfvkCXBQYbSjm8oW)
-- [ML system design](https://youtu.be/h5pPNDz-qUQ?si=QyMHhqB_ymwRKWmq)
-
-Чего не будет в курсе
-
-- глубокого погпужения в нейросети не будет
-- devops часть трогать не будем
-
-# Курсовой проект
-
-Для курсового проекта нужно выбрать и реализовать в составе команды ML проект. Идеал - команда из трех специалистов
-
-- Аналитик
-- Data Scientist
-- ML engineer
-
-В качестве источника данных выбираем [Delivery Hero Recommendation Dataset](https://dl.acm.org/doi/pdf/10.1145/3604915.3610242)
-
-**Важно:** данныe [доступны в Google Drive](https://github.com/deliveryhero/dh-reco-dataset)
-
-Темы курсовых проектов представлены ниже (нужно выбрать одну тему на команду)
-
-Курсовой проект должен состоять из трех частей
-
-- EDA (jupyter notebook) - делает Data аналитик
-- Модель - делает Data Scientist на основании
-- Интерфейс (Streamlit, либо React) - делает ML инженер
-
-## Рекомендательная система
-
-- [Прогноз корзины](https://youtu.be/872uZTqY85k?si=pGfQaKTrsM9XflZE)
-- Рекомендация нового ресторана для пользователя
-- [Товары-заменители](https://youtu.be/tbTekebpK6E?si=iYBMOsgBryCcsZUd)
-- Блок “С этим товаром покупают”
-- [Алгоритм DPP](https://github.com/laming-chen/fast-map-dpp/blob/master/dpp.py): добавить в рекомендательный сервис механизмы разнообразия
-
-## Контентные сервисы
-
-- [Категоризация товаров](https://www.youtube.com/watch?v=38P2RIkHolQ&t=1240s): прогноз кухни для продукта
-- Составление рациона на день
-- Автокомплит поисковой строки
-- кросс-рекомендации ресторанов между городами
-
-## Оптимизация маркетплейса
-
-- Модель ценности заказа для курьера (какой заказ выбрать по расстоянию и цене)
-- [Прогнозирование спроса в районе](https://youtu.be/YnsJ4l0Z3o8?si=_jp3JkGEgZjUrvUS)
-- [Cимуляция города](https://youtu.be/F_bN3CuRPU8?si=TKbazVflyi7ED_R4)
-- Поиск локации локации для ресторана
+```shell
+Host gitlab.YOURCOMPANY.com
+    HostName gitlab.YOURCOMPANY.com
+    User git
+    IdentityFile ~/.ssh/your_key_name
+    IdentitiesOnly yes
+    
+Host github-personal
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519
+    IdentitiesOnly yes
+```
 
 
-# VSCode
+# VSCode settings
 
 - [GitHub's git cheatsheet](https://education.github.com/git-cheat-sheet-education.pdf)
 - [GitLab's git cheatsheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf)
@@ -263,3 +192,69 @@ For extension search `Ctrl`+`Shift`+`P`
 - [Taking Python to Production: A Professional Onboarding Guide](https://www.notion.so/Taking-Python-to-Production-A-Professional-Onboarding-Guide-799409731bf14c78a531ac779f1bd76d?pvs=21) 
 - [keyboard-shortcuts-macos](https://code.visualstudio.com/shortcuts/keyboard-shortcuts-macos.pdf)
 - [keyboard-shortcuts-linux](https://code.visualstudio.com/shortcuts/keyboard-shortcuts-linux.pdf)
+
+# Bonus: setting up remote server for multi users
+
+# SSH & User Management on Alibaba Cloud (Ubuntu)
+
+## 1. Add SSH Public Key to Remote Machine
+
+Three methods to allow key-based login:
+
+- **`ssh-copy-id`** (easiest): `ssh-copy-id -i ~/.ssh/id_rsa.pub user@server-ip`
+- **Manual**: Append key to `~/.ssh/authorized_keys`, set permissions `chmod 600`
+- **One-liner pipe**: `cat ~/.ssh/id_rsa.pub | ssh user@server-ip "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"`
+
+Key permissions: `~/.ssh` must be `700`, `authorized_keys` must be `600`.
+
+---
+
+## 2. Create User `trova` with Password Login
+
+```bash
+sudo adduser trova          # creates user + home dir, prompts for password
+```
+
+Enable password authentication in `/etc/ssh/sshd_config`:
+```
+PasswordAuthentication yes
+PermitEmptyPasswords no
+```
+
+Restart SSH:
+```bash
+sudo systemctl restart sshd
+```
+
+Connect from local:
+```bash
+ssh trova@your-server-ip
+```
+
+Optional — grant sudo: `sudo usermod -aG sudo trova`
+
+---
+
+## 3. Generated Passwords
+
+| # | Password |
+|---|---|
+| 1 | `Kx9#mP2$vL4nQw7!` |
+| 2 | `Rj5@tN8&hY3bZe6*` |
+
+> Store in a password manager, not plain text.
+
+---
+
+## 4. Remove User or Disable Login
+
+| Goal | Command |
+|---|---|
+| Delete user + home dir | `sudo userdel -r trova` |
+| Lock account | `sudo usermod -L trova` |
+| Block shell access | `sudo usermod -s /sbin/nologin trova` |
+| Expire account immediately | `sudo usermod --expiredate 1 trova` |
+| Remove SSH keys | `sudo rm /home/trova/.ssh/authorized_keys` |
+| Kill active session | `sudo pkill -u trova` |
+
+Verify user is gone: `id trova`

@@ -1,10 +1,10 @@
 # Bootstrap
 
-3. Bootstrap
+Bootstrap
 
-Bootstrap — это метод оценки статистик выборки путём **повторной выборки с возвращением** из имеющихся данных.
+Bootstrap — это метод оценки статистик выборки путём повторной выборки с возвращением из имеющихся данных.
 
-Есть выборка из N элементов. Сделай 1000 раз: возьми N элементов случайно **с возвращением** → получи 1000 "псевдовыборок" → вычисли нужную статистику на каждой → посмотри на распределение.
+Есть выборка из N элементов. Сделай 1000 раз: возьми N элементов случайно с возвращением → получи 1000 "псевдовыборок" → вычисли нужную статистику на каждой → посмотри на распределение.
 
 ```python
 import numpy as np
@@ -21,15 +21,15 @@ for _ in range(n_bootstrap):
 ci = np.percentile(means, [2.5, 97.5])
 ```
 
-- **Доверительный интервал** для любой метрики (accuracy, F1, AUC) — без предположений о распределении
-- **Сравнение моделей**: у модели A accuracy 0.82, у B — 0.84. Значимо ли это? Bootstrap скажет.
-- **Оценка дисперсии** любой статистики
+- Доверительный интервал для любой метрики (accuracy, F1, AUC) — без предположений о распределении
+- Сравнение моделей: у модели A accuracy 0.82, у B — 0.84. Значимо ли это? Bootstrap скажет.
+- Оценка дисперсии любой статистики
 
 ---
 
 Bootstrap в ML — Bagging
 
-**Bagging (Bootstrap Aggregating)** — обучаем несколько моделей на разных bootstrap-выборках, усредняем предсказания.
+Bagging (Bootstrap Aggregating) — обучаем несколько моделей на разных bootstrap-выборках, усредняем предсказания.
 
 ```
 Исходные данные (N строк)
@@ -42,9 +42,9 @@ Bootstrap в ML — Bagging
 Усреднение (или голосование) → финальный ответ
 ```
 
-**Random Forest = Bagging + случайные признаки** — классический пример.
+Random Forest = Bagging + случайные признаки — классический пример.
 
-**Зачем это снижает дисперсию:**
+### Зачем это снижает дисперсию:
 - Разные выборки → модели делают разные ошибки
 - Усреднение ошибок, которые не коррелированы → дисперсия падает в K раз
 
@@ -56,32 +56,32 @@ Out-of-Bag (OOB) оценка
 
 ## Why ~36.8% of the Dataset Ends Up OOB
 
-**Step 1: one specific object**
+### Step 1: one specific object
 
 Each bootstrap sample draws $n$ objects with replacement from a dataset of size $n$.
 The probability that one specific object $x_i$ is never picked across all $n$ draws:
 
 $$P_{\text{OOB}} = \left(1 - \frac{1}{n}\right)^n \xrightarrow{n \to \infty} e^{-1} \approx 0.368$$
 
-This is a statement about a **single object** — not the whole dataset yet.
+This is a statement about a single object — not the whole dataset yet.
 
 ---
 
-**Step 2: extending to all $n$ objects**
+### Step 2: extending to all $n$ objects
 
-Every object has the **same** $P_{\text{OOB}}$. By linearity of expectation, the expected number of OOB objects across the entire dataset:
+Every object has the same $P_{\text{OOB}}$. By linearity of expectation, the expected number of OOB objects across the entire dataset:
 
 $$E[\text{OOB count}] = \sum_{i=1}^{n} P_{\text{OOB}}(x_i) = n \cdot \left(1 - \frac{1}{n}\right)^n \approx \frac{n}{e}$$
 
 ---
 
-**Step 3: the expected fraction**
+### Step 3: the expected fraction
 
 Dividing by $n$, because we want the fraction (proportion), not the count.
 
 $$\frac{E[\text{OOB count}]}{n} = \left(1 - \frac{1}{n}\right)^n \approx 0.368$$
 
-Since every object has the same $\approx 0.368$ probability of being left out, the expected **fraction** of the dataset that ends up OOB is also $\approx 0.368$.
+Since every object has the same $\approx 0.368$ probability of being left out, the expected fraction of the dataset that ends up OOB is also $\approx 0.368$.
 
 The logic is the same as: if every coin has a 50% chance of heads, then on average 50% of $n$ coins will land heads — regardless of $n$.
 
@@ -90,23 +90,23 @@ The logic is the same as: if every coin has a 50% chance of heads, then on avera
 
 Будемм применять теорию к задачам по system design. Во всех этих задачах теория вероятностей помогает:
 
-1. **Оценить риски** (SLA, fraud, data loss)
-2. **Подобрать пороги** (rate limiting, connection pools)
-3. **Спроектировать retry/fallback** (exponential backoff)
-4. **Понять trade-offs** (false positives vs false negatives)
-5. **Capacity planning** (M/M/c, Little's Law)
+1. Оценить риски (SLA, fraud, data loss)
+2. Подобрать пороги (rate limiting, connection pools)
+3. Спроектировать retry/fallback (exponential backoff)
+4. Понять trade-offs (false positives vs false negatives)
+5. Capacity planning (M/M/c, Little's Law)
 
 Без этого ты либо over-provision (тратишь деньги), либо under-provision (теряешь availability).
 
 ## 1. SLA и availability в distributed systems
 
-**Задача:** У вас микросервисная архитектура с 5 сервисами в цепочке. Каждый сервис имеет uptime 99.9%. Какой будет итоговый SLA?
+Задача: У вас микросервисная архитектура с 5 сервисами в цепочке. Каждый сервис имеет uptime 99.9%. Какой будет итоговый SLA?
 
-**Теория:** Независимые вероятности, умножение вероятностей.
+Теория: Независимые вероятности, умножение вероятностей.
 
 $$P(\text{система работает}) = (0.999)^5 = 0.995 \approx 99.5\%$$
 
-**Практический вывод:** 
+### Практический вывод:
 - Цепочка из N сервисов → SLA деградирует
 - Для 99.99% итогового SLA каждый сервис должен иметь 99.998%
 - Нужны retries, circuit breakers, fallbacks
@@ -115,13 +115,13 @@ $$P(\text{система работает}) = (0.999)^5 = 0.995 \approx 99.5\%$$
 
 ## 2. Cache hit rate и память
 
-**Задача:** У вас есть 10GB RAM под cache, запросы идут по Zipf distribution (80% запросов к 20% ключей). Сколько данных кешировать?
+Задача: У вас есть 10GB RAM под cache, запросы идут по Zipf distribution (80% запросов к 20% ключей). Сколько данных кешировать?
 
-**Теория:** 
+### Теория:
 - Распределение частот запросов
 - Оптимизация hit rate vs память
 
-**Практический подход:**
+### Практический подход:
 ```
 Если кешируем топ-20% ключей → hit rate ≈ 80%
 Если кешируем топ-50% ключей → hit rate ≈ 95%
@@ -133,9 +133,9 @@ $$P(\text{система работает}) = (0.999)^5 = 0.995 \approx 99.5\%$$
 
 ## 3. Database connection pool sizing
 
-**Задача:** Backend делает в среднем 5 DB запросов на request. Request rate = 200 rps. Средняя latency DB query = 10ms. Сколько нужно connections в pool?
+Задача: Backend делает в среднем 5 DB запросов на request. Request rate = 200 rps. Средняя latency DB query = 10ms. Сколько нужно connections в pool?
 
-**Теория:** Little's Law + вероятностные пики.
+Теория: Little's Law + вероятностные пики.
 
 $$L = \lambda \cdot W$$
 
@@ -143,24 +143,24 @@ $$L = \lambda \cdot W$$
 - W = 0.01 sec
 - L (среднее) = 10 connections
 
-**Но:** нужен буфер под p95/p99 пики → реально 20-30 connections.
+Но: нужен буфер под p95/p99 пики → реально 20-30 connections.
 
-**Если pool = 10:** при малейшем всплеске будет connection exhaustion.
+Если pool = 10: при малейшем всплеске будет connection exhaustion.
 
 ---
 
 ## 4. Fraud detection: сколько ложных срабатываний?
 
-**Задача:** Система детектит мошенничество с точностью 99% (1% false positive). В день 1 миллион транзакций, из них 0.1% реально фродовые.
+Задача: Система детектит мошенничество с точностью 99% (1% false positive). В день 1 миллион транзакций, из них 0.1% реально фродовые.
 
-**Теория:** Bayes' theorem, precision/recall.
+Теория: Bayes' theorem, precision/recall.
 
 ```
 Истинно фродовых: 1,000,000 \times 0.001 = 1,000
 Ложных срабатываний: 999,000 \times 0.01 = 9,990
 ```
 
-**Вывод:** На каждую реальную атаку — 10 ложных алертов! Нужно улучшать precision.
+Вывод: На каждую реальную атаку — 10 ложных алертов! Нужно улучшать precision.
 
 Как считать по формуле байеса:
 
@@ -172,7 +172,7 @@ $$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$$
 | False positive *(P(алерт \| честная))* | $P(A \mid \neg F) = 0,01$ |
 | Доля фрода *(prior)* | $P(F) = 0,001$ |
 
-**Вопрос:** система подняла алерт — какова вероятность реального фрода?
+Вопрос: система подняла алерт — какова вероятность реального фрода?
 
 $$P(F \mid A) = ?$$
 
@@ -210,22 +210,22 @@ $$P(F \mid A) = \frac{990}{990 + 9\,990} = \frac{990}{10\,980} \approx 9\%$$
 
 Парадокс базовой частоты
 
-> Из **10 980** алертов в день лишь **990** — реальный фрод.
-> То есть **~9 из 10 заблокированных транзакций** принадлежат честным клиентам.
+> Из 10 980 алертов в день лишь 990 — реальный фрод.
+> То есть ~9 из 10 заблокированных транзакций принадлежат честным клиентам.
 
 Даже при точности $99\%$ — низкая база $P(F) = 0,1\%$ «захлёстывает» систему ложными срабатываниями.
 
 $$\text{Precision} = \frac{TP}{TP + FP} = \frac{990}{10\,980} \approx 9\%$$
 
-**Вывод:** чем реже событие, тем важнее не только *sensitivity*, но и *specificity*.
+Вывод: чем реже событие, тем важнее не только *sensitivity*, но и *specificity*.
 
 ---
 
 ## 5. Retry policy и exponential backoff
 
-**Задача:** API падает с вероятностью 5% на каждый request. Если делать retry, какова вероятность успеха?
+Задача: API падает с вероятностью 5% на каждый request. Если делать retry, какова вероятность успеха?
 
-**Теория:** Геометрическое распределение.
+Теория: Геометрическое распределение.
 
 ```
 P(успех с 1 попытки) = 0.95
@@ -233,7 +233,7 @@ P(успех с 2 попыток) = 1 - (0.05)^2 = 0.9975
 P(успех с 3 попыток) = 1 - (0.05)^3 = 0.999875
 ```
 
-**Практический вывод:**
+### Практический вывод:
 - 1 retry → с 95% до 99.75%
 - 2 retries → 99.9875%
 - Но нужен exponential backoff, иначе thunder herd
@@ -242,9 +242,9 @@ P(успех с 3 попыток) = 1 - (0.05)^3 = 0.999875
 
 ## 6. Load balancer: probability of hot shard
 
-**Задача:** У вас 10 backend instance, приходит burst из 100 requests за 1ms (быстрее, чем они успевают разобраться). При random routing какова вероятность, что какой-то instance получит ≥15 requests?
+Задача: У вас 10 backend instance, приходит burst из 100 requests за 1ms (быстрее, чем они успевают разобраться). При random routing какова вероятность, что какой-то instance получит ≥15 requests?
 
-**Теория:** Binomial distribution → Poisson approximation.
+Теория: Binomial distribution → Poisson approximation.
 
 $$\lambda = \frac{100}{10} = 10, \quad P(X \ge 15) \approx e^{-10} \sum_{k=15}^{100} \frac{10^k}{k!}$$
 
@@ -252,47 +252,47 @@ $$\lambda = \frac{100}{10} = 10, \quad P(X \ge 15) \approx e^{-10} \sum_{k=15}^{
 
 $$P(X \ge 15) = P(Z \ge \frac{15-10}{3.16}) \approx P(Z \ge 1.58) \approx 0.057$$
 
-**Вывод:** ≈5-6% вероятность, что instance получит перегрузку → нужен consistent hashing или least-connections routing.
+Вывод: ≈5-6% вероятность, что instance получит перегрузку → нужен consistent hashing или least-connections routing.
 
 ---
 
 ## 7. Distributed consensus: вероятность split brain
 
-**Задача:** Raft кластер из 5 нод. Вероятность network partition между любыми двумя нодами = 1%. Какова вероятность split brain (кластер разбился на 2 группы по 2 и 3 ноды)?
+Задача: Raft кластер из 5 нод. Вероятность network partition между любыми двумя нодами = 1%. Какова вероятность split brain (кластер разбился на 2 группы по 2 и 3 ноды)?
 
-**Теория:** Комбинаторика + теория графов.
+Теория: Комбинаторика + теория графов.
 
 Упрощённая оценка: если 2 ноды изолированы от 3 остальных, нужно ≥2 рёбер оборваться.
 
-**Практический вывод:** При low partition rate (1%) split brain очень редок, но при network flapping (10-20%) становится реальной проблемой → нужен quorum monitoring.
+Практический вывод: При low partition rate (1%) split brain очень редок, но при network flapping (10-20%) становится реальной проблемой → нужен quorum monitoring.
 
 ---
 
 ## 8. Rate limiting: сколько legitimate users заблокируем?
 
-**Задача:** Rate limit = 100 rps на IP. Нормальный пользователь делает в среднем 2 rps с дисперсией (bursts). 1% пользователей — боты (200+ rps). Сколько false positives?
+Задача: Rate limit = 100 rps на IP. Нормальный пользователь делает в среднем 2 rps с дисперсией (bursts). 1% пользователей — боты (200+ rps). Сколько false positives?
 
-**Теория:** Распределение burst'ов + threshold analysis.
+Теория: Распределение burst'ов + threshold analysis.
 
 Если трафик пользователя ~ Poisson(2), вероятность burst ≥100 за секунду ничтожна.
 
 Но если есть legitimate use case (например, batch upload), нужен token bucket вместо fixed window.
 
-**Практический вывод:** Fixed rate limit блокирует легитимных пользователей → нужен leaky bucket / sliding window.
+Практический вывод: Fixed rate limit блокирует легитимных пользователей → нужен leaky bucket / sliding window.
 
 ---
 
 ## 9. Backup retention: вероятность потери данных
 
-**Задача:** Daily backup с вероятностью сбоя 0.1%. Храним 30 последних бэкапов. Какова вероятность, что ВСЕ 30 бэкапов битые?
+Задача: Daily backup с вероятностью сбоя 0.1%. Храним 30 последних бэкапов. Какова вероятность, что ВСЕ 30 бэкапов битые?
 
-**Теория:** Независимые события.
+Теория: Независимые события.
 
 $$P(\text{все битые}) = (0.001)^{30} = 10^{-90}$$
 
 Практически невозможно. Но если сбои коррелированы (например, bug в backup script), вероятность резко растёт.
 
-**Практический вывод:** 
+### Практический вывод:
 - Независимые сбои → можно хранить меньше копий
 - Коррелированные сбои (software bug) → нужна диверсификация (разные tools, offsite)
 
@@ -300,14 +300,14 @@ $$P(\text{все битые}) = (0.001)^{30} = 10^{-90}$$
 
 ## 10. Password brute force: когда блокировать?
 
-**Задача:** Пароль из 6 цифр (10⁶ вариантов). Атакующий пробует 1000 паролей/сек. После скольких попыток блокировать аккаунт?
+Задача: Пароль из 6 цифр (10⁶ вариантов). Атакующий пробует 1000 паролей/сек. После скольких попыток блокировать аккаунт?
 
-**Теория:** 
+### Теория:
 - Вероятность угадать за N попыток: $P = \frac{N}{10^6}$
 - После 100 попыток: $P = 0,01\%$
 - После 10 000 попыток: $P = 1\%$
 
-**Практический вывод:**
+### Практический вывод:
 ```
 Block after 3-5 attempts   → false positives (пользователь забыл пароль)
 Block after 100 attempts   → reasonable (0.01% шанс угадать)
@@ -325,26 +325,26 @@ Block after 10,000 attempts → слишком поздно
 
 Расчёт lower bound
 
-**Дано:**
+### Дано:
 * входной поток: \lambda = 1000 rps
 * производительность одного instance: \mu = 100 rps
 
-**Минимально необходимое число instance:**
+### Минимально необходимое число instance:
 
 $$c_{min} = \frac{\lambda}{\mu} = \frac{1000}{100} = 10$$
 
-⚠️ **Это абсолютный минимум, при котором:**
+⚠️ Это абсолютный минимум, при котором:
 * система работает на 100% загрузке
 * любая флуктуация \Rightarrow бесконечные очереди
 * latency \to \infty
 
 Как расчитать "c запасом"
-**Модель:**
-* вход: пуассоновский поток \to **M**
-* время обслуживания: экспоненциальное \to **M**
-* `c` параллельных серверов \to **M/M/c**
+### Модель:
+* вход: пуассоновский поток \to M
+* время обслуживания: экспоненциальное \to M
+* `c` параллельных серверов \to M/M/c
 
-**Параметры:**
+### Параметры:
 * \lambda = 1000 rps
 * \mu = 100 rps
 * c = ?
@@ -352,20 +352,251 @@ $$c_{min} = \frac{\lambda}{\mu} = \frac{1000}{100} = 10$$
 
 $$\rho = \frac{\lambda}{c \mu}$$
 
-**Условие устойчивости:**
+### Условие устойчивости:
 
 $$\rho < 1$$
 
 В реальных системах обычно целятся в:
-* **\rho \approx 0.6–0.7** — низкие latency
-* **\rho \approx 0.7–0.8** — компромисс
-* **\rho > 0.8** — очереди растут очень быстро
+* \rho \approx 0.6–0.7 — низкие latency
+* \rho \approx 0.7–0.8 — компромисс
+* \rho > 0.8 — очереди растут очень быстро
 
 Возьмём \rho = 0.7:
 
 $$c = \frac{\lambda}{\rho \mu} = \frac{1000}{0.7 \cdot 100} \approx 14.3$$
 
-Итог - *"Минимально нужно **10 instance**, но это система с загрузкой 100%, очередь будет расти бесконечно. Корректно моделировать это как **M/M/c**. Обычно целимся в загрузку **60–70%**, тогда потребуется около **15 instance**. Более точно число выбирается через **Erlang C** под SLA по latency."*
+Итог - *"Минимально нужно 10 instance, но это система с загрузкой 100%, очередь будет расти бесконечно. Корректно моделировать это как M/M/c. Обычно целимся в загрузку 60–70%, тогда потребуется около 15 instance. Более точно число выбирается через Erlang C под SLA по latency."*
+
+# The Dice Reroll Problem
+
+This is exactly the kind of problem interviewers love to ask at Avito, Yandex, Sber, and many other companies. Read on to not only learn what the problem is, but also to see it worked through 👇👇👇
+
+This is a mathematical statistics / probability theory problem about rerolling a die. It can be phrased in different ways, but the essence is the following:
+
+You roll a die, after which you have two options:
+
+1. Take an amount of $ equal to the number rolled (if you rolled $k$ — you get $\$k$)
+
+2. Reject the result of the first roll and roll the die a second time. Then take as many $ as came up on the second roll (the second roll can no longer be rejected)
+
+**Which strategy should you choose to maximize the expected profit?**
+
+**What is the expected profit under this strategy?**
+
+Try to pause here and solve it on your own first.
+
+---
+
+Got it? Then let's work through it together:
+
+Let $A$ be the first roll and $B$ the second (repeat) roll, where $A, B \in \{1, 2, 3, 4, 5, 6\}$.
+
+## Choosing the strategy
+
+Consider $A = 3$. The probability of rolling something lower on the second roll is
+
+$$P(B < A \mid A = 3) = \frac{2}{6},$$
+
+while the probability of rolling something higher is
+
+$$P(B > A \mid A = 3) = \frac{3}{6}.$$
+
+In other words, most likely the result will be **improved** by rerolling.
+
+Similarly, for $A = 4$:
+
+$$P(B < A \mid A = 4) = \frac{3}{6}, \qquad P(B > A \mid A = 4) = \frac{2}{6}.$$
+
+That is, most likely the result will be **worsened** by rerolling.
+
+Based on this, we arrive at the following strategy: **if you rolled 4 or higher, do NOT reroll. Otherwise — reroll.**
+
+The threshold value can be determined more precisely by estimating the expected value of the first roll:
+
+$$E = \frac{1}{6} \cdot 1 + \frac{1}{6} \cdot 2 + \dots + \frac{1}{6} \cdot 6 = \frac{21}{6} = 3.5$$
+
+If the first roll came up higher than the expected value, then by rerolling we would, on average, only make the result worse.
+
+## Computing the expected value of the chosen strategy
+
+If the first roll is a 1, the expected value of this branch is:
+
+$$\text{last}(1,1) \cdot \frac{1}{36} + \text{last}(1,2) \cdot \frac{1}{36} + \dots + \text{last}(1,6) \cdot \frac{1}{36} = \frac{21}{36},$$
+
+where $\text{last}(A, B) = B$ — the value of the final roll.
+
+The same holds for first rolls of 2 and 3.
+
+If the first roll is a 4, the expected value of this branch is:
+
+$$4 \cdot \frac{1}{6} = \frac{4}{6},$$
+
+since we do not reroll the die.
+
+The same holds for 5 and 6.
+
+Now we add everything up and get:
+
+$$E = \frac{21}{36} + \frac{21}{36} + \frac{21}{36} + \frac{4}{6} + \frac{5}{6} + \frac{6}{6} = 4.25$$
+
+**Bottom line: the expected value of the optimal strategy is 4.25.**
+
+That's it. I hope that when you run into this problem in an interview, you'll already know how to solve it.
+
+# Experiment analysis case
+
+## Problem
+
+According to the survey, in City A, the percentage of people watching television is 15%, while in City B, it is 17%.
+
+Can it be said that fewer people in Moscow watch television based on this data?
+
+## Answer
+
+Based on the given information, it cannot be conclusively stated that the percentage of people watching television in City A is lower than in City B.
+
+Here are the steps for additional statistical analysis to determine if the difference in the percentage of people watching television between City A and City B is statistically significant:
+
+1. **Formulate Hypotheses:**
+   - Null Hypothesis (H0): There is no difference in the percentage of people watching television between City A and City B.
+   - Alternative Hypothesis (H1): There is a significant difference in the percentage of people watching television between City A and City B.
+
+2. **Define Significance Level:**
+   - Choose a significance level (commonly denoted as alpha, often set at 0.05 or 0.01). This represents the probability of rejecting the null hypothesis when it is true.
+
+3. **Collect Data:**
+   - Ensure that the survey data is representative and collected using a sound methodology.
+
+4. **Perform a Two-Sample Hypothesis Test:**
+   - Utilize an appropriate statistical test for comparing two independent samples. For proportions, a Z-test or Chi-square test might be applicable.
+
+5. **Calculate Test Statistic:**
+   - Calculate the test statistic based on the chosen statistical test. This value will be used to determine the p-value.
+
+6. **Determine P-value:**
+   - The p-value represents the probability of obtaining results as extreme as the observed results if the null hypothesis is true. A lower p-value indicates stronger evidence against the null hypothesis.
+
+7. **Compare P-value to Significance Level:**
+   - If the p-value is less than or equal to the chosen significance level, reject the null hypothesis. If it is greater, fail to reject the null hypothesis.
+
+8. **Interpret Results:**
+   - Provide a conclusion based on the statistical analysis. If the null hypothesis is rejected, it suggests a significant difference in the percentage of people watching television between City A and City B.
+
+9. **Consider Practical Significance:**
+   - Assess not only statistical significance but also practical significance. Even if a difference is statistically significant, it may not be practically significant if the effect size is small.
+
+10. **Report Findings:**
+    - Communicate the results, including the statistical test used, p-value, and any relevant effect size measures, in a clear and understandable manner.
+
+By following these steps, you can conduct a robust statistical analysis to determine whether the observed difference in television-watching percentages between City A and City B is statistically significant.
+
+## Z-test
+
+Certainly! In the context of comparing the percentage of people watching television in City A and City B, a Z-test for proportions can be employed. This test is appropriate when you have two independent samples and you want to assess whether the difference between the proportions in the samples is statistically significant.
+
+Here are the steps for conducting a Z-test for proportions:
+
+1. **Formulate Hypotheses:**
+   - Null Hypothesis (H0): The proportion of people watching television is the same in City A and City B.
+   - Alternative Hypothesis (H1): There is a significant difference in the proportion of people watching television between City A and City B.
+
+2. **Calculate Proportions:**
+   - Calculate the sample proportions for each city. Let $p_1$ be the proportion in City A, and $p_2$ be the proportion in City B.
+
+$$
+p_1 = \frac{\text{Number of people watching TV in City A}}{\text{Total number of respondents in City A}}
+$$
+
+$$
+p_2 = \frac{\text{Number of people watching TV in City B}}{\text{Total number of respondents in City B}}
+$$
+
+3. **Calculate the Standard Error of the Difference:**
+   - Compute the standard error of the difference between the sample proportions using the formula:
+
+$$
+SE = \sqrt{p(1 - p)\left(\frac{1}{n_1} + \frac{1}{n_2}\right)}
+$$
+
+   where $p$ is the pooled sample proportion and $n_1$ and $n_2$ are the sample sizes for City A and City B, respectively:
+
+$$
+p = \frac{n_1 p_1 + n_2 p_2}{n_1 + n_2}
+$$
+
+4. **Calculate the Z-statistic:**
+   - Use the formula for the Z-statistic for comparing two proportions:
+
+$$
+Z = \frac{(p_1 - p_2)}{SE}
+$$
+
+5. **Determine the P-value:**
+   - Use the Z-statistic to find the corresponding p-value from the standard normal distribution table.
+
+6. **Compare P-value to Significance Level:**
+   - If the p-value is less than or equal to the chosen significance level (e.g., 0.05), reject the null hypothesis.
+
+7. **Interpret Results:**
+   - Conclude whether there is sufficient evidence to suggest a significant difference in the proportion of people watching television between City A and City B.
+
+By performing these steps, you can use the Z-test for proportions to assess the statistical significance of the observed difference in television-watching percentages between the two cities.
+
+## Chi-square
+
+Certainly! The chi-square test for independence is another statistical test that can be used to assess the association between two categorical variables. In this case, you can use the chi-square test to examine if there is a significant difference in the distribution of people watching television between City A and City B. Here's how you can apply the chi-square test to this problem:
+
+1. **Formulate Hypotheses:**
+   - Null Hypothesis (H0): There is no association between the city and the habit of watching television.
+   - Alternative Hypothesis (H1): There is a significant association between the city and the habit of watching television.
+
+2. **Create a Contingency Table:**
+   - Organize the data into a contingency table, which shows the frequency distribution of people watching and not watching television in each city.
+
+   |        | Watching TV | Not Watching TV | Total |
+   |--------|-------------|-----------------|-------|
+   | City A |             |                 |       |
+   | City B |             |                 |       |
+
+   - Populate the table with the observed frequencies based on your survey data.
+
+3. **Calculate Expected Frequencies:**
+   - Calculate the expected frequencies for each cell in the contingency table. The expected frequency for each cell is calculated as:
+
+$$
+E_{ij} = \frac{(\text{Row } i \text{ Total} \times \text{Column } j \text{ Total})}{\text{Grand Total}}
+$$
+
+   - Compute the expected frequencies for all cells in the table.
+
+4. **Calculate the Chi-Square Statistic:**
+   - Compute the chi-square statistic using the formula:
+
+$$
+\chi^2 = \sum \frac{(O_{ij} - E_{ij})^2}{E_{ij}}
+$$
+
+   where $O_{ij}$ is the observed frequency in cell $(i, j)$, and $E_{ij}$ is the expected frequency in cell $(i, j)$.
+
+5. **Determine Degrees of Freedom:**
+   - Determine the degrees of freedom for the chi-square test. For a 2×2 contingency table, the degrees of freedom is given by:
+
+$$
+df = (\text{rows} - 1) \times (\text{columns} - 1)
+$$
+
+   - In this case, $df = 1$.
+
+6. **Consult the Chi-Square Distribution Table:**
+   - Compare the calculated chi-square statistic with the critical value from the chi-square distribution table at the chosen significance level (e.g., 0.05) and degrees of freedom.
+
+7. **Make a Decision:**
+   - If the calculated chi-square statistic is greater than the critical value, reject the null hypothesis. If it is less than the critical value, fail to reject the null hypothesis.
+
+8. **Interpret Results:**
+   - Conclude whether there is sufficient evidence to suggest an association between the city and the habit of watching television.
+
+By following these steps, you can apply the chi-square test for independence to determine if there is a significant difference in the distribution of people watching television between City A and City B.
 
 # Statistics
 

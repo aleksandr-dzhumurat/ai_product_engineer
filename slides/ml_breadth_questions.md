@@ -1,6 +1,92 @@
-# Machine Learning & Statistics: 28 Essential Questions
+# Machine Learning & Statistics: 29 Essential Questions
 
-## Q1 — Law of Large Numbers vs Central Limit Theorem
+## Q1 Probability distributions
+
+
+### Normal distribution
+
+#### Role of Sigma (σ)
+
+- **σ (Standard Deviation)** tells how much the data deviates from the mean.
+- **A smaller σ** → The data is closely packed around the mean.
+- **A larger σ** → The data is more spread out.
+
+#### Empirical Rule (68-95-99.7 Rule)
+
+For a normal distribution:
+
+- **68%** of data lies within **1σ** of the mean (μ ± 1σ).
+- **95%** of data lies within **2σ** of the mean (μ ± 2σ).
+- **99.7%** of data lies within **3σ** of the mean (μ ± 3σ).
+
+---
+
+### Poisson Distribution
+
+The **Poisson distribution** is a probability distribution that models the number of **events occurring in a fixed interval** (time, space, area) when these events happen **independently** and at a **constant average rate (λ)**.
+
+#### 1. Poisson Distribution Formula
+
+$$P(X = k) = \frac{e^{-\lambda} \lambda^k}{k!}$$
+
+Where:
+
+- $k$ = Number of occurrences (0, 1, 2, …)
+- $\lambda$ = Expected number of occurrences per interval
+- $e$ = Euler's number (≈2.718)
+- $k!$ = Factorial of k
+
+#### 2. Key Characteristics
+
+- ✅ **Discrete:** Poisson is used for count data (e.g., customer arrivals, defects in manufacturing).
+- ✅ **λ is the Mean & Variance:** The average and variance of a Poisson distribution are both equal to λ.
+- ✅ **No Upper Bound:** Theoretically, any number of events can occur.
+- ✅ **Used when Events are Independent:** One event happening does not affect another.
+
+#### 3. Poisson Distribution Graphs
+
+Poisson distribution graphs for different values of **λ** (expected occurrences per interval): **λ = 2, 5, 10**.
+
+![Poisson Distribution for Different λ Values](img/poisson_distribution_lambda_2_5_10.png)
+
+- **λ = 2:** The distribution is skewed to the left, meaning most events happen around 2 times per interval.
+- **λ = 5:** The distribution shifts right, and the peak moves around 5.
+- **λ = 10:** The distribution is more spread out, with most events occurring around 10.
+
+As **λ increases**, the Poisson distribution starts looking more like a **normal distribution** due to the **Central Limit Theorem**.
+
+---
+
+### Binomial distribution
+
+The **Binomial distribution** models the number of successes in a fixed number of independent trials, each with the same probability of success.
+
+#### 1. Binomial Distribution Formula
+
+$$P(X = k) = \binom{n}{k} p^k (1-p)^{n-k}$$
+
+Where:
+
+- $n$ = Total number of trials
+- $k$ = Number of successes
+- $p$ = Probability of success in each trial
+- $\binom{n}{k}$ = Combination formula, which calculates the number of ways to get k successes in n trials
+
+![Binomial Distribution for Different p Values (n=10)](img/binomial_distribution_p_values_n10.png)
+
+- **p = 0.2** (Low success probability): Most outcomes cluster around **fewer successes**.
+- **p = 0.5** (Fair coin flip): The distribution is **symmetrical**, centered around **n/2**.
+- **p = 0.8** (High success probability): The distribution skews **towards higher values**.
+
+#### 2. Key Characteristics
+
+- ✅ **Discrete:** The binomial distribution is used for counting the number of successes.
+- ✅ **Two Possible Outcomes:** Each trial is either a **success** or a **failure** (e.g., heads or tails in a coin flip).
+- ✅ **Fixed Number of Trials:** Unlike the Poisson distribution, where events happen randomly over time, binomial experiments have a **fixed n**.
+- ✅ **Independent Events:** One trial's outcome does not affect another.
+
+
+## Q2 — Law of Large Numbers vs Central Limit Theorem
 
 Quick Answer
 
@@ -82,7 +168,7 @@ Valid regardless of population distribution (for large n).
 
 ---
 
-## Q2 — EDA on Single Feature Dataset
+## Q3 — EDA on Single Feature Dataset
 
 ### Metrics to Calculate For Numerical Feature:
 
@@ -129,7 +215,7 @@ If Dataset Contains Only 0s and 1s (CTR - Click-Through Rate) - this is Binary/B
 
 ---
 
-## Q3 — Correlation Types
+## Q4 — Correlation Types
 
 | Type X | Type Y | Method to Use |
 |--------|--------|---------------|
@@ -175,7 +261,7 @@ Where:
 
 ---
 
-## Q4 — Entropy
+## Q5 — Entropy
 
 Entropy = Measure of Uncertainty
 
@@ -188,7 +274,7 @@ Sequence: AG4l9Pq!D8...
 Hard to predict → High uncertainty → High entropy
 ```
 
-[deep dive to entropy](../jupyter_notebooks/vol_04_deep_dive_09_trees_boosting.ipynb)
+[deep dive to entropy](https://github.com/aleksandr-dzhumurat/ai_product_engineer/blob/main/jupyter_notebooks/vol_04_deep_dive_09_trees_boosting.ipynb)
 
 ### Shannon Entropy Formula
 
@@ -264,7 +350,7 @@ Since $H(p)$ is constant (true labels), minimizing H(p,q) = minimizing KL diverg
 
 ---
 
-## Q5 — Type I and Type II Errors
+## Q6 — Type I and Type II Errors
 
 Definitions
 
@@ -333,7 +419,7 @@ $$\text{Cost} = C_{FP} \cdot FP + C_{FN} \cdot FN$$
 
 ---
 
-## Q6 — Linear Regression
+## Q7 — Linear Regression
 
 Model in Matrix Form
 
@@ -376,7 +462,7 @@ $$\nabla_{\boldsymbol{\beta}} J = -2\mathbf{X}^T(\mathbf{y} - \mathbf{X}\boldsym
 *(Note: In practice, libraries often optimize Mean Squared Error $J = \frac{1}{n}\|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2$ so the learning rate $\eta$ does not need scaling by $n$, which introduces a $\frac{1}{n}$ factor to the gradient.)*
 
 
-## Q7 — Regularization: L1 vs L2
+## Q8 — Regularization: L1 vs L2
 
 Why Regularization - **without regularization, models can:**
 - Memorize training data (overfitting)
@@ -458,6 +544,8 @@ Optimization:
 
 Visual: L1's sharp corners encourage solutions where many weights = 0
 
+![l1_l2_regularization](img/l1_l2_regularization.png)
+
 
 ### Comparison Table
 
@@ -491,7 +579,7 @@ Use ElasticNet when:
 
 ---
 
-## Q8 — Linear Regression Metrics
+## Q9 — Linear Regression Metrics
 
 For deeper understanding: [cracking_linear_regression](cracking_linear_regression.md)
 
@@ -576,7 +664,7 @@ Behavior:
 
 ---
 
-## Q9 — Classification Algorithms
+## Q10 — Classification Algorithms
 
 Algorithm Comparison
 
@@ -727,7 +815,7 @@ Disadvantages:
 
 ---
 
-## Q10 — Classification Metrics & ROC-AUC vs F1
+## Q11 — Classification Metrics & ROC-AUC vs F1
 
 ### Core Metrics
 
@@ -843,7 +931,7 @@ Drawbacks of ROC-AUC: it does not account for the costs of Type I and Type II er
 - Highly imbalanced datasets (positive < 10%)
 - When true negatives are not meaningful
 
-## Q11 — Handling Class Imbalance
+## Q12 — Handling Class Imbalance
 
 Methods:
 1. Resampling:
@@ -866,13 +954,30 @@ Methods:
    - F1-score instead of accuracy
    - PR-AUC instead of ROC-AUC
 
+Your imbalanced dataset probably doesn't need SMOTE.
+
+Assume a fraud detection model. 99.2% non-fraud. The team had spent two weeks tuning SMOTE variants. Best F1: 0.34.
+
+Ask, "What's your business cost ratio for false positives vs false negatives?"
+
+Here's the playbook before you touch synthetic samples:
+
+→ Set the right loss function — class weights in XGBoost, focal loss for deep models
+→ Tune the threshold; 0.5 is almost never optimal for rare events
+→ Pick a metric that matches the business. PR-AUC beats ROC-AUC for imbalanced problems
+→ Look at per-class precision and recall, not a single number
+
+Same model. Same data. F1 jumped to 0.61. No SMOTE. No new features.
+
+Resampling is a tool, not a default. Most "imbalance problems" are actually loss-function and threshold problems wearing a costume.
+
 **References:**
 - [Confusion Matrix - Wikipedia](https://en.wikipedia.org/wiki/Confusion_matrix)
 - [Receiver Operating Characteristic - Wikipedia](https://en.wikipedia.org/wiki/Receiver_operating_characteristic)
 
 ---
 
-## Q12 — Handling Unknown Categories in Production
+## Q13 — Handling Unknown Categories in Production
 
 Problem: Model encounters category it never saw during training.
 
@@ -956,9 +1061,9 @@ Fallback to parent category if specific subcategory unknown
 
 ---
 
-## Q13 — Gradient Boosting
+## Q14 — Gradient Boosting
 
-[Gradient boosting recap](../jupyter_notebooks/vol_04_deep_dive_09_trees_boosting.ipynb)
+[Gradient boosting recap](https://github.com/aleksandr-dzhumurat/ai_product_engineer/blob/main/jupyter_notebooks/vol_04_deep_dive_09_trees_boosting.ipynb)
 
 The gradient descent update rule is:
 
@@ -1094,7 +1199,7 @@ CatBoost:
 
 ---
 
-## Q14 — Bias-Variance Tradeoff
+## Q15 — Bias-Variance Tradeoff
 
 * [bias-variance decomposition](https://education.yandex.ru/handbook/ml/article/bias-variance-decomposition)
 * [bias-variance tradeoff explained](https://www.linkedin.com/feed/update/groupPost:961087-7266231655042838528)
@@ -1248,7 +1353,7 @@ Usually simple model (Logistic Regression, Ridge) to avoid overfitting.
 
 ---
 
-## Q15 — Recommendation Systems
+## Q16 — Recommendation Systems
 
 Goal: Predict user preference for items not yet interacted with
 
@@ -1529,7 +1634,7 @@ New Item:
 
 ---
 
-## Q16 — Text Preprocessing (Sparse Retrieval)
+## Q17 — Text Preprocessing (Sparse Retrieval)
 
 ### Preprocessing Pipeline
 
@@ -1672,7 +1777,7 @@ Optimizations:
 
 ---
 
-## Q17 — Word2Vec
+## Q18 — Word2Vec
 
 
 | Aspect | CBOW | Skip-gram |
@@ -1687,6 +1792,8 @@ Optimizations:
 
 **CBOW:** Predict target word from context  
 **Skip-gram:** Predict context from target word
+
+Mnemonic: CBOW is like fill-in-the-blank — "The ___ sat on the mat." Skip-gram is the reverse — given "cat", predict "The", "sat", "on", etc.
 
 Key difference from BoW:
 - BoW: Sparse, high-dimensional, no semantics
@@ -1707,9 +1814,14 @@ Training Tricks:
 - Negative sampling: Instead of softmax over full vocabulary, sample K negative words
 - Hierarchical softmax: Binary tree structure for efficient training
 
+| Method | Pros | Cons |
+|---|---|---|
+| **Word2vec** (e.g. CBOW, Skip-gram) | Very simple, yet powerful; Intuitive embeddings | Word order does not count; Embeddings not context aware |
+| **Recurrent Neural Networks** (e.g. traditional RNN, LSTM) | Word order matters; State-of-the-art results | Vanishing gradient problem; Slow computations |
+
 ---
 
-## Q18 — Vector Search
+## Q19 — Vector Search
 
 Map text/images/other data to dense vectors that capture semantic similarity
 
@@ -1974,15 +2086,50 @@ Compression: 32× smaller
 Speed: Hamming distance = POPCNT instruction  
 Quality: Significant degradation (use for filtering, then rerank)
 
+Yes, but it's not a direct one-step conversion. The typical workflow is:
+
+**PyTorch → Hugging Face format → GGUF**
+
+Here's the general process:
+
+1. **Save your PyTorch model in Hugging Face format** (safetensors or standard PyTorch bins with proper config.json)
+
+2. **Use llama.cpp conversion scripts** to convert to GGUF:
+```bash
+# Clone llama.cpp
+git clone https://github.com/ggerganov/llama.cpp
+cd llama.cpp
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Convert (example for LLaMA-style models)
+python convert_hf_to_gguf.py /path/to/your/model --outtype f16
+```
+
+3. **Optionally quantize** to reduce size:
+```bash
+./llama-quantize model.gguf model-q4_0.gguf q4_0
+```
+
+**Important caveats:**
+
+- **Architecture matters**: GGUF works best with LLaMA-based architectures (LLaMA, Mistral, Qwen, etc.). If your model uses a different architecture, you may need to check if llama.cpp supports it or modify the conversion script
+- **Not all models are sup`ported**: Check the llama.cpp documentation for supported architectures
+- **Custom architectures**: If you built a custom PyTorch model, you'd likely need to write custom conversion logic
+
+Is your model based on a standard architecture like LLaMA, or is it a custom architecture? That will determine how straightforward the conversion will be.
+
 **References:**
 - [Approximate Nearest Neighbor - Wikipedia](https://en.wikipedia.org/wiki/Nearest_neighbor_search)
 - [vector similarity](https://redis.io/blog/vector-similarity/)
 - [HNSW params](https://www.linkedin.com/posts/sarthakrastogi_ai-genai-aiagents-activity-7377665823470968832--0WB)
 - [DataBricks scaled vector search](https://www.databricks.com/blog/decoupled-design-billion-scale-vector-search)
+- [Qdrant](https://qdrant.tech/course/essentials/day-3/sparse-retrieval-demo/)
 
 ---
 
-## Q19 — Transformers
+## Q20 — Transformers
 
 [transformer deep dive](cracking_llm_basics.md)
 
@@ -2023,7 +2170,7 @@ Key Innovation: Replace recurrence with self-attention
 
 ---
 
-## Q20 — Temperature in LLM Sampling
+## Q21 — Temperature in LLM Sampling
 
 Temperature Formula
 
@@ -2107,7 +2254,7 @@ Presence Penalty: Reduce if token appeared at all
 
 ---
 
-## Q21 — Context Window
+## Q22 — Context Window
 
 Definition: Maximum number of tokens model can process
 
@@ -2161,6 +2308,7 @@ Why RoPE beats absolute positional embeddings
 
 * [RoPe explain](https://www.linkedin.com/posts/hoang-van-hao_machinelearning-llm-llama3-activity-7408475024220835840-7M7Y)
 * [How RoPE work](https://www.linkedin.com/posts/sarthakrastogi_ai-llms-genai-activity-7423159922256809984-ou9b)
+* [Rotary embeddings visualizations](https://blog.eleuther.ai/rotary-embeddings/)
 
 **Extension Techniques:**
 
@@ -2190,7 +2338,7 @@ References:
 
 ---
 
-## Q22 — Tokenization: BPE
+## Q23 — Tokenization: BPE
 
 ### Byte Pair Encoding (BPE)
 
@@ -2200,6 +2348,8 @@ Algorithm:
 3. Merge most frequent pair
 4. Add to vocabulary
 5. Repeat until desired vocab size
+
+Doesn't learn morphology explicitly — BPE is purely statistical, it finds frequent byte pairs, not linguistically meaningful stems/prefixes
 
 Example:
 ```
@@ -2240,7 +2390,7 @@ Used by: T5, XLNet, multilingual models
 
 ---
 
-## Q23 — GPT vs BERT
+## Q24 — GPT vs BERT
 
 ### GPT (Generative Pre-trained Transformer)
 
@@ -2322,7 +2472,7 @@ Used for:
 
 ---
 
-## Q24 — SFT, RLHF, DPO (Instruct Training)
+## Q25 — SFT, RLHF, DPO (Instruct Training)
 
 ### Training Pipeline
 
@@ -2497,7 +2647,7 @@ References:
 
 ---
 
-## Q25 — LLM Inference Optimization
+## Q26 — LLM Inference Optimization
 
 [deep dive to llm ops](cracking_llm_ops.md)
 
@@ -2574,7 +2724,7 @@ Result: 10-100× speedup vs naive implementation
 
 ---
 
-## Q26 — ML Project Stages
+## Q27 — ML Project Stages
 
 ### 1. Problem Definition
 - Understand business objective
@@ -2626,7 +2776,13 @@ Key Techniques/Tools:
 
 ### 4. Preprocessing
 - Cleaning: Handling missing values (imputation, deletion), outlier treatment
-- Encoding: One-hot encoding, label encoding, target encoding
+- Encoding:
+   - One-hot encoding - creates binary column per category; best for nominal (unordered) features with low cardinality
+   - Label encoding - assigns integer per category; suitable for ordinal features or tree-based models
+   - Target encoding - replaces category with mean of target variable; powerful for high-cardinality but prone to data leakage (use smoothing/regularization)
+   - Frequency encoding - replaces category with its occurrence count; simple and efficient with tree-based models, but does not account for target variable directly
+   - Leave-one-out encoding - target mean per category excluding current observation to reduce leakage; works well with high-cardinality but computationally more expensive
+   - Hashing encoding - applies hash function to create fixed-length vectors; memory-efficient for very high-cardinality features but loses interpretability and can have hash collisions
 - Scaling: StandardScaler, MinMaxScaler, RobustScaler
 - Feature creation: Polynomial features, binning, log transformations
 - Feature selection: Filter methods, wrapper methods (RFE), embedded methods (L1 regularization)
@@ -2711,7 +2867,7 @@ project/
 
 ---
 
-## Q27 — RAG (Retrieval-Augmented Generation)
+## Q28 — RAG (Retrieval-Augmented Generation)
 
 
 Problems with Vanilla LLMs:
@@ -2793,6 +2949,7 @@ $$\text{score}_{hybrid} = \alpha \cdot \text{score}_{dense} + (1-\alpha) \cdot \
 - Cohere rerank
 - bge-reranker
 - Cross-encoder models (SBERT)
+- ColBERT: late-interaction, multi-vector — keeps per-token embeddings, scores via MaxSim; near cross-encoder precision at lower latency (doc tokens precomputed/indexed)
 
 #### 4. Generation
 
@@ -2856,11 +3013,11 @@ Example:
   - "Apple revenue 2020-2023"
   - "Microsoft revenue 2020-2023"
 
-## Q28 — Agents, Tool Calling, ReAct
+## Q29 — Agents, Tool Calling, ReAct
 
 ### What Are Agents?
 
-[complex agents intro](https://cold-scallion-5b8.notion.site/AI-agents-1979c76f79e8808291a4e463e8224bfc?pvs=74)
+[complex agents intro](slides/lecture_08_ai_agents.md)
 
 **Definition:** Autonomous systems that can:
 1. **Perceive:** Understand environment/task

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ML Notes</title>
+
+  <!-- Docsify Vue theme -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify/themes/vue.css">
+
+  <style>
+    /* Display math — prevent horizontal overflow */
+    .MathJax {
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app"></div>
+
+  <script>
+    window.$docsify = {
+      name: '🏠 Homepage',
+      nameLink: 'https://aleksandr-dzhumurat.github.io',
+      basePath: '/ai_product_engineer/',
+      loadSidebar: true,
+      subMaxLevel: 3,
+      autoHeader: true,
+
+      // Search
+      search: {
+        maxAge: 86400000,
+        paths: 'auto',
+        placeholder: 'Search notes...',
+        noData: 'No results for "{query}"',
+        depth: 6,
+        namespace: 'ml-notes',
+      },
+
+      // Pagination
+      pagination: {
+        previousText: '← Prev',
+        nextText: 'Next →',
+        crossChapter: true,
+        crossChapterText: true,
+      },
+
+      // Copy-to-clipboard on code blocks
+      copyCode: {
+        buttonText: 'Copy',
+        errorText: 'Error',
+        successText: 'Copied!',
+      },
+
+      // Word count / read time
+      count: {
+        countable: ['p', 'li', 'blockquote'],
+        position: 'top',
+        float: 'right',
+        fontsize: '0.8em',
+        color: 'gray',
+        language: 'english',
+        isExpected: true,
+      },
+
+      // Tabs
+      tabs: {
+        persist: true,
+        sync: true,
+        theme: 'classic',
+        tabComments: true,
+        tabHeadings: true,
+      },
+
+      plugins: [
+        function (hook) {
+          // beforeEach: protect math from marked by storing in data-math attributes
+          hook.beforeEach(function (content) {
+            function enc(s) {
+              return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+            }
+            content = content.replace(/\$\$([\s\S]*?)\$\$/g, function (_, math) {
+              return '<div class="math-block" data-math="' + enc(math) + '"></div>';
+            });
+            content = content.replace(/\$([^\n$]+?)\$/g, function (_, math) {
+              return '<span class="math-inline" data-math="' + enc(math) + '"></span>';
+            });
+            return content;
+          });
+
+          // afterEach: restore math in the HTML string BEFORE DOM update.
+          // This is synchronous and more reliable than manipulating the DOM in doneEach.
+          hook.afterEach(function (html) {
+            function dec(s) {
+              return s.replace(/&amp;/g, '&').replace(/&quot;/g, '"');
+            }
+            html = html.replace(/<div class="math-block" data-math="([^"]*?)"><\/div>/g, function (_, math) {
+              return '<div class="math-block">$$' + dec(math) + '$$</div>';
+            });
+            html = html.replace(/<span class="math-inline" data-math="([^"]*?)"><\/span>/g, function (_, math) {
+              return '<span class="math-inline">$' + dec(math) + '$</span>';
+            });
+            return html;
+          });
+
+        }
+      ],
+    };
+  </script>
+
+  <!-- Trigger MathJax outside Docsify hooks — doneEach is unreliable here.
+       hashchange fires on every Docsify navigation; load covers the first render. -->
+  <script>
+    (function () {
+      function typeset() {
+        if (window.MathJax && MathJax.typesetPromise) {
+          MathJax.typesetPromise();
+        }
+      }
+      // Initial load: wait for Docsify to finish rendering (~300 ms)
+      window.addEventListener('load', function () { setTimeout(typeset, 300); });
+      // Every navigation (Docsify uses hash routing)
+      window.addEventListener('hashchange', function () { setTimeout(typeset, 300); });
+    })();
+  </script>
+
+  <!-- MathJax 3 config — must be before the MathJax script -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      },
+      svg: { fontCache: 'global' },
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+  <!-- Core Docsify -->
+  <script src="https://cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
+
+  <!-- Search plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+
+  <!-- Syntax highlighting -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+
+  <!-- Copy code button -->
+  <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@2/dist/docsify-copy-code.min.js"></script>
+
+  <!-- Pagination -->
+  <script src="https://cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
+
+  <!-- Word count / read time -->
+  <script src="https://cdn.jsdelivr.net/npm/docsify-count/dist/countable.min.js"></script>
+
+  <!-- Tabs -->
+  <script src="https://cdn.jsdelivr.net/npm/docsify-tabs@1/dist/docsify-tabs.min.js"></script>
+</body>
+
+</html>

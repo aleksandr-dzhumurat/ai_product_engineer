@@ -2,7 +2,7 @@
 
 [![Recommender Systems](http://img.youtube.com/vi/fEbwRMnviqA/0.jpg)](http://www.youtube.com/watch?v=fEbwRMnviqA "Recommender Systems")
 
-[Jupyter Notebook](../src/jupyter_notebooks/lecture_05_recommended_system.ipynb)
+[Jupyter Notebook](https://github.com/aleksandr-dzhumurat/ai_product_engineer/blob/main/jupyter_notebooks/vol_03_sys_design_01_recommendation_system.ipynb)
 [Colab notebook](https://drive.google.com/file/d/1z8K06ZiYKPFhOgNkPZX5eCiM7jGvzN-n/view?usp=sharing)
 
 [slides](https://docs.google.com/presentation/d/1_pbTCGMs1Vfnoqe2GroLUnvKFE5uPKI_x87OVdXHH_I/edit?usp=sharing)
@@ -112,35 +112,36 @@ Code
 
 ```python
 def mean_precision_at_k(y_true, y_score, group, k=3):
-    df = pd.DataFrame({'group_id': group, 'y_score': y_score, 'y_true': y_true})
-    df['rank'] = df.groupby("group_id")["y_score"].rank(ascending=False)
-    return df[df['rank'] <= k].groupby("group_id").y_true.sum().mean()
+    df = pd.DataFrame({"group_id": group, "y_score": y_score, "y_true": y_true})
+    df["rank"] = df.groupby("group_id")["y_score"].rank(ascending=False)
+    return df[df["rank"] <= k].groupby("group_id").y_true.sum().mean()
 
 
 def mean_reciprocal_rank(y_true, y_score, group):
-    df = pd.DataFrame({'group_id': group, 'y_score': y_score, 'y_true': y_true})
-    df['rank'] = df.groupby("group_id")["y_score"].rank(ascending=False)
-    return (1 / df.query("y_true==1")['rank']).mean()
+    df = pd.DataFrame({"group_id": group, "y_score": y_score, "y_true": y_true})
+    df["rank"] = df.groupby("group_id")["y_score"].rank(ascending=False)
+    return (1 / df.query("y_true==1")["rank"]).mean()
 
 
 def mean_rank(y_true, y_score, group):
-    df = pd.DataFrame({'group_id': group, 'y_score': y_score, 'y_true': y_true})
-    df['rank'] = df.groupby("group_id")["y_score"].rank(ascending=False)
-    return (df.query("y_true==1")['rank']).mean()
+    df = pd.DataFrame({"group_id": group, "y_score": y_score, "y_true": y_true})
+    df["rank"] = df.groupby("group_id")["y_score"].rank(ascending=False)
+    return (df.query("y_true==1")["rank"]).mean()
 ```
 
 # Reading list
 
-# Recsys in production (recommender systems)
 
-# Common resources
+##  Common resources
 
+* [Recommender Systems](https://github.com/yandexdataschool/recsys_course/tree/2026_spring)
+* [DeepRecSys](https://github.com/KhrylchenkoKirill/DeepRecSys/tree/main)
 * [Personalized Machine Learning book.pdf](https://cseweb.ucsd.edu/~jmcauley/pml/pml_book.pdf)
 * [Recommendations in Lyft](https://eng.lyft.com/the-recommendation-system-at-lyft-67bc9dcc1793)
 * [Lyft Engineering: geo embeddings](https://eng.lyft.com/lyft2vec-embeddings-at-lyft-d4231a76d219)
 * [recys design](https://www.theinsaneapp.com/2021/03/system-design-and-recommendation-algorithms.html)
 
-# Recsys tricks
+## Recsys tricks
 
 * [Position bias](https://eugeneyan.com/writing/position-bias/)
 * [Bragin: position bias](https://www.youtube.com/watch?v=5dEzcKTkojQ&ab_channel=ODSAIRu)
@@ -148,6 +149,8 @@ def mean_rank(y_true, y_score, group):
 * [Propensity modeling](https://youtu.be/NdZaM0_mhVM?si=FKOgpcwvnmV_gg8Q)
 * [Beyong propensity](https://www.notion.so/acabce8dc0de4bbdb6d61966432e3e5c?pvs=21)
 * [Counterfactual-evaluation](https://eugeneyan.com/writing/counterfactual-evaluation/)
+* [Propensity score matching](https://youtu.be/eCTqp227xvo?si=Yl5wgtsVbE3ueRi4)
+* [counters-in-recommendations](https://roizner.medium.com/counters-in-recommendations-from-exponential-decay-to-position-debiasing-30a6175bba5)
 
 ## Cases
 
@@ -183,8 +186,9 @@ def mean_rank(y_true, y_score, group):
 * [4-stage recommender system](https://www.linkedin.com/feed/update/activity:7235938187540332544)
 * [re-ranking in WB](https://t.me/wildrecsys/45)
 * [RAG in ecom](https://youtu.be/EqUjf5X6IPE?t=3014)
+* [Ecom recsys foundational model TubiFM](https://www.linkedin.com/posts/alexsalle_paper-drop-tubifm-a-foundation-model-approach-share-7465867722334248961-MFZ-/)
 
-# Bandits & RL
+## Bandits & RL
 
 * [RL in recsys, overview](https://scitator.medium.com/rl-in-recsys-an-overview-e02815019a8f)
 * [Deep reinforcement learning from human preferences](https://arxiv.org/abs/1706.03741)
@@ -221,6 +225,7 @@ def mean_rank(y_true, y_score, group):
 * [Music recommendation in VK](https://habr.com/ru/companies/vk/articles/683152/)
 * [Multi objective](https://medium.com/@subirverma/multi-objective-ranking-in-large-scale-e-commerce-recommender-systems-9bab88bc00a8)
 * [Tabby transformers](https://open.substack.com/pub/alextuzovsky/p/which-architecture-to-choose-for)
+* [Large Scale Retrieval for the LinkedIn Feed using Causal Language Models (https://arxiv.org/abs/2510.14223v1)](https://arxiv.org/abs/2510.14223v1)
 
 # Other algorithms
 
@@ -247,6 +252,8 @@ def mean_rank(y_true, y_score, group):
 * [zincsearch](https://zincsearch-docs.zinc.dev/api/search/search/#response)
 * [dagster](https://medium.com/indiciumtech/data-ingestion-with-the-dagster-embedded-elt-library-60d860321d45)
 * [zincsearch](https://zincsearch-docs.zinc.dev/)
+* [lattice-retrieval](https://huggingface.co/erikkaum/lattice-retrieval)
+* [Knowledge Distillation for Enhancing Walmart E-commerce Search Relevance Using Large Language Models](https://arxiv.org/abs/2505.07105)
 
 ## Deep Learning in Information Retrieval
 
@@ -284,6 +291,8 @@ def mean_rank(y_true, y_score, group):
 * [SBert for semantic search](https://www.linkedin.com/posts/maxbuckley_from-65-hours-to-5-seconds-how-sbert-empowered-activity-7390810937206788096-3nS4)
 * [Bert: two encoder approach](https://www.linkedin.com/posts/maxbuckley_one-encoder-or-two-sentence-bert-sbert-activity-7394835704855293953-BBVP)
 * [BERT fine-tuning](https://www.cloudskillsboost.google/course_sessions/3623482/video/377867)
+* [Argus: autoregressive encoder-decoder (Yandex)](https://youtu.be/4dKc-KLaoyg?si=rLAJ2OHobKhKXYiE)
+* [QDRANT: multimodal search](https://qdrant.tech/documentation/tutorials-build-essentials/multimodal-search/)
 
 GPT
 

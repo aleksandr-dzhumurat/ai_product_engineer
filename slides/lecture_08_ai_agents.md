@@ -2,19 +2,28 @@
 
 ## Refs
 
+* [12 factor agents](https://github.com/humanlayer/12-factor-agents)
 * [multi agent patterns](https://developers.googleblog.com/developers-guide-to-multi-agent-patterns-in-adk/)
+* [pydantic-deepagents](https://github.com/vstorm-co/pydantic-deepagents)
+* [CS329A Self-Improving AI Agents](https://cs329a.stanford.edu/)
+* [Multi-Agent Video Recommenders: Evolution, Patterns, and Open Challenges](https://arxiv.org/abs/2604.02211)
 * [Small Language Models for Efficient Agentic Tool Calling: Outperforming Large Models with Targeted Fine-tuning](https://arxiv.org/abs/2512.15943)
+* [LiquidAI: small language fine tuning](https://www.linkedin.com/posts/pau-labarta-bajo-4432074b_you-dont-need-a-trillion-parameter-model-activity-7465703450614521856-NU6Y)
 * [agent skills](https://www.linkedin.com/posts/activity-7420544568703651841-LwmW)
 * [linear for agents management](https://www.linkedin.com/posts/markkropf_hello-from-the-floor-of-the-agentic-software-activity-7420544815286689792-b24t)
 * [Era of Agentic Organization](https://arxiv.org/abs/2510.26658)
 * [Microsoft: Peli’s agents factory](https://www.linkedin.com/posts/mikolajsedek_welcome-to-pelis-agent-factory-github-activity-7428755975676850176-KhGz)
-* [Alibaba] long term and short term memory](https://arxiv.org/abs/2601.01885)
+* [Alibabalong term and short term memory](https://arxiv.org/abs/2601.01885)
 * [Agentic Design patterns: google engineer book](https://docs.google.com/document/d/1rsaK53T3Lg5KoGwvf8ukOUvbELRtH-V0LnOIFDxBryE/preview?tab=t.0#)
 * [google agents technical guide](https://www.linkedin.com/feed/update/urn:li:activity:7375837282467069952)
 * [AGENTS.md](https://www.linkedin.com/posts/sumanth077_finally-a-simple-open-format-for-building-activity-7365289392548036609-TafF)
+* [writing agents.md](https://www.linkedin.com/posts/viktormalyi_most-agents-md-files-i-audit-are-useless-activity-7424349225678807041--cNt)
 * [cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf](http://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf)
 * [agentic protocols](https://www.linkedin.com/posts/sergey-ignatov_last-year-we-saw-lots-of-standards-in-the-activity-7416226657033781248-Waxi)
 * [FinAI bot](https://fin.ai/research/)
+* [FinAI cx models](https://fin.ai/cx-models)
+* [Reranker experiment: data beats model size](https://salespeak.ai/blog/reranker-experiment-data-beats-model-size)
+* [Open source agentic search is here](https://www.linkedin.com/posts/mary-newhauser_open-source-agentic-search-is-here-share-7443309648176349184-4vQ_/)
 * [Clickhouse MCP](https://clickhouse.com/blog/integrating-clickhouse-mcp)
     - https://github.com/ClickHouse/mcp-clickhouse
 * [fastapi_mcp](https://github.com/tadata-org/fastapi_mcp)
@@ -59,6 +68,7 @@
 * [Agentic Data generation (huggingface)](https://huggingface.co/blog/mlabonne/agentic-datagen)
 * [Building save and alighnment AI chatbots](https://padolsey.medium.com/build-a-safe-informed-ai-chatbot-3485f34486d4)
 * [create-a-synthetic-dataset-using-llama-3-1-405b-for-instruction-fine-tuning](https://medium.com/towards-data-science/create-a-synthetic-dataset-using-llama-3-1-405b-for-instruction-fine-tuning-9afc22fb6eef)
+* [tool-calling-guide-for-local-llms](https://unsloth.ai/docs/basics/tool-calling-guide-for-local-llms)
 * [AlignLLMHumanSurvey](https://github.com/GaryYufei/AlignLLMHumanSurvey)
 * [build-e-commerce-shopping-assistant-chatbot-llms](https://getindata.com/blog/build-e-commerce-shopping-assistant-chatbot-llms/)
 * [mcp servers explained python and agentic ai tool integration](https://generativeai.pub/mcp-servers-explained-python-and-agentic-ai-tool-integration-aa2ddca6cbe5)
@@ -73,7 +83,7 @@
 * [top-12-mcp-servers-i-used-and-activity-7322898843463782400-2b8g](https://www.linkedin.com/posts/philipp-schmid-a6a2bb196_here-are-my-top-12-mcp-servers-i-used-and-activity-7322898843463782400-2b8g)
 * [graph_constructing/#llm-graph-transformer](https://python.langchain.com/docs/how_to/graph_constructing/#llm-graph-transformer)
 * [lioralex_theres-a-new-python-agent-framework](https://www.linkedin.com/posts/lioralex_theres-a-new-python-agent-framework-that-activity-7328072622204747777-ZqoF)
-* [𝐀𝐠𝐞𝐧𝐭𝐢𝐜-𝐑𝐀𝐆-with-langgraph](https://www.linkedin.com/posts/migueloteropedrido_%F0%9D%90%80%F0%9D%90%A0%F0%9D%90%9E%F0%9D%90%A7%F0%9D%90%AD%F0%9D%90%A2%F0%9D%90%9C-%F0%9D%90%91%F0%9D%90%80%F0%9D%90%86-with-langgraph-a-3-activity-7325799064627724288-suS3)
+* [Agentic-RAG-with-langgraph](https://www.linkedin.com/posts/migueloteropedrido_%F0%9D%90%80%F0%9D%90%A0%F0%9D%90%9E%F0%9D%90%A7%F0%9D%90%AD%F0%9D%90%A2%F0%9D%90%9C-%F0%9D%90%91%F0%9D%90%80%F0%9D%90%86-with-langgraph-a-3-activity-7325799064627724288-suS3)
 * [terminal based coding agents](https://github.com/rsrohan99/tig)
 * [openai-new-tools-for-building-agents/](https://openai.com/index/new-tools-for-building-agents/)
 * [computer use agent training](https://www.linkedin.com/posts/anshuizme_reinforcementlearning-machinelearning-datascience-activity-7373635325329362944-iAFQ)
@@ -91,14 +101,15 @@
 * [langchain.com/memory/conversational_customization](https://python.langchain.com/docs/modules/memory/conversational_customization)
 * [LangChain Cookbook Part 2 - Use Cases.ipynb](https://github.com/gkamradt/langchain-tutorials/blob/main/LangChain%20Cookbook%20Part%202%20-%20Use%20Cases.ipynb)
 * [langchain/memory/types/buffer](https://python.langchain.com/docs/modules/memory/types/buffer)
-* [langchain-building-language-model-applications](https://medium.com/@princekrampah/langchain-building-language-model-applications-c54cfe7219cb
-* [tutorials/extraction](https://python.langchain.com/docs/tutorials/extraction/
-* [how_to/chatbots_memory](https://python.langchain.com/docs/how_to/chatbots_memory/
-* [langchain-ai.github.io/langgraph](https://langchain-ai.github.io/langgraph/
+* [langchain-building-language-model-applications](https://medium.com/@princekrampah/langchain-building-language-model-applications-c54cfe7219cb)
+* [tutorials/extraction](https://python.langchain.com/docs/tutorials/extraction/)
+* [how_to/chatbots_memory](https://python.langchain.com/docs/how_to/chatbots_memory/)
+* [langchain-ai.github.io/langgraph](https://langchain-ai.github.io/langgraph/)
 * [how-to-make-an-ai-agent-in-10-minutes-with-langchain](https://dev.to/timesurgelabs/how-to-make-an-ai-agent-in-10-minutes-with-langchain-3i2n)
 * [AI agents for visualizations](https://medium.com/firebird-technologies/building-an-agent-for-data-visualization-plotly-39310034c4e9)
 * [mongodb-developer/GenAI-Showcase](https://github.com/mongodb-developer/GenAI-Showcase)
 * [Agentic patterns](https://www.linkedin.com/posts/migueloteropedrido_mlops-machinelearning-datascience-activity-7239895938209640449-Jjhj)
+* [loop engineering framework](https://github.com/huangruiteng/loopx)
 
 
 ## Agents architecture
@@ -106,6 +117,7 @@
 * [Agent Design Pattern Catalogue: A Collection of Architectural Patterns for Foundation Model based Agents](https://arxiv.org/pdf/2405.10467)
 - [How to design AI Agent Architecture with patterns | LinkedIn](https://www.linkedin.com/posts/rakeshgohel01_dont-waste-every-day-reinventing-your-ai-activity-7321515242390249472-vYzv)
 - [nebius: agents on scale](https://nebius.com/blog/posts/launch-production-agents-at-scale)
+- [Nebius agents blueprint](https://nebius.com/blog/posts/introducing-the-nebius-agents-blueprint)
 - [Agentic System Workflow Patterns | LinkedIn](https://www.linkedin.com/posts/aurimas-griciunas_llm-ai-machinelearning-activity-7325103989090369536-MAtW/)
 - [multi-agents architecture](https://userjot.com/blog/best-practices-building-agentic-ai-systems)
 - [JetBrains/Mellum-4b-base · Hugging Face](https://huggingface.co/JetBrains/Mellum-4b-base)
@@ -120,6 +132,10 @@
 - [OpenAI agent builder](https://youtu.be/44eFf-tRiSg?si=L9r1_jmz_bvhNhRv)
 - [LLM agents](https://www.linkedin.com/feed/update/ugcPost:7219980531155828737)
 - [automating code review with PydanticAI](https://pydantic.dev/articles/scaling-open-source-with-ai)
+- [Doordash AI assistant](https://www.infoq.com/news/2026/07/doordash-ai-ask-assistant/)
+- [glean agentic blog](https://www.glean.com/blog)
+- [AI evals course](https://www.linkedin.com/posts/nikita-fedulov-887b7728_ai-evals-for-engineers-pm-qas-ugcPost-7477972702943854592-TiEp)
+- [DS-STAR: Data Science Agent for Solving Diverse Tasks across Heterogeneous Formats and Open-Ended Queries](https://arxiv.org/pdf/2509.21825)
 
 Agent starts with reasoning and planning
 
@@ -196,14 +212,11 @@ How to set up [HfApi model](https://huggingface.co/docs/smolagents/en/reference/
 from smolagents import CodeAgent, DuckDuckGoSearchTool, HfApiModel
 
 model = HfApiModel(
-  model_id='Qwen/Qwen2.5-Coder-32B-Instruct',
+    model_id="Qwen/Qwen2.5-Coder-32B-Instruct",
 )
 
 search_tool = DuckDuckGoSearchTool()
-agent = CodeAgent(
-    tools=[search_tool],
-    model=model
-)
+agent = CodeAgent(tools=[search_tool], model=model)
 ```
 
 # Function calling
@@ -216,27 +229,24 @@ New roles added to chat template: **Action** and **Observation**.
     
     ```python
     conversation = [
-        {
-            "role": "user",
-            "content": "What's the status of my transaction T1001?"
-        },
+        {"role": "user", "content": "What's the status of my transaction T1001?"},
         {
             "role": "assistant",
             "content": "",
             "function_call": {
                 "name": "retrieve_payment_status",
-                "arguments": "{\"transaction_id\": \"T1001\"}"
-            }
+                "arguments": '{"transaction_id": "T1001"}',
+            },
         },
         {
             "role": "tool",
             "name": "retrieve_payment_status",
-            "content": "{\"status\": \"Paid\"}"
+            "content": '{"status": "Paid"}',
         },
         {
             "role": "assistant",
-            "content": "Your transaction T1001 has been successfully paid."
-        }
+            "content": "Your transaction T1001 has been successfully paid.",
+        },
     ]
     ```
     
@@ -277,20 +287,21 @@ Writing actions in code rather than JSON offers several key advantages:
     
     ```python
     from huggingface_hub import notebook_login
-    
+
     notebook_login()
-    
+
     from smolagents import CodeAgent, DuckDuckGoSearchTool, HfApiModel
-    
+
     agent = CodeAgent(tools=[DuckDuckGoSearchTool()], model=HfApiModel())
     agent.run(
-    """Search for the best music recommendations for a party
+        """Search for the best music recommendations for a party
     at the Wayne's mansion."""
     )
-    
+
     # create a tool using @tool decorator
     from smolagents import CodeAgent, tool
-    
+
+
     @tool
     def suggest_menu(occasion: str) -> str:
         """
@@ -306,9 +317,12 @@ Writing actions in code rather than JSON offers several key advantages:
             return "Buffet with high-energy and healthy food."
         else:
             return "Custom menu for the butler."
-    
+
+
     # additional_authorized_imports - for any required external tools
-    agent = CodeAgent(tools=[suggest_menu], model=HfApiModel(), additional_authorized_imports=['datetime'])
+    agent = CodeAgent(
+        tools=[suggest_menu], model=HfApiModel(), additional_authorized_imports=["datetime"]
+    )
     agent.run("Prepare a formal menu for the party.")
     ```
     
@@ -329,7 +343,9 @@ from smolagents import ToolCallingAgent, DuckDuckGoSearchTool, HfApiModel
 
 agent = ToolCallingAgent(tools=[DuckDuckGoSearchTool()], model=HfApiModel())
 
-agent.run("Search for the best music recommendations for a party at the Wayne's mansion.")
+agent.run(
+    "Search for the best music recommendations for a party at the Wayne's mansion."
+)
 ```
 
 To interact with a tool, the LLM needs an **interface description** with these key components:
@@ -347,11 +363,12 @@ In `smolagents`, tools can be defined in two ways:
 ```python
 from smolagents import CodeAgent, HfApiModel, tool
 
+
 @tool
 def catering_service_tool(query: str) -> str:
     """
     This tool returns the highest-rated catering service in Gotham City.
-    
+
     Args:
         query: A search term for finding catering services.
     """
@@ -361,15 +378,16 @@ def catering_service_tool(query: str) -> str:
         "Gotham City Events": 4.7,
     }
     best_service = max(services, key=services.get)
-    
+
     return best_service
+
 
 agent = CodeAgent(tools=[catering_service_tool], model=HfApiModel())
 result = agent.run(
     "Can you give me the name of the highest-rated catering service in Gotham City?"
 )
 
-print(result)   # Output: Gotham Catering Co.
+print(result)  # Output: Gotham Catering Co.
 ```
 
 # Agentic RAG
@@ -384,7 +402,8 @@ https://huggingface.co/learn/cookbook/agent_rag
     from smolagents import Tool
     from langchain_community.retrievers import BM25Retriever
     from smolagents import CodeAgent, HfApiModel
-    
+
+
     class PartyPlanningRetrieverTool(Tool):
         name = "party_planning_retriever"
         description = "Uses semantic search to retrieve relevant party planning ideas for Alfred’s superhero-themed party at Wayne Manor."
@@ -395,16 +414,17 @@ https://huggingface.co/learn/cookbook/agent_rag
             }
         }
         output_type = "string"
-    
+
         def __init__(self, docs, **kwargs):
             super().__init__(**kwargs)
             self.retriever = BM25Retriever.from_documents(
-                docs, k=5  # Retrieve the top 5 documents
+                docs,
+                k=5,  # Retrieve the top 5 documents
             )
-    
+
         def forward(self, query: str) -> str:
             assert isinstance(query, str), "Your search query must be a string"
-    
+
             docs = self.retriever.invoke(
                 query,
             )
@@ -414,21 +434,37 @@ https://huggingface.co/learn/cookbook/agent_rag
                     for i, doc in enumerate(docs)
                 ]
             )
-    
+
+
     # Simulate a knowledge base about party planning
     party_ideas = [
-        {"text": "A superhero-themed masquerade ball with luxury decor, including gold accents and velvet curtains.", "source": "Party Ideas 1"},
-        {"text": "Hire a professional DJ who can play themed music for superheroes like Batman and Wonder Woman.", "source": "Entertainment Ideas"},
-        {"text": "For catering, serve dishes named after superheroes, like 'The Hulk's Green Smoothie' and 'Iron Man's Power Steak.'", "source": "Catering Ideas"},
-        {"text": "Decorate with iconic superhero logos and projections of Gotham and other superhero cities around the venue.", "source": "Decoration Ideas"},
-        {"text": "Interactive experiences with VR where guests can engage in superhero simulations or compete in themed games.", "source": "Entertainment Ideas"}
+        {
+            "text": "A superhero-themed masquerade ball with luxury decor, including gold accents and velvet curtains.",
+            "source": "Party Ideas 1",
+        },
+        {
+            "text": "Hire a professional DJ who can play themed music for superheroes like Batman and Wonder Woman.",
+            "source": "Entertainment Ideas",
+        },
+        {
+            "text": "For catering, serve dishes named after superheroes, like 'The Hulk's Green Smoothie' and 'Iron Man's Power Steak.'",
+            "source": "Catering Ideas",
+        },
+        {
+            "text": "Decorate with iconic superhero logos and projections of Gotham and other superhero cities around the venue.",
+            "source": "Decoration Ideas",
+        },
+        {
+            "text": "Interactive experiences with VR where guests can engage in superhero simulations or compete in themed games.",
+            "source": "Entertainment Ideas",
+        },
     ]
-    
+
     source_docs = [
         Document(page_content=doc["text"], metadata={"source": doc["source"]})
         for doc in party_ideas
     ]
-    
+
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=500,
         chunk_overlap=50,
@@ -442,7 +478,7 @@ https://huggingface.co/learn/cookbook/agent_rag
     response = agent.run(
         "Find ideas for a luxury superhero-themed party, including entertainment, catering, and decoration options."
     )
-    
+
     print(response)
     ```
     
@@ -467,16 +503,14 @@ web_agent = ToolCallingAgent(
     model=model,
     max_steps=10,
     name="web_search_agent",
-    description="Search web to get up-to-date results" 
+    description="Search web to get up-to-date results",
 )
 
 manager_agent = CodeAgent(
     model=model,
     tools=[],
     managed_agents=[web_agent],
-    additional_authorized_imports=[
-        "time", "numpy", "pandas"
-    ],
+    additional_authorized_imports=["time", "numpy", "pandas"],
     planning_interval=5,
     verbosity_level=2,
     max_steps=15,
@@ -489,10 +523,7 @@ Security code agents: [https://smolagents.org/docs/secure-code-execution-of-smol
 from smolagents import CodeAgent
 
 agent = CodeAgent(
-    tools=[],
-    model=model,
-    additional_authorized_imports=["numpy"],
-    sandbox=E2BSandbox()
+    tools=[], model=model, additional_authorized_imports=["numpy"], sandbox=E2BSandbox()
 )
 ```
 
@@ -510,7 +541,7 @@ agent = ToolCallingAgent(
     max_steps=5,
     name="web_search_agent",
     description="Search web to get up-to-date results",
-    sandbox=E2BSandbox()
+    sandbox=E2BSandbox(),
 )
 ```
 
@@ -519,10 +550,12 @@ Model integration
 ```python
 from smolagents import LiteLLMModel
 
-model = LiteLLMModel("anthropic/claude-3-5-sonnet-latest", temperature=0.2, max_tokens=10)
+model = LiteLLMModel(
+    "anthropic/claude-3-5-sonnet-latest", temperature=0.2, max_tokens=10
+)
 
 messages = [
-  {"role": "user", "content": [{"type": "text", "text": "Hello, how are you?"}]}
+    {"role": "user", "content": [{"type": "text", "text": "Hello, how are you?"}]}
 ]
 
 print(model(messages))
@@ -630,12 +663,14 @@ Tools in LLaMA index
     
     ```python
     from llama_index.core.tools import FunctionTool
-    
+
+
     def get_weather(location: str) -> str:
         """Useful for getting the weather for a given location."""
         print(f"Getting weather for {location}")
         return f"The weather in {location} is sunny"
-    
+
+
     tool = FunctionTool.from_defaults(
         get_weather,
         name="my_weather_tool",
@@ -652,18 +687,20 @@ Tools in LLaMA index
     from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI
     from llama_index.embeddings.huggingface_api import HuggingFaceInferenceAPIEmbedding
     from llama_index.vector_stores.chroma import ChromaVectorStore
-    
+
     embed_model = HuggingFaceInferenceAPIEmbedding("BAAI/bge-small-en-v1.5")
-    
+
     db = chromadb.PersistentClient(path="./alfred_chroma_db")
     chroma_collection = db.get_or_create_collection("alfred")
     vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
-    
+
     index = VectorStoreIndex.from_vector_store(vector_store, embed_model=embed_model)
-    
+
     llm = HuggingFaceInferenceAPI(model_name="Qwen/Qwen2.5-Coder-32B-Instruct")
     query_engine = index.as_query_engine(llm=llm)
-    tool = QueryEngineTool.from_defaults(query_engine, name="some useful name", description="some useful description")
+    tool = QueryEngineTool.from_defaults(
+        query_engine, name="some useful name", description="some useful description"
+    )
     ```
     
 

@@ -6,8 +6,10 @@
 
 # Common engineering
 
+* [YOUTUBE: Всё что надо знать про сети](https://youtu.be/a55ecIWIkVc?si=W279Sa5tTgXjiTSQ)
 * [Modern Hardware Numbers for System Design](https://hellointerview.substack.com/p/modern-hardware-numbers-for-system)
 * [Building Event-Driven Backend Systems with FastAPI + Kafka](https://medium.com/algomart/building-event-driven-backend-systems-with-fastapi-kafka-4d1dde287cc1)
+* [30-blogs-to-learn-30-system-design-concepts](https://www.linkedin.com/posts/ashishps1_30-blogs-to-learn-30-system-design-concepts-activity-7424305668846899200-lj8d)
 * [repo](https://github.com/conduktor/kafka-beginners-course)
 *[konductor site](https://www.conduktor.io/apache-kafka-for-beginners/) + [aws course](https://www.udemy.com/course/apache-kafka/learn/lecture/11566824#overview)
 * [kafka](https://habr.com/ru/articles/880700/)
@@ -21,6 +23,8 @@
 * [SOLID](https://www.linkedin.com/feed/update/activity:7307324823112749056)
 * [When O(n) faster then O(nLog(n))](https://www.linkedin.com/posts/activity-7416183170779590656-FjG1)
 * [AI development cursor](https://www.linkedin.com/learning/create-your-dream-apps-with-cursor-and-claude-ai/ai-web-development-with-cursor)
+* [spec driven development](https://github.com/fall-out-bug/sdp)
+* [How to build with Nano Banana](https://dev.to/googleai/how-to-build-with-nano-banana-complete-developer-tutorial-646)
 * [10-common-software-architectural-patterns](https://towardsdatascience.com/10-common-software-architectural-patterns-in-a-nutshell-a0b47a1e9013)
 * [design patterns for microservices](https://www.linkedin.com/posts/adnan-maqbool-khan-0b4531a1_%F0%9D%90%8F%F0%9D%90%9A%F0%9D%90%AD%F0%9D%90%AD%F0%9D%90%9E%F0%9D%90%AB%F0%9D%90%A7%F0%9D%90%AC-%F0%9D%90%9F%F0%9D%90%A8%F0%9D%90%AB-%F0%9D%90%8C%F0%9D%90%A2%F0%9D%90%9C%F0%9D%90%AB%F0%9D%90%A8%F0%9D%90%AC%F0%9D%90%9E%F0%9D%90%AB%F0%9D%90%AF%F0%9D%90%A2%F0%9D%90%9C%F0%9D%90%9E%F0%9D%90%AC-activity-7332649473191337984-JXJK)
 * [software design principes](https://www.linkedin.com/posts/milanmilanovic_%F0%9D%97%A0%F0%9D%97%AE%F0%9D%97%B6%F0%9D%97%BB-%F0%9D%97%A6%F0%9D%97%BC%F0%9D%97%B3%F0%9D%98%81%F0%9D%98%84%F0%9D%97%AE%F0%9D%97%BF%F0%9D%97%B2-%F0%9D%97%97%F0%9D%97%B2%F0%9D%98%80%F0%9D%97%B6%F0%9D%97%B4%F0%9D%97%BB-%F0%9D%97%A3-activity-7285200291237388288-0ckw)
@@ -61,6 +65,7 @@
 * [Naoma](https://www.naoma.ai/) 
 * [Lightdash](https://www.lightdash.com/)
 * [JIT](https://pytorch.org/docs/stable/jit.html)
+* [YOUTUBE JWT, Bearer, Access, Refresh](https://youtu.be/qsdJeix2MlY?feature=shared)
 
 # Data engineering
 
@@ -177,6 +182,7 @@
 * [Data validation using pytest](https://towardsdatascience.com/mlops-data-validation-with-pytest-749641874871/)
 * [Spark optimization Course](https://medium.com/@kevinchwong/intensive-spark-optimization-course-082bdd0592bc)
 * [GCP data platform](https://www.linkedin.com/posts/eduardoalmazang_i-built-a-pipeline-from-scratch-combining-activity-7346449107902738433-W9gW/)
+* [TractoAI: better data infra](https://tracto.ai/blog/better-data-infra)
 
 ### Dashboards
 
