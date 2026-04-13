@@ -37,6 +37,6 @@ chromadb
 langchain
 langchain-text-splitters
 langchain_huggingface
-
+tiktoken
 google-cloud-storage
 gcsfs

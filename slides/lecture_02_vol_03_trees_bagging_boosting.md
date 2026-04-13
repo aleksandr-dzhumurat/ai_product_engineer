@@ -22,6 +22,7 @@
 
 Boosting in depth
 
+* [Machine Learning & Data Science: Random Forest vs Gradient Boosting](https://www.linkedin.com/posts/andrey-yankin_machinelearning-datascience-randomforest-share-7443311833714900992-UaN6)
 * [boosting for regression](https://towardsdatascience.com/all-you-need-to-know-about-gradient-boosting-algorithm-part-1-regression-2520a34a502)
 * [boosting for classification](https://towardsdatascience.com/all-you-need-to-know-about-gradient-boosting-algorithm-part-2-classification-d3ed8f56541e)
 * [boosting in russian](https://kstu.kg/fileadmin/user_upload/lecture11_machine_learning_orozobekova_a.k..pdf)

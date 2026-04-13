@@ -1979,6 +1979,7 @@ Quality: Significant degradation (use for filtering, then rerank)
 - [vector similarity](https://redis.io/blog/vector-similarity/)
 - [HNSW params](https://www.linkedin.com/posts/sarthakrastogi_ai-genai-aiagents-activity-7377665823470968832--0WB)
 - [DataBricks scaled vector search](https://www.databricks.com/blog/decoupled-design-billion-scale-vector-search)
+- [Qdrant](https://qdrant.tech/course/essentials/day-3/sparse-retrieval-demo/)
 
 ---
 

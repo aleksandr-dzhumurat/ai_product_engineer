@@ -17,9 +17,20 @@
 
 4️⃣ Чтобы приземлить теорию — курс по LLM (https://huggingface.co/learn/llm-course/en/chapter6/1) от HuggingFace, особенно классная часть про токенайзеры + много практики про деплой джобов в HuggingFace Cloud.
 
+* [Top 24 LLM Questions Asked at DeepMind](https://buildml.substack.com/p/top-24-llm-questions-asked-at-deepmind)
+* [genai-llm-ml-case-studies](https://github.com/themanojdesai/genai-llm-ml-case-studies/tree/main)
+* [llm-system-design](https://www.systemdesignhandbook.com/guides/llm-system-design)
+* [ai-system-design-interview-questions](https://www.educative.io/blog/ai-system-design-interview-questions)
+* [rag-evaluation](https://www.evidentlyai.com/llm-guide/rag-evaluation)
+* [the-ultimate-ai-research-engineer-interview-guide](https://www.sundeepteki.org/advice/the-ultimate-ai-research-engineer-interview-guide-cracking-openai-anthropic-google-deepmind-top-ai-labs#:~:text=Distributed%20Training%20Architectures%20The%20standard,of%20a%20single%20Nvidia%20A100%2FH100)
+* [generative-ai-system-design-interview](https://igotanoffer.com/en/advice/generative-ai-system-design-interview#:~:text=Example%20questions%3A)
+
+
+
 5️⃣ Если хочется побольше инженерных деталей:
 * Nebius LLM Engineering (https://github.com/Nebius-Academy/LLM-Engineering-Essentials) — упор на метрики
 * LLMOps Essential (https://github.com/Nebius-Academy/LLMOps-Essentials) — полезный материал ( прикольные штуки типа деплоя в Kubernetes)
+* [defeating-nondeterminism-in-llm-inference](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/)
 * Unsloth [fine-tuning guide](https://unsloth.ai/docs/get-started/fine-tuning-llms-guide)
 
 6️⃣ Если вкатывани в LLM тяжело идет, начните с базы.
@@ -266,9 +277,12 @@ LLMOps
 * [Fine-tuning LLaMA3 with OPRO](https://www.linkedin.com/feed/update/activity:7187052127410692096)
 * [finetuning for classification](https://m.youtube.com/watch?v=5PFXJYme4ik)
 * [small LLMs fine tuning (SLM)](https://arxiv.org/abs/2505.24189v1)
+* [Domain-Specific Small Language Models](https://github.com/virtualramblas/Domain-Specific-Small-Language-Models)
+* [domain specific llms](https://github.com/virtualramblas/Domain-Specific-Small-Language-Models/)
 * [Small models fine-tuning](https://www.linkedin.com/posts/maxbuckley_fine-tuning-for-making-expert-domain-specific-activity-7369093772732682241-bsSg)
 * [you-should-be-using-bert-based-slms-because](https://www.linkedin.com/posts/mary-newhauser_you-should-be-using-bert-based-slms-because-activity-7397287634982719489-CzqD)
 * [offline ai assistant](https://medium.com/@korshun.dev/offline-ai-assistant-in-15-mb-ae86786f5ced)
+* [Gemma architecture](https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-gemma-4)
 
 ### GPT
 

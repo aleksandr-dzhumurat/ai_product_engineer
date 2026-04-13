@@ -3,6 +3,9 @@
 ## Refs
 
 * [multi agent patterns](https://developers.googleblog.com/developers-guide-to-multi-agent-patterns-in-adk/)
+* [pydantic-deepagents](https://github.com/vstorm-co/pydantic-deepagents)
+* [CS329A Self-Improving AI Agents](https://cs329a.stanford.edu/)
+* [Multi-Agent Video Recommenders: Evolution, Patterns, and Open Challenges](https://arxiv.org/abs/2604.02211)
 * [Small Language Models for Efficient Agentic Tool Calling: Outperforming Large Models with Targeted Fine-tuning](https://arxiv.org/abs/2512.15943)
 * [agent skills](https://www.linkedin.com/posts/activity-7420544568703651841-LwmW)
 * [linear for agents management](https://www.linkedin.com/posts/markkropf_hello-from-the-floor-of-the-agentic-software-activity-7420544815286689792-b24t)
@@ -12,9 +15,13 @@
 * [Agentic Design patterns: google engineer book](https://docs.google.com/document/d/1rsaK53T3Lg5KoGwvf8ukOUvbELRtH-V0LnOIFDxBryE/preview?tab=t.0#)
 * [google agents technical guide](https://www.linkedin.com/feed/update/urn:li:activity:7375837282467069952)
 * [AGENTS.md](https://www.linkedin.com/posts/sumanth077_finally-a-simple-open-format-for-building-activity-7365289392548036609-TafF)
+* [writing agents.md](https://www.linkedin.com/posts/viktormalyi_most-agents-md-files-i-audit-are-useless-activity-7424349225678807041--cNt)
 * [cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf](http://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf)
 * [agentic protocols](https://www.linkedin.com/posts/sergey-ignatov_last-year-we-saw-lots-of-standards-in-the-activity-7416226657033781248-Waxi)
 * [FinAI bot](https://fin.ai/research/)
+* [FinAI cx models](https://fin.ai/cx-models)
+* [Reranker experiment: data beats model size](https://salespeak.ai/blog/reranker-experiment-data-beats-model-size)
+* [Open source agentic search is here](https://www.linkedin.com/posts/mary-newhauser_open-source-agentic-search-is-here-share-7443309648176349184-4vQ_/)
 * [Clickhouse MCP](https://clickhouse.com/blog/integrating-clickhouse-mcp)
     - https://github.com/ClickHouse/mcp-clickhouse
 * [fastapi_mcp](https://github.com/tadata-org/fastapi_mcp)
@@ -59,6 +66,7 @@
 * [Agentic Data generation (huggingface)](https://huggingface.co/blog/mlabonne/agentic-datagen)
 * [Building save and alighnment AI chatbots](https://padolsey.medium.com/build-a-safe-informed-ai-chatbot-3485f34486d4)
 * [create-a-synthetic-dataset-using-llama-3-1-405b-for-instruction-fine-tuning](https://medium.com/towards-data-science/create-a-synthetic-dataset-using-llama-3-1-405b-for-instruction-fine-tuning-9afc22fb6eef)
+* [tool-calling-guide-for-local-llms](https://unsloth.ai/docs/basics/tool-calling-guide-for-local-llms)
 * [AlignLLMHumanSurvey](https://github.com/GaryYufei/AlignLLMHumanSurvey)
 * [build-e-commerce-shopping-assistant-chatbot-llms](https://getindata.com/blog/build-e-commerce-shopping-assistant-chatbot-llms/)
 * [mcp servers explained python and agentic ai tool integration](https://generativeai.pub/mcp-servers-explained-python-and-agentic-ai-tool-integration-aa2ddca6cbe5)

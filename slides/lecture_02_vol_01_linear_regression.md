@@ -575,6 +575,7 @@ MALE как loss, MAPE как метрика на валидации
 
 - [Дьяконов — AUC ROC (площадь под кривой ошибок)](https://alexanderdyakonov.wordpress.com/2017/07/28/auc-roc-%D0%BF%D0%BB%D0%BE%D1%89%D0%B0%D0%B4%D1%8C-%D0%BF%D0%BE%D0%B4-%D0%BA%D1%80%D0%B8%D0%B2%D0%BE%D0%B9-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA/comment-page-1/)
 - [Understanding ROC-AUC](https://towardsdatascience.com/understanding-auc-roc-curve-68b2303cc9c5)
+- [From Confusion Matrix to Money: How an ML Metric Drove 10% Revenue Growth](https://www.linkedin.com/posts/mikhail-borodastov_from-confusion-matrix-to-money-how-an-share-7444707228915412992-sYkG)
 - [PR-AUC vs ROC-AUC](https://www.linkedin.com/feed/update/activity:7250079790420897792)
 - [Cross-Validation Techniques](https://www.linkedin.com/feed/update/activity:7082846284994224128/)
 - [On Sampled Metrics for Item Recommendations](https://dl.acm.org/doi/pdf/10.1145/3394486.3403226)
