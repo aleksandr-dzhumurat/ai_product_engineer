@@ -128,6 +128,8 @@ Here's how it fits into the flow shown:
 
 ## Ref
 
+* [Avito Tech ML Cup 2024](https://ods.ai/competitions/avitotechmlcup2024)
+* [Behind the Scenes: Building a Robust Ads Event Processing Pipeline](https://netflixtechblog.com/behind-the-scenes-building-a-robust-ads-event-processing-pipeline-e4e86caf9249)
 * [Ozon: сервис авто-бидов](https://habr.com/ru/companies/ozontech/articles/768102/)
 * [Ozon Tech meetup](https://habr.com/ru/companies/ozontech/articles/750196/)
 * [Evolution of Ads Conversion Optimization Models at Pinterest](https://medium.com/pinterest-engineering/evolution-of-ads-conversion-optimization-models-at-pinterest-84b244043d51)

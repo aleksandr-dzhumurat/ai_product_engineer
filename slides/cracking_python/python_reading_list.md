@@ -10,6 +10,7 @@
 
 ### Code best prectices
 
+* [Modern Python Tooling: uv, ruff, and mypy](https://belderbos.dev/blog/modern-python-tooling-uv-ruff-ty/)
 * [Kagge notebooks with code](https://www.linkedin.com/feed/update/urn:li:activity:7240040270203936768)
 * [Python interview question](https://www.interviewbit.com/python-interview-questions/#memory-management-in-python)
 * [Memory efficient python classes](https://medium.com/towards-data-science/how-to-write-memory-efficient-classes-in-python-beb90811abfa)

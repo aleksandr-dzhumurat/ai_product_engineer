@@ -135,6 +135,8 @@ def mean_rank(y_true, y_score, group):
 
 # Common resources
 
+* [Recommender Systems](https://github.com/yandexdataschool/recsys_course/tree/2026_spring)
+* [DeepRecSys](https://github.com/KhrylchenkoKirill/DeepRecSys/tree/main)
 * [Personalized Machine Learning book.pdf](https://cseweb.ucsd.edu/~jmcauley/pml/pml_book.pdf)
 * [Recommendations in Lyft](https://eng.lyft.com/the-recommendation-system-at-lyft-67bc9dcc1793)
 * [Lyft Engineering: geo embeddings](https://eng.lyft.com/lyft2vec-embeddings-at-lyft-d4231a76d219)

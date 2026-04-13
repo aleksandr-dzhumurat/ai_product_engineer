@@ -458,6 +458,8 @@ Optimization:
 
 Visual: L1's sharp corners encourage solutions where many weights = 0
 
+![l1_l2_regularization](img/l1_l2_regularization.png)
+
 
 ### Comparison Table
 
@@ -1688,6 +1690,8 @@ Optimizations:
 **CBOW:** Predict target word from context  
 **Skip-gram:** Predict context from target word
 
+Mnemonic: CBOW is like fill-in-the-blank — "The ___ sat on the mat." Skip-gram is the reverse — given "cat", predict "The", "sat", "on", etc.
+
 Key difference from BoW:
 - BoW: Sparse, high-dimensional, no semantics
 - Word2Vec: Dense (50-300d), captures semantic similarity
@@ -1706,6 +1710,11 @@ Limitations:
 Training Tricks:
 - Negative sampling: Instead of softmax over full vocabulary, sample K negative words
 - Hierarchical softmax: Binary tree structure for efficient training
+
+| Method | Pros | Cons |
+|---|---|---|
+| **Word2vec** (e.g. CBOW, Skip-gram) | Very simple, yet powerful; Intuitive embeddings | Word order does not count; Embeddings not context aware |
+| **Recurrent Neural Networks** (e.g. traditional RNN, LSTM) | Word order matters; State-of-the-art results | Vanishing gradient problem; Slow computations |
 
 ---
 
@@ -1979,6 +1988,7 @@ Quality: Significant degradation (use for filtering, then rerank)
 - [vector similarity](https://redis.io/blog/vector-similarity/)
 - [HNSW params](https://www.linkedin.com/posts/sarthakrastogi_ai-genai-aiagents-activity-7377665823470968832--0WB)
 - [DataBricks scaled vector search](https://www.databricks.com/blog/decoupled-design-billion-scale-vector-search)
+- [Qdrant](https://qdrant.tech/course/essentials/day-3/sparse-retrieval-demo/)
 
 ---
 
@@ -2200,6 +2210,8 @@ Algorithm:
 3. Merge most frequent pair
 4. Add to vocabulary
 5. Repeat until desired vocab size
+
+Doesn't learn morphology explicitly — BPE is purely statistical, it finds frequent byte pairs, not linguistically meaningful stems/prefixes
 
 Example:
 ```

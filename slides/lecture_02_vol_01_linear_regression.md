@@ -30,6 +30,17 @@ $$\hat{\beta} = (X^TX)^{-1} X^Ty$$
 - Если $X^TX$ почти сингулярна из-за коллинеарности → $(X^TX)^{-1}$ плохо вычисляется
 - Результат → огромные или нестабильные коэффициенты
 
+Пример весов для скоррелированных признаков:
+
+| Feature | w |
+|---|---|
+| `x1` | **+8 420** |
+| `x2` | **−7 980** |
+| `x3` | +1 850 |
+| `x4` | +420 |
+| `x5` | −650 |
+
+
 ---
 
 Проверка на мультиколлинеарность
@@ -38,12 +49,30 @@ VIF (Variance Inflation Factor)
 
 $$\text{VIF}_i = \frac{1}{1 - R_i^2}$$
 
-- $R_i^2$ — коэффициент детерминации регрессии $X_i$ на остальные признаки
-- VIF > 5–10 → проблема
+- $R_i^2$ — коэффициент детерминации регрессии $X_i$ на остальные признаки (предсказываем $X_i$ по остальным признакам)
+- VIF=1 - нет корреляции
+VIF > 5–10 → проблема
 
 Корреляционная матрица
 
 - Если $|\text{corr}(X_i, X_j)| > 0.8$ → признак потенциально коллинеарный
+
+Линейная регрессия решает нормальное уравнение:
+ 
+$$w = (X^\top X)^{-1} X^\top y$$
+ 
+Если признаки коллинеарны, матрица $X^\top X$ близка к сингулярной (вырожденной) — её обращение численно нестабильно. Число обусловленности определяется как:
+ 
+$$\kappa(X^\top X) = \frac{\lambda_{\max}(X^\top X)}{\lambda_{\min}(X^\top X)}$$
+ 
+где $\lambda_{\max}$ и $\lambda_{\min}$ — наибольшее и наименьшее собственные значения матрицы $X^\top X$. Большое значение $\kappa$ означает, что матрица близка к сингулярной: крошечное возмущение в данных вызывает огромный сдвиг весов $w$.
+ 
+| Сценарий | $\kappa(X^\top X)$ | Значение |
+|---|---|---|
+| Независимые признаки | $\sim 1$–$100$ | Стабильное решение |
+| Умеренная корреляция | $100$–$1\,000$ | Начинается нестабильность |
+| `area_m2` + `area_ft2` | $> 100\,000$ | Коэффициенты "взрываются" |
+| Полный дубликат признака | $\infty$ (сингулярность) | Решения не существует |
 
 ---
 
@@ -53,6 +82,10 @@ $$\text{VIF}_i = \frac{1}{1 - R_i^2}$$
 
 - Удаляем один из сильно коррелирующих признаков
 - Преобразуем их (например, PCA или среднее)
+
+PCA / SVD
+- Преобразуем коррелированные признаки в независимые компоненты
+- Используется, если важна предсказательная способность, а не интерпретация
 
 ---
 
@@ -67,11 +100,33 @@ $$\text{VIF}_i = \frac{1}{1 - R_i^2}$$
 
 ---
 
-Преобразования
+# Feature Scaling
 
-PCA / SVD
-- Преобразуем коррелированные признаки в независимые компоненты
-- Используется, если важна предсказательная способность, а не интерпретация
+Существует два основных типа масштабирования:
+
+1. Standardization (Стандартизация)
+2. Normalization (Нормализация)
+
+Если не применять масштабирование, то модель будет отдавать предпочтение признакам с большими значениями. Коэффициенты при таких признаках будут низкими, а при признаках с маленькими значениями высокими.
+
+
+| Feature | w |
+|---|---|
+| `price_per_m2` | 0.0000031 |
+| `rooms` | 312 000 |
+| `floor` | 18 400 |
+| `area_m2` | 4 820 |
+| `dist_center` | −95 000 |
+
+# Standardization
+
+Стандартизация приводит данные к виду:
+
+$$X' = \frac{X - \mu}{\sigma}$$
+
+- $\mu$ — среднее значение
+- $\sigma$ — стандартное отклонение
+
 
 # Metrics
 
@@ -313,32 +368,9 @@ $$R^2 = 1 - \frac{SS_{res}}{SS_{tot}} = 1 - \frac{\sum(y_i - \hat{y}_i)^2}{\sum(
 
 
 R^2 Interpretation:
-- R^2 = 0: Model no better than mean
-- R^2 = 1: Perfect fit
-- R^2 < 0: Model worse than mean (overfitting)
-
-Multicollinearity Detection - VIF (Variance Inflation Factor):
-
-$$VIF_j = \frac{1}{1 - R_j^2}$$
-
-Where $R_j^2$ is $R^2$ from regressing $X_j$ on all other predictors.
-
-| VIF | Interpretation |
-|-----|---------------|
-| 1 | No correlation |
-| 1-5 | Moderate |
-| 5-10 | High |
-| >10 | Severe |
-
-Problems Caused:
-- Inflated standard errors
-- Unstable coefficient estimates
-- Difficult interpretation
-
-Solutions:
-- Remove redundant variables
-- Use PCA
-- Apply Ridge/ElasticNet regularization
+- $R^2 = 0$: Model no better than mean
+- $R^2 = 1$: Perfect fit
+- $R^2 < 0$: Model worse than mean (overfitting)
 
 Advantages:
 - Normalized (0-1 range... usually)
@@ -575,6 +607,7 @@ MALE как loss, MAPE как метрика на валидации
 
 - [Дьяконов — AUC ROC (площадь под кривой ошибок)](https://alexanderdyakonov.wordpress.com/2017/07/28/auc-roc-%D0%BF%D0%BB%D0%BE%D1%89%D0%B0%D0%B4%D1%8C-%D0%BF%D0%BE%D0%B4-%D0%BA%D1%80%D0%B8%D0%B2%D0%BE%D0%B9-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA/comment-page-1/)
 - [Understanding ROC-AUC](https://towardsdatascience.com/understanding-auc-roc-curve-68b2303cc9c5)
+- [From Confusion Matrix to Money: How an ML Metric Drove 10% Revenue Growth](https://www.linkedin.com/posts/mikhail-borodastov_from-confusion-matrix-to-money-how-an-share-7444707228915412992-sYkG)
 - [PR-AUC vs ROC-AUC](https://www.linkedin.com/feed/update/activity:7250079790420897792)
 - [Cross-Validation Techniques](https://www.linkedin.com/feed/update/activity:7082846284994224128/)
 - [On Sampled Metrics for Item Recommendations](https://dl.acm.org/doi/pdf/10.1145/3394486.3403226)

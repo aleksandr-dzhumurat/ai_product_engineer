@@ -1,53 +1,397 @@
-# NLP (LLM)
+# Week 03
 
-LLMs generate text Token by token:
+## Summary of the Lecture on Neural Networks and Activation Functions
 
-* Predict probabilities for every possible next token options (~128 tokens)
-* Sample something from this distribution
-
-For each input token we have an embedding. Then vectors are pushed into transformers block to get internal representation for all these tokens.
-THen take vector one by one and push to LM head which is a linear transformation (matrix multiply). LM head produces logits.
-Softmax transforms logits to probabilities, then sampling happens.
-If distribution is flat - hallucinations happens.
-
-What is temperature?
-
-$$\left( \frac{e^{x_1/T}}{\sum_t e^{x_t/T}}, \cdots, \frac{e^{x_V/T}}{\sum_t e^{x_t/T}} \right)$$
-
-If $T$ is small - distribution is sharper (more reliable otput), otherwise it is flattener (more random).
-
+### 1. Introduction to Neural Networks
+- Context: The lecture, delivered by Tatiana, a PhD candidate in AI research at Queen Mary University of London, explores the fundamentals of neural networks, their training, and applications to tasks like classification.
+- Plan:
+  - Build intuition from logistic regression to neural networks.
+  - Cover training principles, activation functions, and regularization techniques.
+  - Use PyTorch for practical implementation.
 
 ---
 
-The **encoder**, **decoder**, and **transformer** are components of the Transformer architecture, which is widely used in natural language processing tasks like translation, summarization, and question answering. Here's how they relate to each other:
+### 2. From Logistic Regression to Neural Networks
+- Logistic Regression Review:
+  - Used for binary classification.
+  - Formula: $P = \sigma(\mathbf{w}^T \mathbf{x} + b)$, where $\sigma$ is the sigmoid function:
+    $$\sigma(z) = \frac{1}{1 + e^{-z}}$$
+  - Optimizes parameters $\mathbf{w}, b$ by minimizing binary cross-entropy loss.
+- Limitations of Logistic Regression:
+  - Assumes a linear decision boundary.
+  - Fails on non-linearly separable data (e.g., XOR problem).
+
+- Kernel Methods and Feature Transformation:
+  - Idea: Transform inputs to a higher-dimensional space to achieve linear separability.
+  - Problem: Kernels are fixed, and hand-picking the optimal kernel is impractical for complex data.
+
+- Neural Network Construction:
+  - Stacked Logistic Regressions: Each neuron applies a logistic regression (linear transformation + sigmoid). Hidden layers transform features iteratively.
+  - Matrix Formulation: Input $\mathbf{x} \in \mathbb{R}^n$, weights $\mathbf{W} \in \mathbb{R}^{m \times n}$, bias $\mathbf{b} \in \mathbb{R}^m$. Activation: $\mathbf{z} = \mathbf{Wx} + \mathbf{b}$, then apply non-linearity (e.g., sigmoid).
+  - Architecture Terminology:
+    - Input Layer: Raw features.
+    - Hidden Layers: Feature extractors (non-linear transformations).
+    - Output Layer: Final classification/regression (e.g., logistic or linear).
 
 ---
 
-**1. Transformer**
+### 3. Training Neural Networks
+- Loss Function:
+  - Binary Classification: Cross-entropy loss.
+  - Regression: Mean squared error (MSE).
+- Gradient Descent: Update rules for weights and biases:
+  $$\mathbf{W} \leftarrow \mathbf{W} - \alpha \frac{\partial L}{\partial \mathbf{W}}, \quad \mathbf{b} \leftarrow \mathbf{b} - \alpha \frac{\partial L}{\partial \mathbf{b}}$$
+  where $\alpha$ is the learning rate.
+- Backpropagation: Computes gradients via the chain rule.
+  - Forward Pass: Compute activations layer-by-layer.
+  - Backward Pass: Propagate errors from output to input, updating gradients for weights and biases.
+- Stochastic Gradient Descent (SGD): Trains on mini-batches to handle large datasets.
 
-[https://www.youtube.com/watch?v=7fvxOgliYRw](https://www.youtube.com/watch?v=7fvxOgliYRw) - transformer explained
+---
 
-The **Transformer** is the overarching architecture introduced in the paper "Attention is All You Need" by Vaswani et al. It is a model designed to process sequences of data, such as sentences, by focusing on the relationships between elements in the sequence using attention mechanisms.
+### 4. Activation Functions
+- Purpose: Introduces non-linearity to model complex patterns. Without it, stacked layers reduce to a single linear transformation.
 
-A full Transformer model typically consists of:
+- Sigmoid Function:
+  - Formula: $\sigma(z) = \frac{1}{1 + e^{-z}}$
+  - Issues: Vanishing gradients (derivatives near 0 for large $|z|$); output range $[0,1]$ leads to saturation.
 
-The Transformer consists of stacked layers of self-attention and feedforward networks.
+- Hyperbolic Tangent (tanh):
+  - Formula: $\tanh(z) = \frac{e^z - e^{-z}}{e^z + e^{-z}}$
+  - Output range $[-1, 1]$, centering activations around 0.
+  - Still suffers from vanishing gradients and computational overhead (exponents).
 
-Encoder (Processes Input)
-1. Multi-Head Self-Attention → Lets each word focus on others.
-2. Feedforward Neural Network → Applies non-linear transformations.
-3. Layer Normalization & Residual Connections → Helps with training stability.
+- Rectified Linear Unit (ReLU):
+  - Formula: $\text{ReLU}(z) = \max(0, z)$
+  - Advantages: No exponents (fast); derivative is 1 for $z > 0$ (mitigates vanishing gradients).
+  - Issues: Dying ReLU problem (neurons may become inactive for $z < 0$); potential exploding gradients.
 
-Decoder (Generates Output)
-1. Masked Multi-Head Self-Attention → Prevents attending to future words.
-2. Encoder-Decoder Attention → Lets the decoder focus on relevant encoder outputs.
-3. Feedforward Neural Network.
+- Variants of ReLU:
+  - Leaky ReLU: $\text{LeakyReLU}(z) = \max(0.01z, z)$, prevents dead neurons.
+  - Parametric ReLU (PReLU): Learnable slope for $z < 0$.
 
-RNN processes a sequence step by step → slow, struggles to retain long-range dependencies.
+- Recommendation: Use ReLU as default for hidden layers, especially in deep networks.
 
-Transformer processes the entire sequence in parallel via the attention mechanism.
+---
 
-```shell
+### 5. Key Takeaways
+- Neural Networks: Stacked non-linear transformations enable modeling of complex decision boundaries.
+- Training: Requires careful initialization, backpropagation, and optimization to avoid vanishing/exploding gradients.
+- Activation Functions: Sigmoid and tanh are obsolete for hidden layers; ReLU and variants are standard.
+- Practical Tips:
+  - Normalize inputs to stabilize training.
+  - Use softmax for multi-class classification.
+  - Address exploding gradients via learning rate tuning, weight initialization, and batch norm.
+
+---
+
+### 6. Next Steps
+- Practice: Implement a neural network using PyTorch.
+- Topic: Regularization techniques (dropout, batch normalization).
+
+---
+
+## Summary of the Lecture: Building a Fully Connected Neural Network in PyTorch
+
+### Key Concepts and Objectives
+- Goal: Construct a fully connected neural network to approximate a cosine function ($\cos(x)$) for a regression task.
+- Tools: PyTorch is used for building and training the network.
+- Core Idea: A neural network is composed of linear layers ($\mathbf{W}\mathbf{x} + \mathbf{b}$) and activation functions (tanh, ReLU, etc.), stacked to form a computational graph for backpropagation.
+
+---
+
+### PyTorch Building Blocks
+1. Linear Layers: Defined via `nn.Linear(in_features, out_features, bias=True)`. Example: `linear_layer = nn.Linear(5, 3)`.
+2. Activation Functions: Can be classes (`nn.Tanh()`) or functions (`F.tanh()`). Prefer class-based for sequential models.
+3. Tensors and Gradients: Tensors track gradients via `grad_fn`, enabling automatic differentiation.
+
+---
+
+### Network Construction
+- Sequential API:
+  ```python
+  nn.Sequential(
+      nn.Linear(5, 5),
+      nn.Tanh(),
+      nn.Linear(5, 1)
+  )
+  ```
+- Example Architecture: Three layers (1 → 5 → 5 → 1 neuron) with `nn.Tanh()` activations for cosine approximation.
+
+---
+
+### Training Process
+1. Loss Function — MSE for regression:
+   $$\mathcal{L} = \frac{1}{N} \sum_{i=1}^N (y_i - \hat{y}_i)^2$$
+   Implemented via `nn.MSELoss()`.
+
+2. Optimizer: SGD via `torch.optim.SGD(model.parameters(), lr=0.01)`.
+
+3. Data Handling: Mini-batching with `DataLoader`; move model and data to GPU with `.to(device)`.
+
+4. Training Loop:
+   ```python
+   for epoch in range(epochs):
+       for batch in dataloader:
+           preds = model(batch.X)
+           loss = criterion(preds, batch.y)
+           loss.backward()
+           optimizer.step()
+           optimizer.zero_grad()
+   ```
+
+---
+
+### Regularization: Dropout
+- Purpose: Prevent overfitting by randomly "dropping" neurons during training.
+- Implementation: `nn.Dropout(p=0.5)` after specific layers.
+- Inference Correction: Multiply outputs by `p` during inference to scale down expectations.
+
+---
+
+### Practical Tips and Gotchas
+- Shuffling Data: Ensures uniform sampling to avoid bias.
+- Batch Size: Trade-off between memory and gradient quality. Larger batches reduce noise but use more memory.
+- Debugging: Use `.detach().numpy()` for visualization.
+
+---
+
+### Conclusion and Recommendations
+- Model Tuning: Experiment with learning rate, batch size, layer width/depth, activation functions.
+- Evaluation: Test on unseen data with uniform distribution.
+- Scaling: For large models, rely on empirical scaling laws to extrapolate hyperparameters.
+
+---
+
+# Week 04
+
+## Recurrent Neural Networks (RNNs)
+
+### Introduction to RNNs
+- Motivation: Unlike feedforward networks, RNNs process sequential data (text, audio) by maintaining a "memory" of past inputs through hidden states.
+- Key Idea: RNNs update their hidden state at each time step:
+  $$h_t = f(W h_{t-1} + U x_t + b)$$
+  where $h_t$ is the hidden state at time $t$, $x_t$ is the input, and $f$ is an activation function (e.g., tanh).
+
+### RNN Architecture
+- Input is converted into vector embeddings (e.g., word2vec) of dimension $D$.
+- Hidden states $h_t$ propagate through time, carrying context from previous steps.
+- Output: $y_t = V h_t + b_y$.
+- Task-Specific Adaptations: For text classification, the final hidden state (or average) is passed to a fully connected layer.
+
+### Training RNNs
+- Backpropagation Through Time (BPTT): Gradients computed via chain rule across time steps.
+  - Vanishing Gradient Problem: ReLU/sigmoid can exacerbate this.
+  - Solution: tanh is preferred for gradient stability.
+- Gradient Clipping: Limits gradient magnitudes to prevent exploding gradients.
+
+---
+
+### Tokenization
+
+Converting raw text to numeric tokens is a core preprocessing step. The vocabulary size directly affects model capacity and efficiency.
+
+#### Word-Level Tokenization
+Build a vocabulary of frequent words. Unknown words are mapped to a special token (e.g., `<UNK>`). Simple but produces large vocabularies and cannot handle rare words.
+
+#### Character-Level Tokenization
+Treats every character as a token. Handles any word but produces very long sequences, leading to inefficiency and difficulty learning long-range dependencies.
+
+#### Byte-Pair Encoding (BPE)
+The dominant approach for modern LLMs (GPT-2, GPT-3, RoBERTa).
+
+Algorithm:
+1. Start with a character-level vocabulary.
+2. Iteratively count all adjacent token pairs.
+3. Merge the most frequent pair into a new token.
+4. Repeat until the target vocabulary size is reached.
+
+Example:
+```
+Initial: ["l", "o", "w", "e", "r"]
+Merge "e" + "r" → "er"
+Merge "er" + " " → "er "
+...
+Final: ["low", "er", " ", "wide", "st"]
+```
+
+Advantages: handles unknown words through subword decomposition; balances vocabulary size with efficiency; flexible for multilingual use.
+
+#### WordPiece
+Used by BERT, DistilBERT. Similar to BPE but merges based on the likelihood increase of the language model rather than raw frequency. This tends to produce more linguistically meaningful subwords.
+
+#### SentencePiece
+Used by T5, XLNet, and multilingual models.
+- Language-agnostic: treats whitespace as an ordinary character, requiring no pre-tokenization.
+- Supports both BPE and Unigram LM algorithms.
+- Reversible: the original text can be recovered exactly.
+- Works for languages without spaces (Chinese, Japanese).
+
+#### Summary
+
+| Method | Vocabulary | Handles OOV? | Used by |
+|---|---|---|---|
+| Word-level | Large | No (`<UNK>`) | Early NLP |
+| Character-level | Small (~256) | Yes | Limited use |
+| BPE | ~32K–50K | Yes (subwords) | GPT-2/3, RoBERTa |
+| WordPiece | ~30K | Yes | BERT, DistilBERT |
+| SentencePiece | Configurable | Yes | T5, XLNet |
+
+While English has an estimated 600,000 words, an LLM might have a vocabulary of around 32,000 tokens (as with Llama 2). Subword tokenization lets the model represent rare words by combining familiar pieces.
+
+---
+
+### Practical Example: RNN Language Model
+- Dataset: IMDB movie reviews.
+- Preprocessing: Tokenize text with word-level tokenization; add special tokens (`<EOS>`).
+- Model Architecture:
+  - Embedding Layer: Maps token IDs to dense vectors.
+  - LSTM Layers: Stacked recurrent layers for long-term dependencies.
+  - Output Layer: Fully connected layer producing logits over vocabulary.
+- Training: Cross-entropy loss minimized with Adam; batches padded to align sequence lengths.
+- Inference: Generate sequences by sampling (top-k or softmax with temperature) from the model's probability distribution.
+
+### Challenges and Improvements
+- Limitations: RNNs struggle with long-range dependencies due to fading memory.
+- Solutions: LSTM/GRU with gating mechanisms; bidirectional RNNs; transformers.
+
+### Conclusion
+- RNNs provide a foundational approach for sequence modeling but are outperformed by attention-based models in practice.
+- Understanding BPE and embedding layers is critical for building effective language models.
+
+---
+
+# Week 05
+
+## Summary: From RNNs to Transformers and Attention in Machine Translation
+
+### Abstract
+This lecture transitions from RNNs to attention-based architectures, focusing on machine translation. It covers RNN limitations, encoder-decoder design, the attention mechanism, and the shift toward Transformers.
+
+---
+
+### 1. Machine Translation as Conditional Language Modeling
+- Task Definition: Given source sentence in $L_1$, generate target sentence in $L_2$:
+  $$Y = \arg\max \sum_{i=1}^m P(y_i | y_1, \dots, y_{i-1}, X, \theta)$$
+- Vocabulary: Different vocabularies for source and target. Special tokens BOS/EOS required.
+
+---
+
+### 2. RNN-Based Encoder-Decoder Architecture
+
+#### Encoder
+- Objective: Encode the source sentence into a fixed-dimensional context vector $h_E$.
+- Implementation: Embed tokens → process through RNN (GRU/LSTM) → pass final hidden state $h_n^E$ to decoder.
+
+#### Decoder
+- Objective: Generate target sequence using the context vector and its own hidden states.
+- Initialized with $h_0^D = h_n^E$; generates tokens via:
+  $$y_t = \arg\max P(y_t | y_1, \dots, y_{t-1}, h_t^D, \theta)$$
+
+#### Training with Teacher Forcing
+- During training, ground-truth tokens $y_{t-1}$ are fed as inputs at step $t$ (rather than the decoder's own predictions).
+- Avoids error propagation in early training; loss is categorical cross-entropy.
+
+---
+
+### 3. Limitations of RNNs in Machine Translation
+1. Fixed Context Vector: All source information compressed into a single vector → information loss for long sequences.
+2. Vanishing Gradients: Hard to retain context from early time steps.
+3. Sequential Processing: Inefficient for parallel computation.
+
+---
+
+### 4. Attention Mechanism
+
+#### Key Idea
+Instead of using only $h_n^E$, the decoder dynamically weighs all encoder hidden states $h_i^E$ at each decoding step — allowing it to "look back" at the entire source at every generation step.
+
+#### How Attention Works
+
+Each token is transformed into three learned vector representations:
+
+- **Query (Q)** — "What am I looking for?"
+- **Key (K)** — "What do I contain / what do I offer?"
+- **Value (V)** — "What information do I actually give if chosen?"
+
+This separation gives the model flexibility: what a token looks for does not have to be the same as what it offers, which does not have to be the same as what it contributes.
+
+**Step 1 — Compute alignment scores:**
+A function $f_\text{align}(h_t^D, h_i^E)$ scores how relevant encoder state $i$ is to decoding step $t$. This can be a trainable network or a simple dot product:
+$$\text{score} = \frac{Q \cdot K^\top}{\sqrt{d_k}}$$
+The $\sqrt{d_k}$ scaling prevents extreme softmax saturation when dimension is large.
+
+**Step 2 — Normalize to attention weights:**
+$$\alpha_i = \text{softmax}_i\!\left(f_\text{align}(h_t^D, h_i^E)\right), \quad \alpha_{ij} = \frac{\exp(Q_i \cdot K_j^T)}{\sum_k \exp(Q_i \cdot K_k^T)}$$
+
+**Step 3 — Compute the context vector (weighted sum of values):**
+$$c_t = \sum_i \alpha_i h_i^E, \qquad Z_i = \sum_j \alpha_{ij} V_j$$
+
+The full scaled dot-product attention formula:
+$$\text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right) \cdot V$$
+
+#### Implementation Variants
+- **Concatenation Attention:** Context vector is concatenated to decoder input:
+  $$\tilde{x}_t = [x_t \| c_t]$$
+- **Dot Product Attention:** $\alpha_i = \text{softmax}_i(h_t^D \cdot h_i^E)$ — no learned parameters.
+
+#### Impact
+- Resolves the fixed-context problem; enables accurate modeling of long sequences.
+- Example: when generating "morning" in English, the decoder attends to "Morgen" in German.
+- Attention weights are directly visualizable as alignment maps between source and target tokens.
+
+#### Why Attention Matters
+1. **Long-range dependencies:** Models relationships between distant elements without relying on sequential memory.
+2. **Contextual understanding:** "bank" meaning depends on context — attention captures which other tokens are relevant.
+3. **Parallelization:** Attention-based models process all elements simultaneously, unlike sequential RNNs.
+
+#### Real-World Example
+Translating "She gave him a book because he asked for it" — when generating "it", attention identifies "a book" as the referent by attending to the correct source token.
+
+---
+
+### 5. Transition to Transformers
+- The attention mechanism decouples sequential processing from dependency modeling.
+- Transformers replace RNNs entirely, using self-attention and parallel computation.
+- Key Components: Multi-Head Attention, positional encodings.
+- Advantages: Scalability, parallelization, superior performance on long-range dependencies.
+
+---
+
+### 6. Practical Implementation: RNN with Attention for Machine Translation
+- Dataset: Synthetic date-formatting task ("March 13, 2023" → "2023-03-13").
+- Steps:
+  1. Generate source/target pairs; tokenize; encode as token indices.
+  2. Encoder: RNN with embedding and GRU layers. Decoder: RNN with attention + linear layer.
+  3. Train with teacher forcing; minimize cross-entropy via gradient descent.
+  4. Inference: Greedy/beam search until EOS.
+
+---
+
+### Mathematical Formulation Summary
+
+$$P(Y|X) = \prod_{i=1}^m P(y_i | y_1, \dots, y_{i-1}, X)$$
+$$\alpha_i = \text{softmax}_i(f_\text{align}(h_t^D, h_i^E))$$
+$$c_t = \sum_i \alpha_i h_i^E$$
+
+---
+
+# Week 06
+
+## Overview
+
+This week covers the full Transformer architecture, how LLMs generate text, the BERT vs GPT distinction, attention types, efficient fine-tuning, knowledge distillation, search/retrieval architectures, large-context techniques, and training-time regularization.
+
+---
+
+## 1. Introduction to Transformers
+
+- Motivation: RNNs suffer from sequential computation, vanishing gradients, and poor GPU utilization. Transformers address all three by enabling parallel processing and replacing recurrence with self-attention.
+- Core Ideas:
+  - Attention mechanisms are generalized to **self-attention**: every token can attend to every other token in the input simultaneously.
+  - The Transformer architecture (2017, "Attention is All You Need") replaces RNNs entirely, using stacked encoder-decoder blocks.
+
+```
 Input
   ↓
 [Multi-Head Self-Attention] + Residual connection
@@ -61,905 +405,405 @@ Layer Norm
 Output
 ```
 
-**FFN** — two linear layers with an activation function (typically GELU):
-
+Feed-Forward Network — two linear layers with activation (typically GELU):
 $$\text{FFN}(x) = \max(0,\ xW_1 + b_1)W_2 + b_2$$
 
----
-
-**2. Encoder**
-
-The **encoder** is responsible for transforming the input sequence into a meaningful representation that captures its structure and relationships. It processes all input tokens in parallel, allowing for efficient computation.
-
-- **Components of the Encoder**:
-    - **Input Embeddings**: Converts input tokens into vectors.
-    - **Positional Encoding**: Adds information about the position of tokens in the sequence.
-    - **Self-Attention Mechanism**: Allows the encoder to focus on relevant parts of the input sequence while processing each token.
-    - **Feedforward Neural Network**: Applies a transformation to the attention outputs for each token.
-    - **Layer Normalization** and **Residual Connections**: Help stabilize and improve training.
-- **Output**: The encoder produces a sequence of context-aware representations for the input tokens.
+RNN processes a sequence step by step → slow, struggles with long-range dependencies.  
+Transformer processes the entire sequence in parallel via attention.
 
 ---
 
-**3. Decoder**
+## 2. Self-Attention: Mathematical Deep Dive
 
-The **decoder** takes the encoder's output and generates the target sequence (e.g., translated text, predictions). It works in an autoregressive manner, processing one token at a time and considering previously generated tokens.
+### Linear Projections
 
-- **Components of the Decoder**:
-    - **Input Embeddings**: Converts target tokens into vectors.
-    - **Positional Encoding**: Adds positional information to the token embeddings.
-    - **Masked Self-Attention**: Ensures the decoder can only attend to tokens generated so far, preserving the autoregressive nature.
-    - **Encoder-Decoder Attention**: Allows the decoder to attend to the encoder's outputs, incorporating information from the input sequence.
-    - **Feedforward Neural Network**: Processes the combined attention outputs for each token.
-    - **Layer Normalization** and **Residual Connections**.
-- **Output**: The decoder produces a probability distribution over the vocabulary for the next token, enabling sequential generation.
+Given input sequence $X = [x_1, \ldots, x_n]$, create Query, Key, Value representations:
+$$Q = XW^Q, \quad K = XW^K, \quad V = XW^V$$
+where $W^Q, W^K, W^V \in \mathbb{R}^{d \times d_k}$.
 
----
+The model learns three separate roles for each token. Naively doing token-vs-token dot products directly would work, but separate projections give the model flexibility — what a token looks for (Q) can differ from what it offers (K) and what it contributes (V).
 
-**4. Relations Between Encoder, Decoder, and Transformer**
+### Scaled Dot-Product Attention
 
+$$\text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
 
-1. **Encoders**
-    
-    An encoder-based Transformer takes text (or other data) as input and outputs a dense representation (or embedding) of that text.
-    
-    - **Example**: BERT from Google
-    - **Use Cases**: Text classification, semantic search, Named Entity Recognition
-    - **Typical Size**: Millions of parameters
-2. **Decoders**
-    
-    A decoder-based Transformer focuses **on generating new tokens to complete a sequence, one token at a time**.
-    
-    - **Example**: Llama from Meta
-    - **Use Cases**: Text generation, chatbots, code generation
-    - **Typical Size**: Billions (in the US sense, i.e., 10^9) of parameters
+Steps:
+1. Compute attention logits: $QK^T$ (each query × all keys).
+2. Scale by $\sqrt{d_k}$ — dot products grow with dimension: $\text{Var}(q \cdot k) = d_k$; without scaling, large $d_k$ causes extreme softmax saturation and gradient vanishing.
+3. Apply softmax (convert to probabilities).
+4. Weighted sum of values.
 
-3. **Seq2Seq (Encoder–Decoder)**
-    
-    A sequence-to-sequence Transformer *combines* an encoder and a decoder. The encoder first processes the input sequence into a context representation, then the decoder generates an output sequence.
-    
-    - **Example**: T5, BART,
-    - **Use Cases**: Translation, Summarization, Paraphrasing
-    - **Typical Size**: Millions of parameters
+Complexity: $O(n^2 \times d)$ where $n$ = sequence length, $d$ = dimension.
 
-- **Encoder-Decoder Interaction**:
-    - The encoder processes the input sequence into a rich, contextual representation.
-    - The decoder uses this representation (via encoder-decoder attention) along with its own token history to generate the output sequence.
-- **Shared Attention Mechanisms**:
-    - Both the encoder and decoder use self-attention to model intra-sequence relationships.
-    - The decoder additionally uses encoder-decoder attention to link input and output sequences.
-- **Transformer Model**:
-    - A **Transformer Encoder** model, like BERT, uses only the encoder to generate representations for tasks like classification and question answering.
-    - A **Transformer Decoder** model, like GPT, uses only the decoder to generate text.
-    - A **Full Transformer** model, like in machine translation, uses both the encoder and decoder.
+### Three Types of Attention
 
+Many people conflate these — they are distinct mechanisms:
 
-While English has an estimated 600,000 words, an LLM might have a vocabulary of around 32,000 tokens (as is the case with Llama 2). Tokenization often works on sub-word units that can be combined.
+#### Bidirectional Self-Attention (BERT-style)
+Q, K, V all come from the **same sequence**; no mask applied. Every token attends to every other token.
 
-the difference between a Base Model vs. an Instruct Model:
-
-- *A Base Model* is trained on raw text data to predict the next token.
-- An *Instruct Model* is fine-tuned specifically to follow instructions and engage in conversations. For example, `SmolLM2-135M` is a base model, while `SmolLM2-135M-Instruct` is its instruction-tuned variant.
-
-To make a Base Model behave like an instruct model, we need to **format our prompts in a consistent way that the model can understand**. This is where chat templates come in.
----
-
-**Summary Table**
-
-| **Component** | **Input** | **Output** | **Attention Mechanisms** | **Usage** |
-| --- | --- | --- | --- | --- |
-| **Encoder** | Input sequence | Contextual representations | Self-attention | Processing input sequences |
-| **Decoder** | Encoder outputs + target tokens | Generated output sequence | Self-attention + Encoder-Decoder attention | Generating output sequences |
-| **Transformer** | Full model (Encoder + Decoder) | Task-specific results | Combines both components | Machine translation, text generation |
-
-## 3. Transformer Architecture: Encoder vs Decoder
-
-### Фундаментальное различие
-
-**BERT (Encoder-only)** vs **GPT (Decoder-only)** — это не просто "разные модели", это разные философии.
-
-#### BERT: Bidirectional Attention
-
-```text
+```
 Input: "The cat [MASK] on the mat"
-
-Attention pattern (все видят всё):
      The  cat  [MASK]  on  the  mat
 The   ●────●────●────●────●────●
 cat   ●────●────●────●────●────●
-[MASK]●────●────●────●────●────●  ← Видит ВЕСЬ контекст!
+[MASK]●────●────●────●────●────●  ← sees FULL context
 on    ●────●────●────●────●────●
-the   ●────●────●────●────●────●
-mat   ●────●────●────●────●────●
-
-Предсказание [MASK] использует:
-- Левый контекст: "The cat"
-- Правый контекст: "on the mat"
 ```
 
-#### GPT: Causal Attention
+#### Causal Self-Attention (GPT-style)
+Q, K, V from the same sequence + a triangular mask that prevents attending to future positions.
 
-```text
+```
 Input: "The cat sits on the"
-
-Attention pattern (только прошлое):
-         The  cat  sits  on   the
-The      ●    ✗    ✗    ✗    ✗
-cat      ●────●    ✗    ✗    ✗
-sits     ●────●────●    ✗    ✗
-on       ●────●────●────●    ✗
-the      ●────●────●────●────●
-
-При генерации следующего слова видит только предыдущие!
+         The  cat  sits  on  the
+The      ●    ✗    ✗    ✗   ✗
+cat      ●────●    ✗    ✗   ✗
+sits     ●────●────●    ✗   ✗
+on       ●────●────●────●   ✗
+the      ●────●────●────●───●
 ```
 
-**Когда что использовать:**
-
-| Задача | BERT | GPT |
-|--------|------|-----|
-| Classification | ✅ Отлично | ⚠️ Можно |
-| NER | ✅ Отлично | ❌ Плохо |
-| Text Generation | ❌ Невозможно | ✅ Отлично |
-| Q&A (extractive) | ✅ Отлично | ⚠️ Можно |
-| Q&A (generative) | ❌ | ✅ Отлично |
-
-**BERT (Bidirectional Encoder Representations from Transformers)** is a transformer-based machine learning model designed for natural language processing (NLP) tasks. It was introduced by Google AI in 2018 in the paper [“BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding”](https://arxiv.org/abs/1810.04805).
-
----
-
-**Key Characteristics of BERT:**
-
-1. **Transformer-Based Architecture**:
-    - BERT is built on the **encoder** part of the transformer architecture.
-    - It uses self-attention mechanisms to model relationships between all words in a sentence, capturing both left and right contexts.
-2. **Bidirectional Contextual Understanding**:
-    - Unlike earlier models like GPT or traditional RNNs that process text left-to-right or right-to-left, BERT processes text bidirectionally.
-    - This allows BERT to understand the full context of a word by looking at both its preceding and following words simultaneously.
-3. **Pre-training and Fine-tuning**:
-    - **Pre-training**: BERT is pre-trained on large amounts of text data using self-supervised learning tasks, such as:
-        - **Masked Language Modeling (MLM)**: Randomly masks words in a sentence and trains the model to predict them based on context.
-        - **Next Sentence Prediction (NSP)**: Trains the model to understand relationships between sentences by predicting if one sentence follows another.
-    - **Fine-tuning**: After pre-training, BERT can be fine-tuned on specific NLP tasks (e.g., classification, named entity recognition, and question answering) with task-specific labeled data.
-4. **Model Variants**:
-    - **BERT-base**: 12 layers (transformer blocks), 110 million parameters.
-    - **BERT-large**: 24 layers, 340 million parameters.
-    - Variants like **DistilBERT**, **ALBERT**, and **RoBERTa** offer lighter or optimized versions of BERT.
-
----
-
-**Applications of BERT:**
-
-BERT can be applied to a wide range of NLP tasks, including:
-
-- **Text Classification**: Sentiment analysis, spam detection.
-- **Named Entity Recognition (NER)**: Identifying entities like names, dates, and locations in text.
-- **Question Answering**: Extracting answers from documents or passages (e.g., SQuAD dataset).
-- **Text Summarization**: Generating summaries of long documents.
-- **Machine Translation**: Translating text from one language to another.
-
----
-
-**Advantages of BERT:**
-
-1. **Contextual Representations**: Understands the meaning of a word based on its full sentence context.
-
-# Word2Vec: "bank" всегда одинаковый вектор
-"I went to the bank" → [0.23, -0.45, 0.67, ...]
-"River bank is beautiful" → [0.23, -0.45, 0.67, ...]  # Тот же!
-
-# BERT: "bank" зависит от контекста
-```
-"I went to the bank" → [0.12, 0.89, -0.34, ...]  # Финансы
-"River bank is beautiful" → [-0.45, 0.23, 0.91, ...]  # Берег
-```
-
-2. **Pre-trained on Large Data**: Leverages knowledge from extensive pre-training on diverse corpora (e.g., Wikipedia, BooksCorpus).
-3. **Versatile**: Can be fine-tuned for a variety of downstream tasks with minimal task-specific changes.
-
----
-
-**Example Workflow:**
-
-1. Pre-training: BERT learns language representations from a large text corpus.
-2. Fine-tuning: Tailors BERT for a specific task, such as:
-    - Input: Sentence pairs (e.g., "What is BERT?" and "BERT is a transformer model.")
-    - Output: Task-specific results, such as classification probabilities or extracted answers.
-
----
-
-In essence, **BERT revolutionized NLP** by introducing a deep bidirectional transformer architecture, enabling models to achieve state-of-the-art performance across many tasks.
-
-# Attention
-
-**Attention** is a mechanism in machine learning, particularly in natural language processing (NLP) and computer vision, that enables models to focus on specific parts of the input data when making predictions. It is a way to prioritize important elements of the input, improving the model's understanding and performance.
-
----
-
-**Key Idea of Attention**
-
-Attention works by assigning different levels of importance, or weights, to various elements of the input. For example, in a sentence, not all words contribute equally to the meaning of a specific word or phrase. Attention allows the model to focus more on the relevant words and less on the irrelevant ones.
-
----
-
-**Types of Attention**
-
-1. **Self-Attention (or Intra-Attention)**:
-    - Used to relate different parts of the same input sequence.
-    - Example: In the sentence "The cat sat on the mat," self-attention helps the model understand that "cat" is the subject of "sat."
-    - Self-attention is a key component of the Transformer architecture, including models like BERT and GPT.
-2. **Cross-Attention**:
-    - Used to relate two different sequences, such as a query and a document.
-    - Example: In machine translation, cross-attention helps the model focus on the relevant words in the source sentence while generating the target sentence.
-
----
-
-### Три типа Attention
-
-Многие путают bidirectional attention и cross-attention. Это **разные** механизмы!
-
-#### 1. Self-Attention (Bidirectional) — BERT
-
-```text
-Q, K, V все из ОДНОЙ последовательности
-
-Input: "The cat sits"
-Query из: "The cat sits"
-Key из: "The cat sits"
-Value из: "The cat sits"
-```
-
-#### 2. Self-Attention (Causal) — GPT
-
-```text
-Q, K, V из одной последовательности + causal mask
-
-Треугольная маска запрещает смотреть в будущее
-```
-
-#### 3. Cross-Attention — Encoder-Decoder
-
-```text
-Query из DECODER
-Key, Value из ENCODER (другая последовательность!)
-
-Encoder input: "The cat sits" → Encoder outputs
-                                       ↓
-Decoder: "Le chat" → Cross-Attention → смотрит на Encoder outputs
-```
-
-**Сравнение:**
-
-| Тип | Q из | K, V из | Маска | Модели |
-|-----|------|---------|-------|--------|
-| Bidirectional Self | Той же seq | Той же seq | Нет | BERT |
-| Causal Self | Той же seq | Той же seq | Треугольная | GPT |
-| Cross | Decoder | Encoder | Нет | T5, BART |
-
----
-
-**How Attention Works (High-Level Steps)**
-
-1. **Query, Key, and Value Representations**:
-    - Each token (input element, e.g., a word) is transformed into three vectors:
-        - **Query (Q)**: What are we looking for?
-        - **Key (K)**: What information does this element have?
-        - **Value (V)**: The actual information content.
-    - These vectors are learned through training.
-2. **Similarity Scores**:
-    - The query is compared with all keys in the input sequence to calculate a similarity score (e.g., dot product).
-    - This score represents how relevant each input element is to the query.
-
-$$\text{score} = \frac{Q \cdot K^\top}{\sqrt{d_k}}$$
-
-3. **Attention Weights**:
-    - The similarity scores are converted into probabilities using the softmax function.
-    - These probabilities (attention weights) indicate the relative importance of each element.
-4. **Weighted Sum of Values**:
-    - The attention weights are used to compute a weighted sum of the value vectors.
-    - This produces a context vector that aggregates relevant information based on the attention mechanism.
-
-$$\text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right) \cdot V$$
-
-**Intuition:** Q — "what I'm looking for", K — "what I offer", V — "what I give if I'm chosen".
-
-Compute Attention Scores. We measure the importance of each word **relative to all others** using the **dot product** of the Query and Key vectors:
-
-$$\text{Attention Score} = Q \cdot K^T$$
-
-This gives a matrix where each row represents how much **one word attends to others**.
-
-To normalize the scores into a probability distribution, we apply a **softmax function**:
-
-$$\alpha_{ij} = \frac{\exp(Q_i \cdot K_j^T)}{\sum_k \exp(Q_i \cdot K_k^T)}$$
-
-Now, these values represent the **attention weights** — higher means more focus on that word.
-
-Each word's Value vector is weighted by these attention scores:
-
-$$Z_i = \sum_j \alpha_{ij} V_j$$
-
-This results in a new vector representation for each word, incorporating information from all other words **based on their relevance**.
-
----
-
-**Attention in Transformers**
-
-In the **Transformer** model:
-
-- Self-attention is applied multiple times (multi-head self-attention) to allow the model to focus on different aspects of the input simultaneously.
-- This enables the model to capture complex dependencies between words in a sequence, regardless of their position.
-
----
-
-**Why is Attention Important?**
-
-1. **Captures Long-Range Dependencies**:
-    - Traditional models like RNNs struggle with long sequences. Attention can effectively model relationships between distant elements.
-2. **Contextual Understanding**:
-    - Attention enables models to understand how words relate to each other in a given context (e.g., "bank" can mean a financial institution or a riverbank depending on the context).
-3. **Parallelization**:
-    - Attention-based models like Transformers can process all input elements simultaneously, making them faster and more efficient than sequential models like RNNs.
-
----
-
-**Real-World Example**
-
-Imagine translating the sentence:
-*"She gave him a book because he asked for it."*
-
-- While generating the word "it" in the translated sentence, the model uses attention to determine that "it" refers to "a book."
-
----
-
-**Applications of Attention**
-
-1. **Machine Translation**: Focus on relevant parts of a source sentence while generating translations.
-2. **Text Summarization**: Identify key sentences or words for concise summaries.
-3. **Question Answering**: Focus on relevant parts of a passage to extract answers.
-4. **Image Captioning**: Focus on specific regions of an image to generate accurate descriptions.
-
----
-
-Attention has become a cornerstone of modern machine learning, enabling the success of powerful models like Transformers, BERT, and GPT. Its ability to focus on relevant data has revolutionized tasks across NLP, computer vision, and beyond.
-
-# Search and Retrieval
-
-## 1. Bi-encoder vs Cross-encoder
-
-### Bi-encoder (двойной энкодер)
-
-Два текста кодируются **независимо** — каждый превращается в вектор, а потом сравниваются через cosine similarity или dot product.
+#### Cross-Attention (Encoder–Decoder)
+Query comes from the **decoder**; Key and Value come from the **encoder** output (a different sequence). This is the only place encoder and decoder "talk" to each other.
 
 ```
-Текст A → [Encoder] → вектор A ─┐
-                                  ├─ cosine_sim → score
-Текст B → [Encoder] → вектор B ─┘
+Encoder input: "The cat sits" → encoder outputs
+                                        ↓
+Decoder: "Le chat" → Cross-Attention ← looks at encoder outputs
 ```
 
-**Плюсы:**
-- Векторы можно вычислить заранее и сохранить в индекс (FAISS, Annoy)
-- Поиск по миллиону документов за миллисекунды
-- Масштабируется
-
-**Минусы:**
-- Не видит взаимодействие между текстами — контекст одного не влияет на кодирование другого
-- Точность ниже, чем у cross-encoder
-
-**Где используется:** семантический поиск, ANN-индексы, первый этап в двухступенчатом пайплайне (retrieval).
+| Type | Q from | K, V from | Mask | Models |
+|---|---|---|---|---|
+| Bidirectional Self | Same seq | Same seq | None | BERT |
+| Causal Self | Same seq | Same seq | Triangular | GPT, LLaMA |
+| Cross | Decoder | Encoder | None | T5, BART |
 
 ---
 
-### Cross-encoder
+## 3. Multi-Head Attention
 
-Оба текста подаются в модель **вместе** — конкатенируются и обрабатываются совместно. Модель видит взаимодействие между ними с первого слоя.
+### Motivation
+A single attention head can only capture one type of relationship at a time. Multiple heads let the model attend to different things simultaneously — syntactic, semantic, positional, coreference, etc.
+
+### Architecture
+
+Each head gets its own $W^Q_i, W^K_i, W^V_i$ — it projects Q, K, V into a different subspace and runs attention independently:
 
 ```
-[CLS] Текст A [SEP] Текст B [SEP] → [Encoder] → score
+head_i = Attention(Q·W_i^Q,  K·W_i^K,  V·W_i^V)
 ```
 
-**Плюсы:**
-- Гораздо точнее — attention видит связи между словами обоих текстов
-- Учитывает контекст и пересечения смыслов
+Outputs are concatenated and projected:
+$$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \ldots, \text{head}_h)W^O$$
 
-**Минусы:**
-- Нельзя предвычислить — нужно прогонять каждую пару заново
-- O(N) операций на запрос → не масштабируется на большие коллекции
+Parameters:
+- $h$: number of heads (typical: 8–16)
+- $d_k = d_\text{model} / h$ (dimension per head)
+- Same total computation cost as single-head (dimension split across heads)
 
-**Где используется:** reranking — берём топ-100 от bi-encoder, перебираем их через cross-encoder.
+### Example Head Specializations
+For "A cute teddy bear is reading":
+- Head 1 — syntactic relationships (subject–verb)
+- Head 2 — semantic similarity ("cute" → "teddy bear")
+- Head 3 — positional proximity
+- Head 4 — coreference resolution
 
 ---
 
-### Типичный пайплайн в production
+## 4. Transformer Encoder Block
 
+Structure:
+1. **Self-Attention:** Each token's embedding attends to all others, capturing contextual information.
+2. **Residual Connection + LayerNorm:** $x_i = x_i^\text{embed} + \text{Attention}(x_i^\text{embed})$. LayerNorm stabilizes training by normalizing per-token embeddings.
+3. **Feed-Forward Network (FFN):** Position-wise MLP with nonlinearities.
+4. **Repeat:** Stacked encoder blocks propagate contextualized embeddings.
+
+---
+
+## 5. Transformer Decoder Block
+
+Differs from encoder by including:
+1. **Masked Self-Attention:** Prevents attending to future tokens during autoregressive generation.
+2. **Cross-Attention:** Decoder attends to encoder outputs (relevant for translation, summarization).
+3. **FFN:** Same as encoder.
+
+---
+
+## 6. Positional Encoding
+
+Problem: Self-attention is permutation-invariant — it has no inherent notion of order.
+
+### Fixed Sinusoidal Encodings (Original Transformer)
+$$PE_{(pos,\, 2i)} = \sin\!\left(\frac{pos}{10000^{2i/d}}\right), \quad PE_{(pos,\, 2i+1)} = \cos\!\left(\frac{pos}{10000^{2i/d}}\right)$$
+where $pos$ is position, $d$ is embedding dimension.
+
+Properties:
+- Deterministic, unique per position.
+- Relative position encodable: $PE_{pos+k}$ is a linear function of $PE_{pos}$.
+- Extrapolates to sequences longer than training length.
+
+### Learned Positional Embeddings (BERT-style)
+- Trainable position embeddings; cannot extrapolate beyond training length.
+- Often performs better in practice for fixed-length tasks.
+
+### Relative Positional Encoding (T5, DeBERTa)
+- Encode relative distances rather than absolute positions.
+- Better length generalization; more parameter-efficient.
+
+---
+
+## 7. Encoder vs Decoder Models — Architecture Philosophy
+
+The encoder and decoder are not just "parts of a model" — they represent different design philosophies:
+
+### Encoder-Only (e.g., BERT)
+- Bidirectional attention — every token sees the full context.
+- Pre-trained with Masked Language Modeling (MLM) and Next Sentence Prediction (NSP).
+- Output: dense contextual representations (embeddings), not generated text.
+- Typical size: hundreds of millions of parameters.
+- Use cases: text classification, NER, extractive QA, semantic search.
+
+### Decoder-Only (e.g., GPT, LLaMA)
+- Causal attention — each token only sees previous tokens.
+- Pre-trained to predict the next token.
+- Output: generated sequences, one token at a time.
+- Typical size: billions of parameters.
+- Use cases: text generation, chatbots, code generation.
+
+### Encoder–Decoder / Seq2Seq (e.g., T5, BART)
+- Encoder processes the full source; decoder generates the target attending to encoder outputs via cross-attention.
+- Use cases: translation, summarization, paraphrasing.
+
+| Component | Input | Output | Attention | Usage |
+|---|---|---|---|---|
+| Encoder | Input sequence | Contextual representations | Bidirectional self | Processing input |
+| Decoder | Encoder outputs + target tokens | Generated output | Causal self + cross | Generating output |
+| Full Transformer | Both | Task-specific | All three types | Translation, generation |
+
+| Task | BERT | GPT |
+|---|---|---|
+| Classification | ✅ Excellent | ⚠️ Possible |
+| NER | ✅ Excellent | ❌ Poor |
+| Text Generation | ❌ Impossible | ✅ Excellent |
+| Extractive Q&A | ✅ Excellent | ⚠️ Possible |
+| Generative Q&A | ❌ | ✅ Excellent |
+
+---
+
+## 8. BERT Deep Dive
+
+BERT (Bidirectional Encoder Representations from Transformers) was introduced by Google AI in 2018.
+
+### Key Characteristics
+1. **Transformer-Based Architecture:** Built on the encoder; uses bidirectional self-attention.
+2. **Bidirectional Context:** Understands each word by looking at both preceding and following words simultaneously — unlike GPT (left-to-right) or traditional RNNs.
+3. **Pre-training Tasks:**
+   - **MLM (Masked Language Modeling):** Randomly masks words; trains the model to predict them from context.
+   - **NSP (Next Sentence Prediction):** Trains the model to determine if two sentences are consecutive.
+4. **Fine-Tuning:** After pre-training, BERT is fine-tuned on specific tasks with labeled data.
+
+### Contextual vs. Static Embeddings
 ```
-Запрос
+# Word2Vec: "bank" always the same vector
+"I went to the bank"     → [0.23, -0.45, 0.67, ...]
+"River bank is beautiful"→ [0.23, -0.45, 0.67, ...]  # Identical!
+
+# BERT: "bank" depends on context
+"I went to the bank"     → [0.12, 0.89, -0.34, ...]  # Finance
+"River bank is beautiful"→ [-0.45, 0.23, 0.91, ...]  # Geography
+```
+
+### Model Variants
+- BERT-base: 12 transformer blocks, 110M parameters.
+- BERT-large: 24 layers, 340M parameters.
+- DistilBERT, ALBERT, RoBERTa: lighter or optimized versions.
+
+### Applications
+Text classification, NER, extractive QA (SQuAD), summarization, machine translation.
+
+---
+
+## 9. LLM Training Pipeline: From Pre-Training to Alignment
+
+### 9.1 Pre-Training
+
+**Objective:** LLMs are pre-trained on the *next-token prediction* task using large unlabeled text corpora, minimizing cross-entropy loss over each predicted token.
+
+**What the model learns:**
+- Broad language knowledge, grammar, world facts.
+- Multilingual ability (if trained on multilingual data).
+- Basic reasoning and coding skills (if data includes code).
+- **In-context learning** — the ability to perform tasks like translation or factual Q&A from examples in the prompt, without any gradient updates.
+
+**Multi-Stage Pre-Training Pipeline:**
+
+| Stage | Sequence Length | Goal |
+|---|---|---|
+| Initial pre-training | 2K–4K tokens | Foundational language knowledge |
+| Long-context continuing pre-training | Up to millions of tokens | Improve positional encoding robustness, attention over long inputs |
+
+The second stage extends the model's effective context window without restarting training from scratch.
+
+---
+
+### 9.2 How Text Generation Works
+
+LLMs generate text token by token:
+1. For each input token, create an embedding vector.
+2. Push all vectors through transformer blocks to get internal representations.
+3. Take the last vector and push through the **LM head** — a linear transformation (matrix multiply) that produces **logits** over the vocabulary (~128K tokens for modern models).
+4. **Softmax** transforms logits to probabilities.
+5. **Sample** from this distribution.
+
+If the distribution is too flat → hallucinations. If too sharp → repetitive output.
+
+### Temperature
+
+Temperature $T$ controls the sharpness of the output distribution:
+$$\left(\frac{e^{x_1/T}}{\sum_t e^{x_t/T}},\ \cdots,\ \frac{e^{x_V/T}}{\sum_t e^{x_t/T}}\right)$$
+
+- Small $T$ → sharper distribution (more reliable, less creative).
+- Large $T$ → flatter distribution (more random, more creative).
+
+### Base Model vs. Instruct Model
+- **Base Model:** Trained on raw text to predict the next token. (e.g., `SmolLM2-135M`)
+- **Instruct Model:** Fine-tuned to follow instructions and engage in conversations. (e.g., `SmolLM2-135M-Instruct`)
+- Chat templates are used to format prompts consistently for instruct models.
+
+**Standard LLM post-training pipeline:**
+```
+Pre-training (next-token prediction on raw text)
   ↓
-Bi-encoder → ANN-поиск → топ-100 кандидатов
+Supervised Fine-Tuning / SFT (instruction following)
   ↓
-Cross-encoder → reranking → топ-10 финальных результатов
+Preference Alignment (RLHF or LVR)
+  ↓
+Deployed instruct model
 ```
 
+---
 
-# 1M context 
+## 10. Efficient Fine-Tuning
 
-2020: GPT-3 → 2K контекст
-2023: GPT-4 → 32K контекст (128K extended)
-2024: Claude 3 → 200K контекст
-2024: Gemini 1.5 → 1M контекст
-2025: Gemini 2.0 → 2M контекст (announced)
+Full fine-tuning of large LLMs updates every weight — prohibitively expensive in memory and compute. Parameter-efficient methods adapt only a small subset of parameters.
 
-Для N = 1M токенов:
+### Adapter Layers
+Insert small trainable bottleneck modules between pre-trained layers. The original weights stay frozen; only the adapter learns the task-specific transformation. Reduces trainable parameters significantly but can risk slight information loss through the bottleneck.
 
-Память для attention matrix:
-1M × 1M × 4 bytes (float32) = 4 TB (только для одного слоя!)
+### LoRA (Low-Rank Adaptation)
+- **Idea:** For a frozen weight matrix $W \in \mathbb{R}^{D \times D}$, inject two low-rank matrices $A \in \mathbb{R}^{D \times R}$ and $B \in \mathbb{R}^{R \times D}$ (with $R \ll D$). The adapted forward pass becomes:
+  $$\text{output} = Wx + ABx$$
+- Only $A$ and $B$ are trained, requiring $\sim 2DR$ parameters instead of $D^2$.
+- **No inference overhead:** after training, $AB$ is merged into $W$, so the deployed model is the same size.
+- **Typical application:** Applied to the key and value projection matrices inside self-attention layers. Effective for style transfer, domain adaptation, and task specialization.
 
-Вычисления:
-Query @ Key^T = 1M × 1M умножений
-Это нужно делать для КАЖДОГО слоя (например, 80+ слоёв)
+### Bias Tuning
+Freeze all weights; train only bias terms. Reduces trainable parameters to less than 1% of the full model. Weakest of the three methods but extremely cheap.
 
-На обычном GPU: невозможно!
+### Transfer Learning (General Pattern)
+The same principle applies outside LLMs. In image classification, pre-train on ImageNet (1000 classes), then fine-tune only the final linear layer for a target task (e.g., 10 classes). Freezing early layers preserves low-level feature extraction learned during pre-training.
 
-Gemini НЕ использует "честный" full self-attention O(N²)
-Вместо этого: умная комбинация sparse patterns, compression, distribution
-Результат: effective 1M контекст, не literal 1M×1M attention
+### Comparison
 
-1. ✅ Sparse Attention - не весь контекст со всем
-2. ✅ Ring Attention - распределение по устройствам
-3. ✅ Flash Attention - эффективные вычисления
-4. ✅ MQA/GQA - экономия KV cache
-5. ✅ Hierarchical processing - уровни абстракции
-6. ✅ KV compression - квантизация, pooling
-7. ✅ MoE - selective activation
-8. ✅ Огромные вычислительные ресурсы (TPU v5)
-
-Даже с 1M контекста, модель эффективно использует ~10-20K токенов
-
-Остальное:
-- Background context
-- Reference material
-- "На всякий случай"
-
-Но не активно участвует в каждом шаге генерации
-
-## Проблема "lost in the middle":
-
-Модель хуже "помнит" середину длинного контекста
-Начало и конец - хорошо
-Середина - хуже
-
-Решения:
-- Recency bias
-- Position embeddings
-- Attention boosting для важных частей
-
-Вероятная архитектура
-
-1. Input: 1M токенов
-
-2. Chunking:
-   Разбить на чанки по 10K токенов (100 чанков)
-
-3. Local processing (Flash Attention):
-   Каждый chunk обрабатывается локально
-   Efficient O(chunk_size²) с Flash Attention
-
-4. Hierarchical aggregation:
-   Level 1: Local (10K токенов)
-   Level 2: Regional (100K токенов)  
-   Level 3: Global (1M токенов)
-
-5. Sparse global attention:
-   Только между important tokens
-   Longformer-style patterns
-
-6. Ring Attention:
-   Distributed across many accelerators (TPU v5)
-   KV cache rotation между устройствами
-
-7. MQA/GQA:
-   Shared K, V для экономии памяти
-
-8. KV cache compression:
-   INT4 quantization для старых токенов
-   Pooling для distant context
-
-9. MoE routing:
-   Разные experts для разных частей контекста
-
-
-Технологии, которые использует Gemini
-1. Sparse Attention (Разреженное внимание)
-Идея
-Не все токены должны смотреть на все токены. Большинство connections не нужны.
-Виды sparse attention
-A. Local Attention (Sliding Window)
-Каждый токен смотрит только на ближайших соседей
-
-Пример: окно размера W = 512
-
-Token 1000 видит: [500-1500]  (не весь контекст!)
-
-Визуализация:
-       Token 0   Token 500  Token 1000  Token 1500
-Token 0    ●        -           -           -
-Token 500  -        ●           ●           -
-Token 1000 -        ●           ●           ●
-Token 1500 -        -           ●           ●
-
-Сложность: O(N × W) вместо O(N²)
-B. Strided Attention (с пропусками)
-Каждый k-й токен
-
-Token 0:    смотрит на [0, 100, 200, 300, ...]
-Token 1:    смотрит на [1, 101, 201, 301, ...]
-
-Sparse pattern:
-●  -  -  -  ●  -  -  -  ●  -  -  -
--  ●  -  -  -  ●  -  -  -  ●  -  -
--  -  ●  -  -  -  ●  -  -  -  ●  -
-C. Block-Sparse Attention
-Разбиваем на блоки, attention между блоками
-
-[Block 1] ← → [Block 2] ← → [Block 3]
-   ↕              ↕              ↕
-[Block 4]     [Block 5]     [Block 6]
-
-Attention только между соседними блоками
-D. Longformer-style attention
-Комбинация:
-1. Local attention (sliding window)
-2. Global attention для special tokens ([CLS], important phrases)
-3. Dilated attention (с увеличивающимися пропусками)
-
-Attention pattern:
-    0   1   2   3   4   5   6   7   8
-0   ●   ●   ●   -   -   -   -   -   -   ← Local (window=3)
-1   ●   ●   ●   ●   -   -   -   -   -
-2   ●   ●   ●   ●   ●   -   -   -   -
-3   -   ●   ●   ●   ●   ●   -   -   -
-4   ●   -   ●   ●   ●   ●   ●   -   -   ← Global token
-5   -   -   -   ●   ●   ●   ●   ●   -
-...
-Эффект для Gemini
-Вместо: 1M × 1M attention
-Реально: 1M × W где W << 1M
-
-Если W = 4096:
-Память: 1M × 4K = 4B элементов (вместо 1T!)
-Сокращение в ~250,000 раз! 🚀
-
-2. Ring Attention (Кольцевое внимание)
-Идея от Google (2023)
-Разбить длинную последовательность на чанки и обрабатывать их последовательно через кольцо устройств.
-Архитектура
-Последовательность 1M токенов разбита на чанки по 10K
-
-GPU 1: Chunk 1  [0-10K]
-GPU 2: Chunk 2  [10K-20K]
-GPU 3: Chunk 3  [20K-30K]
-...
-GPU 100: Chunk 100 [990K-1M]
-
-Процесс (по кольцу):
-Round 1: GPU_i обрабатывает свой chunk с локальным attention
-Round 2: Передаём KV-cache соседнему GPU
-Round 3: GPU_i обрабатывает чужой chunk
-...
-После полного круга: каждый chunk "увидел" все остальные
-Псевдокод
-for round in 1..num_chunks:
-    // Local computation
-    Q_local = compute_query(chunk_i)
-    K_local = compute_key(chunk_i)
-    V_local = compute_value(chunk_i)
-    
-    // Attention с текущими K, V
-    attn_output = attention(Q_local, K_current, V_current)
-    
-    // Rotate K, V to next GPU (ring communication)
-    send(K_local, V_local, to=next_gpu)
-    K_current, V_current = receive(from=prev_gpu)
-Преимущества
-✅ Каждый GPU хранит только свой chunk
-✅ Полный attention между всеми токенами (не sparse!)
-✅ Memory distributed: O(N/num_devices)
-✅ Коммуникация efficient (высокая пропускная способность между GPU)
-Сложность
-Compute: O(N²) всё равно, но distributed
-Memory per device: O(N/D) где D = количество устройств
-Communication: O(N² / D) - нужна высокая bandwidth
-
-Для 1M токенов на 100 GPU:
-Каждый GPU: 10K токенов
-Memory per GPU: управляемо!
-
-3. Multi-Query Attention (MQA) и Grouped-Query Attention (GQA)
-Проблема стандартного MHA
-Multi-Head Attention (MHA):
-
-Каждая head имеет свои Q, K, V
-
-Heads = 32
-d_model = 512
-d_head = 512 / 32 = 16
-
-Memory для KV cache:
-N × heads × d_head × 2 (K и V) = N × 32 × 16 × 2 = N × 1024
-
-Для N = 1M: 1B параметров только для KV cache!
-Multi-Query Attention (MQA)
-Идея: Разные Q для каждой head, но ОБЩИЕ K и V
-
-Heads = 32
-Q: 32 разных матриц
-K, V: ОДНА общая матрица
-
-Memory для KV cache:
-N × d_head × 2 = N × 16 × 2 = N × 32
-
-Сокращение в 32 раза! 🚀
-Grouped-Query Attention (GQA) - компромисс
-Группируем heads
-
-Total heads = 32
-Groups = 8
-Heads per group = 4
-
-Каждая группа имеет общие K, V
-
-Memory для KV cache:
-N × groups × d_head × 2 = N × 8 × 16 × 2 = N × 256
-
-Сокращение в 4 раза
-Но лучше качество, чем MQA
-Используется в Gemini
-Gemini, вероятно, использует GQA:
-- Меньше памяти для KV cache
-- Позволяет caching для длинного контекста
-- Качество почти как MHA
-
-4. Flash Attention (оптимизация вычислений)
-Проблема стандартного attention
-Standard attention (materialized):
-
-1. Compute Q @ K^T → store N×N matrix
-2. Softmax → requires full matrix
-3. Multiply by V
-
-Peak memory: O(N²)
-Flash Attention решение
-Идея: Не храним полную attention matrix!
-
-Вычисляем по блокам (tiling):
-1. Разбиваем Q, K, V на блоки
-2. Для каждого блока Q:
-   - Загружаем нужные блоки K, V
-   - Вычисляем attention
-   - Сразу aggregируем результат
-   - Удаляем промежуточные данные
-3. Никогда не храним полную N×N матрицу!
-
-Memory: O(N) вместо O(N²) 🚀
-Speed: 2-4x faster (меньше memory I/O)
-Визуализация
-Standard:
-Q (N×d) @ K^T (d×N) = Attention Matrix (N×N) ← ОГРОМНО!
-    ↓
-Softmax
-    ↓
-@ V (N×d)
-
-Flash Attention (tiled):
-For block_i in Q_blocks:
-    For block_j in K_blocks:
-        attention_block = Q_i @ K_j^T  ← Только блок!
-        softmax_block = softmax(attention_block)
-        output_i += softmax_block @ V_j
-        # Удаляем attention_block из памяти
-Для Gemini 1M контекста
-Без Flash Attention:
-Memory = 1M × 1M × 4 bytes = 4TB ❌
-
-С Flash Attention:
-Memory = 1M × block_size × 4 bytes
-Если block_size = 256: 1M × 256 × 4 = 1GB ✅
-
-Сокращение в ~4000 раз!
-
-5. Hierarchical / Nested Attention
-Идея
-Обрабатываем контекст иерархически на разных уровнях абстракции.
-Архитектура
-Level 1 (Low): Обрабатываем мелкие блоки (512 токенов)
-    ↓ Compress
-Level 2 (Mid): Обрабатываем сжатые представления (64K токенов)
-    ↓ Compress
-Level 3 (High): Обрабатываем всю последовательность (1M токенов)
-
-Аналогия: Пирамида изображений
-- Низкий уровень: детали (пиксели)
-- Средний уровень: регионы (паттерны)
-- Высокий уровень: полная картина (контекст)
-Пример для текста
-Исходный текст: 1M токенов
-
-Level 1: Local attention в блоках по 512 токенов
-    "The cat sat on the mat" → embedding_1
-    "It was a sunny day"     → embedding_2
-    ...
-
-Level 2: Attention между embeddings блоков (2000 блоков)
-    [embedding_1, embedding_2, ..., embedding_2000]
-    Attention между ними
-
-Level 3: Global representation
-    Итоговое понимание всего контекста
-
-При генерации:
-- Level 3 даёт общий контекст
-- Level 2 даёт релевантные секции
-- Level 1 даёт точные детали
-
-6. KV Cache Compression
-Проблема
-KV cache растёт линейно с длиной последовательности
-
-Standard KV cache для 1M токенов:
-K: 1M × d_model
-V: 1M × d_model
-
-Огромная память!
-Решение: Сжатие KV
-A. Quantization (квантизация)
-FP16 → INT8 → INT4
-
-FP16: 2 bytes per value
-INT4: 0.5 bytes per value
-
-Сжатие в 4 раза! 🚀
-B. Pooling старых токенов
-Недавние токены: полное разрешение
-Старые токены: сжатые
-
-Tokens 0-1000:    сжать в 100 embeddings (pooling)
-Tokens 1000-2000: сжать в 100 embeddings
-...
-Tokens 999000-1M: полное разрешение (1000 tokens)
-
-Total KV: 100 × 999 + 1000 = ~100K вместо 1M
-Сжатие в 10 раз!
-C. Adaptive selection
-Храним только "важные" токены в полном разрешении
-
-Importance scoring:
-- Attention weights
-- Gradient norms
-- Manual markers (headings, keywords)
-
-Top 10% tokens: полное KV
-Bottom 90% tokens: сжатое или удалённое
-
-7. Mixture of Experts (MoE)
-Связь с длинным контекстом
-Не все части модели нужны для всех токенов
-
-MoE позволяет:
-- Активировать только релевантные experts для данной части контекста
-- Эффективнее использовать память
-- Параллелизовать обработку разных частей контекста
-
-Пример:
-Tokens 0-100K    (English technical): Expert 1, 3, 5
-Tokens 100K-200K (Code Python):       Expert 2, 4, 7
-Tokens 200K-1M   (English narrative): Expert 1, 6, 8
-
-Каждый expert работает независимо
-
-# LLM fine tuning and optimization
-
-[Model inference](https://www.notion.so/Model-inference-1f79c76f79e8808e86c7e30e222a3dc4?pvs=21) 
-
-| Method | Full Name | Purpose / Idea |
-| --- | --- | --- |
-| **SFT** | Supervised Fine-Tuning | Train on labeled examples to adapt the LLM to a specific task |
-| **PEFT** | Parameter-Efficient Fine-Tuning | Fine-tune a small part of the model to save compute and memory |
-| **RLHF** | Reinforcement Learning from Human Feedback | Align model with human preferences using reward models |
-| **DDP** | Distributed Data Parallel | Parallel training across multiple GPUs (speed up training) |
-| **FSDP** | Fully Sharded Data Parallel | Memory-efficient training of large models across GPUs |
-
-[The Ultimate Guide to Fine-Tuning LLMs from Basics to Breakthroughs](https://arxiv.org/html/2408.13296v1)
-
-
-**📘 1. SFT — Supervised Fine-Tuning**
-
-- **What it is:** Standard fine-tuning of an LLM on a task using labeled input–output pairs.
-- **Use case:** Adapt a base model (like LLaMA or Mistral) to chat, summarize, translate, etc.
-- **Example:** Train GPT on `(question, answer)` pairs to create a customer support bot.
+| Method | Trainable params | Inference overhead | Typical use |
+|---|---|---|---|
+| Full fine-tuning | 100% | None | Small models / abundant compute |
+| Adapter Layers | ~1–5% | Small (extra layers) | Task-specific adapters |
+| LoRA | ~0.1–1% | None (merged) | LLMs, style/domain transfer |
+| Bias Tuning | <1% | None | Ultra-cheap adaptation |
 
 ---
 
-**⚙️ 2. PEFT — Parameter-Efficient Fine-Tuning**
+## 11. LLM Fine-Tuning and Optimization — Full Reference
 
-- **What it is:** Techniques that fine-tune only a **small part** of the LLM to save memory and compute.
-- **Popular PEFT methods:**
-    - **LoRA** (Low-Rank Adaptation): Inject trainable matrices into transformer layers
-    - **Prefix Tuning**: Add trainable tokens to the start of input
-    - **Adapters**: Add small MLP blocks to layers
-- **Use case:** You want to fine-tune a 7B+ model on a laptop or a single A100.
+| Method | Full Name | Purpose |
+|---|---|---|
+| SFT | Supervised Fine-Tuning | Train on labeled examples to adapt LLM to a specific task |
+| PEFT | Parameter-Efficient Fine-Tuning | Fine-tune a small part of the model to save compute |
+| RLHF | Reinforcement Learning from Human Feedback | Align model with human preferences using reward models |
+| LVR | Learning from Verifiable Rewards | Align model using automated correctness signals (math, code) |
+| DDP | Distributed Data Parallel | Parallel training across multiple GPUs |
+| FSDP | Fully Sharded Data Parallel | Memory-efficient training of large models |
 
-✅ **Pros:** Fast, low-cost, avoids catastrophic forgetting
+### SFT — Supervised Fine-Tuning
+Train on labeled (input, output) pairs to give the model structured, assistant-like behaviour (summarizing, translating, answering questions).
 
-❌ **Cons:** Less flexible than full fine-tuning for deep changes
+**How it works:** Teacher forcing is applied — during training, the model receives ground-truth tokens as decoder inputs rather than its own previous predictions. This avoids compounding errors in early training. The model outputs tokens only conditioned on the prompt's final tokens, not the entire input context.
+
+**Key historical models:**
+- **T5 (2020):** Encoder-decoder model trained on curated tasks (translation, summarization) with fixed input formats.
+- **T0:** Extended T5 to handle arbitrary natural-language task descriptions without fixed format constraints — an early step toward general instruction following.
+
+**Limitations:**
+- Relies on curated datasets; quality of SFT is bounded by data quality.
+- Struggles with ambiguous prompts; does not ask clarifying questions.
+- Can produce well-formatted but unhelpful answers.
+- Requires diverse task and prompt formats during training to generalize robustly.
+
+### PEFT — Parameter-Efficient Fine-Tuning
+Fine-tune only a small part of the model. Methods include:
+- **LoRA:** Inject low-rank trainable matrices into transformer layers (see above).
+- **Prefix Tuning:** Add trainable tokens to the start of the input.
+- **Adapters:** Add small MLP blocks between layers.
+
+✅ Fast, low-cost, avoids catastrophic forgetting.  
+❌ Less flexible than full fine-tuning for deep architectural changes.
+
+### RLHF — Reinforcement Learning from Human Feedback
+
+**Pipeline:**
+1. **Sample:** Pre-trained LLM generates multiple candidate answers for a prompt using temperature sampling.
+2. **Rank:** Human annotators rank the candidates for helpfulness, correctness, and clarity.
+3. **Reward Model:** Trained on pairwise comparisons to assign a scalar reward score to each answer. Uses pairwise ranking losses (e.g., $\ell_1$-regularized comparisons).
+4. **Policy Optimization:** The LLM is fine-tuned (typically with PPO) to maximize the reward model's output, shifting the distribution toward human-preferred responses.
+
+Used in: ChatGPT's alignment phase.  
+✅ Produces more aligned, human-like outputs.  
+❌ Requires expensive human annotation; risk of **reward hacking** (model learns to be verbose or superficially pleasing rather than correct); can reduce response diversity.
+
+### LVR — Learning from Verifiable Rewards
+
+An alternative to RLHF for tasks where correctness is objectively measurable (math problems, code generation, formal proofs).
+
+**Mechanism:** Instead of human annotators, automated tests verify the answers (e.g., executing generated code against test cases). The LLM is fine-tuned to maximize the passing rate.
+
+✅ No human annotation cost; objective signal; scales to large datasets.  
+❌ Only applicable where automated verification is possible. May fail to capture nuanced reasoning — the model could produce a correct answer via an invalid reasoning path without penalty.
+
+### DDP — Distributed Data Parallel (PyTorch)
+Copy the model to each GPU; split the batch; sync gradients after each step.  
+`torch.nn.parallel.DistributedDataParallel`  
+✅ Simple setup, good performance.  
+❌ Each GPU holds a full model copy (higher memory).
+
+### FSDP — Fully Sharded Data Parallel (PyTorch)
+Shards model weights and optimizer states across GPUs. Enables training of 13B+ models that cannot fit on a single GPU.  
+✅ Enables training of giant models on fewer GPUs.  
+❌ More complex setup.
+
+### Typical Production Stack
+```
+LLaMA 13B base model
+  → SFT on customer chat logs (QA pairs)
+  → LoRA (PEFT) to save memory
+  → FSDP across 4 GPUs for efficiency
+  → RLHF to align tone with user preferences
+  (or LVR if the task output is verifiable, e.g. code/math)
+```
+
+### Key Limitations Across Methods
+- **SFT generalization:** Requires diverse prompt formats in training data.
+- **Human feedback reliability:** Subjective preferences introduce noise and bias.
+- **RLHF reward hacking:** Model may learn superficially pleasing behaviours instead of genuinely correct ones.
+- **Efficiency vs. performance:** LoRA and similar methods trade some performance for computational savings.
 
 ---
 
-**🎯 3. RLHF — Reinforcement Learning from Human Feedback**
+## 12. Knowledge Distillation
 
-- **What it is:** Align a language model's behavior with human preferences by:
-    1. Training a reward model on human rankings
-    2. Fine-tuning the LLM using **reinforcement learning** (e.g., PPO)
-- **Example:** ChatGPT's alignment phase is done with RLHF.
-
-✅ Produces more aligned and human-like outputs
-
-❌ Requires human-labeled data and careful tuning
-
----
-
-**🖥️ Training Strategies for Scale**
-
-Now let’s cover **how** we train these models efficiently on big hardware.
-
----
-
-**🔁 4. DDP — Distributed Data Parallel** (from PyTorch)
-
-- **What it is:** A way to **parallelize training across multiple GPUs** by copying the model to each GPU and syncing gradients.
-- **Use case:** You want to train a model faster by splitting the batch across 4 or more GPUs.
-- Built into PyTorch (`torch.nn.parallel.DistributedDataParallel`)
-
-✅ Simple to set up, good performance
-
-❌ Each GPU holds a full copy of the model (uses more memory)
-
----
-
-**💡 5. FSDP — Fully Sharded Data Parallel** (also PyTorch)
-
-- **What it is:** Like DDP, but **shards model weights and optimizer states** across GPUs, reducing memory usage.
-- Use for **very large models** (13B+, 65B, etc.) that can’t fit on one GPU even during training.
-
-✅ Enables training of giant models on fewer GPUs
-
-❌ More complex setup, not always faster for small models
-
----
-
-**🔄 How These Work Together**
-
-Here’s a typical stack:
-
-- Use **PEFT (e.g., LoRA)** or **SFT** to fine-tune your model
-- If the model is big, use **FSDP** or **DDP** to distribute training
-- If you want to align with user preferences → use **RLHF**
-
----
-
-**📌 Example Workflow**
-
-Let’s say you’re adapting LLaMA 13B to customer support:
-
-1. Start with **SFT** on customer chat logs (QA pairs)
-2. Use **LoRA (PEFT)** to save memory
-3. Train on 4 GPUs using **FSDP** for efficiency
-4. Collect human preferences and apply **RLHF** to improve tone
-
-
-## Knowledge Distillation
-
-Core Idea
-
-A small model (student) learns from a large model (teacher) rather than from hard labels.
+### Core Idea
+A small **student** model learns from a large **teacher** model, not from hard (one-hot) labels.
 
 ```
 Teacher (large) → soft predictions (soft labels)
@@ -967,202 +811,223 @@ Teacher (large) → soft predictions (soft labels)
 Student (small) ← learns to mimic
 ```
 
-Train smaller model to mimic larger:
+Result: Smaller model (e.g., 7B → 400M parameters) with similar quality.
 
-$$\mathcal{L} = \alpha \cdot \mathcal{L}_{\text{student}} + (1 - \alpha) \cdot \mathrm{KL}(T_{\text{teacher}}, T_{\text{student}})$$
+### Why Soft Labels Are Better
+Hard label: $[0, 0, 1, 0, 0]$ — carries little information.  
+Soft label from teacher: $[0.01, 0.02, 0.85, 0.08, 0.04]$ — encodes inter-class similarity ("cat is more similar to dog than to airplane").
 
-
-**Process:**
-1. Train student model to mimic teacher's embeddings
-2. Loss: MSE(student_embed, teacher_embed) + task_loss
-
-**Result:** Smaller model (e.g., 7B → 400M parameters) with similar quality
-
-**Example:** distilbert-base → 40% smaller, 97% quality
-
----
-
-Why Soft Labels Are Better Than Hard Labels
-
-Hard label: $[0, 0, 1, 0, 0]$ — carries little information.
-
-Soft label from teacher: $[0.01, 0.02, 0.85, 0.08, 0.04]$ — carries rich information about inter-class similarity. For example: "a cat is more similar to a dog than to an airplane."
-
----
-
-Temperature
-
-To make soft labels "softer", a temperature $T$ is applied inside the softmax:
-
+### Temperature in Distillation
+To make soft labels "softer", apply temperature $T$ inside the softmax:
 $$p_i = \frac{\exp(z_i / T)}{\sum_j \exp(z_j / T)}$$
+When $T > 1$, the distribution smooths out — the student sees richer information about class structure. After training, temperature is reset to $T = 1$.
 
-When $T > 1$, the distribution becomes smoother — the student sees more information about the class structure.
+### Distillation Loss
+$$\mathcal{L} = \alpha \cdot \mathcal{L}_\text{hard} + (1 - \alpha) \cdot \mathcal{L}_\text{soft}$$
+$$\mathcal{L}_\text{hard} = \text{CrossEntropy}(\text{student logits},\ \text{true labels})$$
+$$\mathcal{L}_\text{soft} = \text{KL}(\text{student}_\text{soft},\ \text{teacher}_\text{soft}) \quad \text{at temperature } T$$
+$\alpha$ is a hyperparameter (typically 0.1–0.5).
 
----
+### Types of Distillation
+- **Response-based:** Student mimics teacher's final predictions.
+- **Feature-based:** Student mimics intermediate activations (hidden layers).
+- **Relation-based:** Student learns to reproduce pairwise distances between examples.
 
-Distillation Loss
+### Real Examples
+- **DistilBERT:** 97% of BERT quality at 40% smaller, 60% faster.
+- **TinyBERT:** Distillation at the level of attention matrices.
+- Quantization + distillation is a standard production deployment pipeline.
 
-$$\mathcal{L} = \alpha \cdot \mathcal{L}_{\text{hard}} + (1 - \alpha) \cdot \mathcal{L}_{\text{soft}}$$
-
-$$\mathcal{L}_{\text{hard}} = \text{CrossEntropy}(\text{student logits},\ \text{true labels})$$
-
-$$\mathcal{L}_{\text{soft}} = \text{KL}(\text{student}_{\text{soft}},\ \text{teacher}_{\text{soft}}) \quad \text{(at temperature } T\text{)}$$
-
-$\alpha$ is a hyperparameter (typically $0.1$–$0.5$). After training, temperature is reset to $T = 1$.
-
----
-
-Types of Distillation
-
-**Response-based** — the student mimics the teacher's final predictions.
-
-**Feature-based** — the student mimics intermediate activations (hidden layers of the teacher).
-
-**Relation-based** — the student learns to reproduce pairwise relationships between examples (distance matrix).
+Note: Distillation ≠ simply training a small model from scratch. Identical architectures trained from scratch vs. via distillation yield different quality — distillation is a fully-fledged training method.
 
 ---
 
-Applications
+## 13. Label Smoothing
 
-- **DistilBERT** — 97% of BERT's quality at 40% smaller size and 60% faster inference
-- **TinyBERT** — distillation at the level of attention matrices
-- **Quantization + distillation** — standard production deployment pipeline
+### Motivation
+Standard training uses hard (one-hot) targets:
+$$\text{correct class} \to 1.0, \quad \text{all others} \to 0.0$$
+
+Hard targets reward the model for pushing the correct logit to $+\infty$ and all others to $-\infty$, causing:
+- **Poor calibration** — model is more confident than warranted.
+- **Poor generalization** — model memorizes rather than learning smooth representations.
+
+### Definition
+Label smoothing redistributes a small probability mass $\varepsilon$ (typically 0.1, from the original Transformer paper):
+$$y_\text{smooth} = (1 - \varepsilon) \cdot y_\text{hard} + \frac{\varepsilon}{V}$$
+
+Per token:
+$$y_\text{smooth}(k) = (1 - \varepsilon) \cdot \mathbf{1}[k = \text{target}] + \frac{\varepsilon}{V}$$
+
+Concrete example for $\varepsilon = 0.1$, $V = 30{,}000$:
+$$\text{correct token} \to 0.9 + \frac{0.1}{30000} \approx 0.9000033$$
+$$\text{wrong tokens} \to 0.0 + \frac{0.1}{30000} \approx 0.0000033$$
+
+### Loss Function
+With label smoothing (soft target):
+$$\mathcal{L} = -\sum_{k} y_\text{smooth}(k) \cdot \log p_\text{model}(k)$$
+
+Standard cross-entropy (only the correct-class term survives):
+$$\mathcal{L} = -\log p_\text{model}(\text{target})$$
+
+### Effect on Metrics
+
+| Metric | Effect | Reason |
+|---|---|---|
+| Perplexity | Gets worse | Smoothing reduces confidence on correct tokens; loss can never reach 0 |
+| BLEU | Gets better | Smoother distributions → more diverse, natural outputs |
+
+$$\text{Perplexity} = \exp(\mathcal{L}_\text{cross-entropy})$$
+
+Label smoothing deliberately increases loss, so perplexity rises — but the model generalizes better, so BLEU improves. The two metrics optimize for different things.
+
+### In the Transformer Context
+At each decoder step, the model predicts the next token:
+
+Hard target — correct token is `"ours"` (index 472):
+$$p_\text{target} = [0,\ 0,\ \ldots,\ \underbrace{1.0}_{\text{index } 472},\ \ldots,\ 0]$$
+
+Soft target — with $\varepsilon = 0.1$:
+$$p_\text{target} = \left[\frac{0.1}{29999},\ \ldots,\ \underbrace{0.9}_{\text{index } 472},\ \ldots,\ \frac{0.1}{29999}\right]$$
+
+### Why This Matters for Translation
+In translation, there is rarely a single correct output — "Un ours" and "L'ours" may both be valid. Hard targets pretend exactly one token is correct. Label smoothing implicitly acknowledges translation ambiguity, keeping the model uncertain enough to consider synonyms, which improves BLEU.
+
+**Bottom line:** Label smoothing trades raw likelihood for better generalization — a model slightly less certain, but generating text closer to what humans actually write.
 
 ---
 
-Distillation ≠ simply training a small model. Identical architectures trained from scratch vs. via distillation yield different quality — distillation is a fully-fledged training method in its own right.
+## 14. Search and Retrieval
 
+### Bi-Encoder
+Two texts are encoded **independently** — each becomes a vector, then similarity is computed with cosine or dot product.
 
-### Self-Attention Mechanism
-
-
-**Input:** Sequence of vectors X = [x₁, ..., x_n]
-
-
-**Step 1: Linear Projections**
-
-Create Query, Key, Value representations:
-$$Q = XW^Q, \quad K = XW^K, \quad V = XW^V$$
-
-Where W^Q, W^K, W^V ∈ ℝ^{d×d_k}
-
-**Intuition:**
-- **Query:** "What am I looking for?"
-- **Key:** "What do I contain?"
-- **Value:** "What information do I have?"
-
-
-**Step 2: Scaled Dot-Product Attention**
-
-Attention Scores
-
-$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
-
-
-**Steps:**
-1. Compute attention logits: $QK^T$ (each query $\times$ all keys)
-2. Scale by $\sqrt{d_k}$
-3. Apply softmax (convert to probabilities)
-4. Weighted sum of values
-
-**Why $\sqrt{d_k}$ Scaling:**
-- Dot products grow with dimension: $\text{Var}(q \cdot k) = d_k$
-- Without scaling: Large $d_k \to$ extreme softmax saturation
-- Gradients vanish when softmax outputs $\approx [0, 0, \dots, 1, 0]$
-
-**Complexity:** O(n² × d) where n = sequence length, d = dimension
-
-
-### Multi-Head Attention
-
-
-**Motivation:** Different heads capture different relationships (syntax, semantics, position)
-
-$$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, ..., \text{head}_h)W^O$$
-
-Where:
-$$\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$$
-
-**Parameters:**
-- h: Number of heads (typical: 8-16)
-- d_k = d_model / h (dimension per head)
-
-**Example Specializations:**
-- Head 1: Subject-verb agreement
-- Head 2: Semantic similarity
-- Head 3: Positional relationships
-- Head 4: Coreference resolution
-
-**Benefits:**
-- Richer representations
-- Ensemble of attention patterns
-- Same computation cost (split d_model across heads)
-
-### Positional Encoding
-
-
-**Problem:** Self-attention is permutation-invariant—needs position information
-
-**Sinusoidal Encoding (Original):**
-$$PE_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d}}\right)$$
-$$PE_{(pos, 2i+1)} = \cos\left(\frac{pos}{10000^{2i/d}}\right)$$
-
-**Properties:**
-- Deterministic
-- Unique for each position
-- Relative position encodable: PE_{pos+k} is linear function of PE_{pos}
-- Extrapolates to longer sequences
-
-**Learned Positional Embeddings:**
-- Trainable position embeddings (like BERT)
-- Can't extrapolate beyond training length
-- Often performs better in practice
-
-**Relative Positional Encoding:**
-- Encode relative distances (T5, DeBERTa)
-- Better length generalization
-- More parameter-efficient
-
-
-### Tokenization
-
-#### Byte Pair Encoding (BPE)
-
-Algorithm:
-1. Start with character vocabulary
-2. Iteratively merge most frequent pair
-3. Repeat until vocabulary size reached
-
-**Example:**
 ```
-Initial: ["l", "o", "w", "e", "r"]
-Merge "e"+"r" → "er"
-Merge "er"+" " → "er "
-...
-Final: ["low", "er", " ", "wide", "st"]
+Text A → [Encoder] → vector A ─┐
+                                 ├─ cosine_sim → score
+Text B → [Encoder] → vector B ─┘
 ```
 
-**Used by:** GPT-2, GPT-3, RoBERTa
+**Pros:** Vectors can be precomputed and stored in an index (FAISS, Annoy); search over millions of documents in milliseconds; scales well.  
+**Cons:** No cross-text interaction — the context of A does not influence the encoding of B; lower accuracy than cross-encoder.
 
-#### WordPiece
+Use: Semantic search, ANN indexes, **first stage** in a two-stage pipeline (retrieval).
 
-Difference from BPE: Merges based on likelihood increase, not frequency
+### Cross-Encoder
+Both texts are concatenated and processed jointly — the model sees interactions from the very first layer.
 
-**Used by:** BERT, DistilBERT
+```
+[CLS] Text A [SEP] Text B [SEP] → [Encoder] → score
+```
 
-#### SentencePiece
+**Pros:** Much more accurate — attention sees the connections between words of both texts; captures context and meaning overlap.  
+**Cons:** Cannot precompute — must run every pair through the model; $O(N)$ operations per query → does not scale to large collections.
 
-Key Feature: Language-agnostic, treats whitespace as character
+Use: **Reranking** — take top-100 from bi-encoder, reorder with cross-encoder.
 
-Algorithms: BPE or Unigram LM
+### Typical Production Pipeline
 
-Used by: T5, XLNet, multilingual models
+```
+Query
+  ↓
+Bi-encoder → ANN search → top-100 candidates
+  ↓
+Cross-encoder → reranking → top-10 final results
+```
 
-**Benefits:**
-- No pre-tokenization needed
-- Works for languages without spaces
-- Reversible
+---
 
-**References:**
-- [Attention Is All You Need - Paper](https://arxiv.org/abs/1706.03762)
+## 15. Scaling to 1M+ Context
 
+### Context Length Evolution
+
+| Year | Model | Context |
+|---|---|---|
+| 2020 | GPT-3 | 2K |
+| 2023 | GPT-4 | 32K (128K extended) |
+| 2024 | Claude 3 | 200K |
+| 2024 | Gemini 1.5 | 1M |
+| 2025 | Gemini 2.0 | 2M (announced) |
+
+### Why Naive Attention Fails at 1M Tokens
+
+For $N = 1M$ tokens, the attention matrix requires:
+$$1M \times 1M \times 4\ \text{bytes (float32)} = 4\ \text{TB per layer}$$
+
+With 80+ layers, this is physically impossible on current hardware. Modern long-context models use a combination of approximations:
+
+### Key Techniques
+
+**1. Sparse Attention — not every token attends to every other token.**
+
+- *Local / Sliding Window:* Each token attends only to a fixed-size neighborhood $W$. Complexity: $O(N \times W)$ instead of $O(N^2)$.
+- *Strided:* Each token attends to every $k$-th position.
+- *Block-Sparse:* Attention only between neighboring blocks.
+- *Longformer-style:* Local window + global tokens (e.g., `[CLS]`) that all tokens can attend to.
+
+**2. Ring Attention (Google, 2023)** — distributed processing for full attention.
+
+Sequence is split into chunks across devices. Each device processes its chunk, then rotates KV-cache to the next device in a ring. After a full cycle, every chunk has "seen" all others.
+
+- Memory per device: $O(N/D)$ where $D$ = number of devices.
+- Still achieves full (non-sparse) attention, just distributed.
+
+**3. Flash Attention** — memory-efficient exact attention.
+
+Standard attention materializes the full $N \times N$ matrix. Flash Attention computes attention in tiles, never storing the full matrix:
+- Memory: $O(N)$ instead of $O(N^2)$.
+- Speed: 2–4× faster due to reduced memory I/O.
+
+Without Flash Attention for 1M tokens: 4TB. With Flash Attention (block size 256): ~1GB.
+
+**4. Multi-Query Attention (MQA) / Grouped-Query Attention (GQA)**
+
+Standard MHA: 32 heads, each with its own Q, K, V. KV-cache = $N \times 32 \times d_\text{head} \times 2$.
+
+MQA: All heads share one K and one V. KV-cache reduced by 32×.
+
+GQA (compromise, used in Gemini): Group heads so each group shares K, V. Balances memory saving with quality.
+
+**5. KV Cache Compression**
+
+- *Quantization:* FP16 → INT4 reduces cache size 4×.
+- *Pooling of old tokens:* Recent tokens at full resolution; distant tokens compressed into fewer embeddings.
+- *Adaptive selection:* Keep only "important" tokens at full resolution; compress or drop the rest.
+
+**6. Hierarchical Attention**
+
+Process context at multiple levels of abstraction:
+```
+Level 1: Local attention within 512-token blocks
+  ↓ Compress
+Level 2: Attention between block embeddings (~2000 blocks)
+  ↓ Compress
+Level 3: Global representation of the full context
+```
+
+**7. Mixture of Experts (MoE)**
+
+Different parts of the context activate different experts. Enables parallel, selective processing and reduces per-token compute.
+
+### Practical Reality of Long Context
+
+Even with 1M context, models effectively utilize only ~10–20K tokens per generation step. The rest functions as background reference.
+
+**Lost-in-the-middle problem:** Models remember the beginning and end of long contexts well, but performance degrades for content in the middle. Mitigations include recency bias, position embedding modifications, and attention boosting for important regions.
+
+---
+
+## 16. Practical Implementation (HuggingFace)
+
+- Model loading: `AutoModelForCausalLM.from_pretrained` with positional embeddings and layer normalization.
+- GPTNeoX Layer Blocks: Self-attention with QKV projections, rotary positional encodings (RoPE), and MLP layers.
+- Inspecting attention heads reveals matrix multiplications for QKV generation and attention weight computation.
+
+---
+
+## References
+- [Attention Is All You Need](https://arxiv.org/abs/1706.03762)
+- [BERT Paper](https://arxiv.org/abs/1810.04805)
+- [The Ultimate Guide to Fine-Tuning LLMs](https://arxiv.org/html/2408.13296v1)
+- [Distributed Compute in Transformer](https://ailzhang.github.io/posts/distributed-compute-in-transformer/)
+- [Transformer Explained (video)](https://www.youtube.com/watch?v=7fvxOgliYRw)

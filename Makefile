@@ -128,3 +128,9 @@ rag-data-ingestion:
 	.venv/bin/python src/rag/ingestion.py  --embedding-model qwen2.5:1.5b --collection docs1 "ai_product_engineer/jupyter_notebooks"
 #	.venv/bin/python src/rag/ingestion.py "ai_product_engineer/jupyter_notebooks" --reset-collection
 #	.venv/bin/python src/rag/ipynb2md.py ${CURRENT_DIR}/jupyter_notebooks
+chat:
+	DATA_DIR=${CURRENT_DIR}/data \
+	PYTHONPATH=${CURRENT_DIR}/src \
+	CONFIG_DIR=${CURRENT_DIR}/configs \
+	RUN_ENV=LOCAL \
+	uv run python src/assistant/chat.py

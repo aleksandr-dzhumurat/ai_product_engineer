@@ -254,6 +254,7 @@ Something is always failing in a big system. We need to integrate fault toleranc
 
 ### LLMOps
 
+* [A Practical Guide to LLM Inference](https://theneuralmaze.substack.com/p/a-practical-guide-to-llm-inference)
 * [open-webui](https://github.com/open-webui/open-webui)
 * [production-agentic-rag](https://decodingml.substack.com/p/llmops-for-production-agentic-rag)
 * [LLM and RAG evaluation framework](https://medium.com/decodingml/the-engineers-framework-for-llm-rag-evaluation-59897381c326)
@@ -308,6 +309,7 @@ Something is always failing in a big system. We need to integrate fault toleranc
 * [platform.openai.com/docs/guides/fine-tuning/use-a-fine-tuned-model](https://platform.openai.com/docs/guides/fine-tuning/use-a-fine-tuned-model)
 * [fine tune LLaMA on 7b Titanium](https://www.philschmid.de/fine-tune-llama-7b-trainium)
 * [Dialog mode fine tuning](https://www.kaggle.com/code/danielhanchen/kaggle-llama-3-1-8b-conversational-unsloth/notebook)
+* [Gemma 4 fine tune](https://www.linkedin.com/posts/sarthakrastogi_ai-llms-genai-share-7451889809469591552-RndI)
 * [self-hosting-llama-3-1-70b](https://medium.com/@abhinand05/self-hosting-llama-3-1-70b-or-any-70b-llm-affordably-2bd323d72f8d)
 
 ### Microsoft stack

@@ -33,3 +33,4 @@ get_model() is called once (or cached), and its return value is injected.
 * [serving html fastapi](https://www.fastapitutorial.com/blog/serving-html-fastapi/)
 * [dynamic form values with jinja and fastapi](https://pype.dev/dynamic-form-values-with-jinja-and-fastapi/)
 * [fastapi tutorial encoder](https://fastapi.tiangolo.com/tutorial/encoder/)
+* [how-dependency-injection-makes-your-fastapi-code-better](https://www.linkedin.com/pulse/how-dependency-injection-makes-your-fastapi-code-better-bob-belderbos-umyze/)

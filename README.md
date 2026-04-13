@@ -18,6 +18,7 @@ Who am I?
 * Если хотите запускать локально - требуется подготовить [локальное окружение](slides/lecture_0_prepare_env.md)
 * Ссылка на данные для курса - её надо скопировать к себе [google drive](https://drive.google.com/drive/folders/1FMLKfNZZyFgzOhWjOiyeN3XvCsjT5-ET)
 * [Вопросы к экзамену](slides/ml_breadth_questions.md) - тут по факту список вопросов для собесов
+* [Stuart Russell, Peter Norvig: Artificial Intelligence: A Modern Approach](https://people.engr.tamu.edu/guni/csce625/slides/AI.pdf)
 
 TG канал где я [пишу о продуктовом ML](https://t.me/locomotive_production_driver)
 
