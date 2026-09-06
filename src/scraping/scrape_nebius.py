@@ -114,25 +114,6 @@ def extract_html_from_mhtml(path: str) -> str:
     return decode_quoted_printable(msg.get_payload(decode=False))
 
 
-class TitleExtractor(HTMLParser):
-    def __init__(self):
-        super().__init__()
-        self._in_title = False
-        self.title = ""
-
-    def handle_starttag(self, tag, attrs):
-        if tag == "title":
-            self._in_title = True
-
-    def handle_data(self, data):
-        if self._in_title:
-            self.title += data
-
-    def handle_endtag(self, tag):
-        if tag == "title":
-            self._in_title = False
-
-
 def extract_title(html: str) -> str:
     match = re.search(r"<title[^>]*>(.*?)</title>", html, re.DOTALL)
     return match.group(1).strip() if match else ""

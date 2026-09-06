@@ -31,7 +31,7 @@ MAX_ITERATIONS = 3
 # Telegram bot
 TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN")
 TG_BOT_DATA = os.environ.get("TG_BOT_DATA", "data/tg_bot")
-VISION_MODEL = "Qwen/Qwen2.5-VL-72B-Instruct"
+VISION_MODEL = "moonshotai/Kimi-K2.6"
 
 # Langfuse
 LANGFUSE_PUBLIC_KEY = os.environ.get("LANGFUSE_PUBLIC_KEY")

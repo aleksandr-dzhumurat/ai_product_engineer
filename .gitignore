@@ -176,3 +176,4 @@ src/rag/*.json
 src/nebius_batch_llm_inference/*.mhtml
 slides/*.jsonl
 src/scraping/profile
+run.pid

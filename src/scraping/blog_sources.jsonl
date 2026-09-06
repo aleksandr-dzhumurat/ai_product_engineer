@@ -1,0 +1,118 @@
+{"name": "Pinterest Engineering", "url": "https://medium.com/pinterest-engineering", "feed": "https://medium.com/feed/pinterest-engineering", "link_pattern": null, "strip_query": true}
+{"name": "Netflix Tech Blog", "url": "https://netflixtechblog.com", "feed": "https://netflixtechblog.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "Lyft Engineering", "url": "https://eng.lyft.com", "feed": "https://eng.lyft.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "Airbnb Engineering", "url": "https://medium.com/airbnb-engineering", "feed": "https://medium.com/feed/airbnb-engineering", "link_pattern": null, "strip_query": true}
+{"name": "Instacart Tech", "url": "https://tech.instacart.com", "feed": "https://tech.instacart.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "Meta Engineering", "url": "https://engineering.fb.com", "feed": "https://engineering.fb.com/feed/", "link_pattern": null, "strip_query": true}
+{"name": "Spotify Engineering", "url": "https://engineering.atspotify.com", "feed": "https://engineering.atspotify.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "Shopify Engineering", "url": "https://shopify.engineering/", "feed": null, "link_pattern": "shopify\\.engineering/[a-z0-9-]+$", "strip_query": true}
+{"name": "Tinder Engineering", "url": "https://medium.com/tinder", "feed": "https://medium.com/feed/tinder", "link_pattern": null, "strip_query": true}
+{"name": "Expedia Group Tech", "url": "https://medium.com/expedia-group-tech", "feed": "https://medium.com/feed/expedia-group-tech", "link_pattern": null, "strip_query": true}
+{"name": "Rappi Engineering", "url": "https://engineering.rappi.com", "feed": "https://engineering.rappi.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "Salesforce Engineering", "url": "https://engineering.salesforce.com", "feed": "https://engineering.salesforce.com/feed/", "link_pattern": null, "strip_query": true}
+{"name": "Data Science at Microsoft", "url": "https://medium.com/data-science-at-microsoft", "feed": "https://medium.com/feed/data-science-at-microsoft", "link_pattern": null, "strip_query": true}
+{"name": "Amazon Science", "url": "https://www.amazon.science/blog", "feed": "https://www.amazon.science/index.rss", "link_pattern": null, "strip_query": true}
+{"name": "Google Research Blog", "url": "https://research.google/blog/", "feed": null, "link_pattern": "research\\.google/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Microsoft Research Blog", "url": "https://www.microsoft.com/en-us/research/blog/", "feed": "https://www.microsoft.com/en-us/research/feed/", "link_pattern": null, "strip_query": true}
+{"name": "Swiggy Bytes", "url": "https://bytes.swiggy.com", "feed": "https://medium.com/feed/swiggy-bytes", "link_pattern": null, "strip_query": true}
+{"name": "Booking.com ML/DS", "url": "https://booking.ai", "feed": "https://booking.ai/feed", "link_pattern": null, "strip_query": true}
+{"name": "Criteo Engineering", "url": "https://medium.com/criteo-engineering", "feed": "https://medium.com/feed/criteo-engineering", "link_pattern": null, "strip_query": true}
+{"name": "Thumbtack Engineering", "url": "https://medium.com/thumbtack-engineering", "feed": "https://medium.com/feed/thumbtack-engineering", "link_pattern": null, "strip_query": true}
+{"name": "Flo Health", "url": "https://medium.com/flo-health", "feed": "https://medium.com/feed/flo-health", "link_pattern": null, "strip_query": true}
+{"name": "Snap Engineering", "url": "https://eng.snap.com", "feed": "https://eng.snap.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "Gett Engineering", "url": "https://medium.com/gett-engineering", "feed": "https://medium.com/feed/gett-engineering", "link_pattern": null, "strip_query": true}
+{"name": "Plum Fintech", "url": "https://medium.com/plum-fintech", "feed": "https://medium.com/feed/plum-fintech", "link_pattern": null, "strip_query": true}
+{"name": "Teads Engineering", "url": "https://medium.com/teads-engineering", "feed": "https://medium.com/feed/teads-engineering", "link_pattern": null, "strip_query": true}
+{"name": "Decathlon Technology", "url": "https://medium.com/decathlontechnology", "feed": "https://medium.com/feed/decathlontechnology", "link_pattern": null, "strip_query": true}
+{"name": "Singapore GDS", "url": "https://medium.com/singapore-gds", "feed": "https://medium.com/feed/singapore-gds", "link_pattern": null, "strip_query": true}
+{"name": "Wren AI", "url": "https://medium.com/wrenai", "feed": "https://medium.com/feed/wrenai", "link_pattern": null, "strip_query": true}
+{"name": "Microsoft Azure (Medium)", "url": "https://medium.com/microsoftazure", "feed": "https://medium.com/feed/microsoftazure", "link_pattern": null, "strip_query": true}
+{"name": "Google Cloud Blog (AI/ML)", "url": "https://cloud.google.com/blog/products/ai-machine-learning", "feed": null, "link_pattern": "cloud\\.google\\.com/blog/products/ai-machine-learning/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Google Cloud Blog (Data Analytics)", "url": "https://cloud.google.com/blog/products/data-analytics", "feed": null, "link_pattern": "cloud\\.google\\.com/blog/products/data-analytics/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Google Developers Blog", "url": "https://developers.googleblog.com/", "feed": null, "link_pattern": "developers\\.googleblog\\.com/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "The Keyword (Google AI)", "url": "https://blog.google/technology/ai/", "feed": "https://blog.google/technology/ai/rss/", "link_pattern": null, "strip_query": true}
+{"name": "AWS ML Blog", "url": "https://aws.amazon.com/blogs/machine-learning/", "feed": "https://aws.amazon.com/blogs/machine-learning/feed/", "link_pattern": null, "strip_query": true}
+{"name": "AWS Database Blog", "url": "https://aws.amazon.com/blogs/database/", "feed": "https://aws.amazon.com/blogs/database/feed/", "link_pattern": null, "strip_query": true}
+{"name": "Microsoft Foundry (Tech Community)", "url": "https://techcommunity.microsoft.com/category/ai/blog/azure-ai-foundry-blog", "feed": null, "link_pattern": "techcommunity\\.microsoft\\.com/blog/azure-ai-foundry-blog/[a-z0-9-]+/\\d+$", "strip_query": true}
+{"name": "Microsoft DevBlogs Foundry", "url": "https://devblogs.microsoft.com/foundry/", "feed": "https://devblogs.microsoft.com/foundry/feed/", "link_pattern": null, "strip_query": true}
+{"name": "Nebius Blog", "url": "https://nebius.com/blog", "feed": null, "link_pattern": "nebius\\.com/blog/posts/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "NVIDIA Developer Blog", "url": "https://developer.nvidia.com/blog", "feed": "https://developer.nvidia.com/blog/feed", "link_pattern": null, "strip_query": true}
+{"name": "OpenAI", "url": "https://openai.com/news/", "feed": "https://openai.com/news/rss.xml", "link_pattern": null, "strip_query": true}
+{"name": "Cohere Blog", "url": "https://cohere.com/blog", "feed": null, "link_pattern": "cohere\\.com/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Hugging Face Blog", "url": "https://huggingface.co/blog", "feed": "https://huggingface.co/blog/feed.xml", "link_pattern": null, "strip_query": true}
+{"name": "PyTorch Blog", "url": "https://pytorch.org/blog/", "feed": null, "link_pattern": "pytorch\\.org/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Cerebras Blog", "url": "https://www.cerebras.ai/blog", "feed": null, "link_pattern": "cerebras\\.ai/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Hyperstack Blog", "url": "https://www.hyperstack.cloud/blog", "feed": null, "link_pattern": "hyperstack\\.cloud/blog/[a-z-]+/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Thinking Machines", "url": "https://thinkingmachines.ai/blog/", "feed": null, "link_pattern": "thinkingmachines\\.ai/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Anthropic Engineering", "url": "https://www.anthropic.com/engineering", "feed": null, "link_pattern": "anthropic\\.com/engineering/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Manus Blog", "url": "https://manus.im/blog", "feed": null, "link_pattern": "manus\\.im/blog/[A-Za-z0-9-]+/?$", "strip_query": true}
+{"name": "LangChain Blog", "url": "https://www.langchain.com/blog", "feed": null, "link_pattern": "langchain\\.com/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "LlamaIndex Blog", "url": "https://www.llamaindex.ai/blog", "feed": null, "link_pattern": "llamaindex\\.ai/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Pydantic", "url": "https://pydantic.dev/articles", "feed": null, "link_pattern": "pydantic\\.dev/articles/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Weaviate Blog", "url": "https://weaviate.io/blog", "feed": null, "link_pattern": "weaviate\\.io/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Qdrant Blog", "url": "https://qdrant.tech/blog/", "feed": null, "link_pattern": "qdrant\\.tech/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Pinecone Blog", "url": "https://www.pinecone.io/blog/", "feed": null, "link_pattern": "pinecone\\.io/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Redis Blog", "url": "https://redis.io/blog/", "feed": "https://redis.io/blog/feed/", "link_pattern": null, "strip_query": true}
+{"name": "Elastic Search Labs", "url": "https://www.elastic.co/search-labs/blog", "feed": null, "link_pattern": "elastic\\.co/search-labs/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Neo4j Blog", "url": "https://neo4j.com/blog/", "feed": "https://neo4j.com/blog/feed/", "link_pattern": null, "strip_query": true}
+{"name": "PuppyGraph Blog", "url": "https://www.puppygraph.com/blog", "feed": null, "link_pattern": "puppygraph\\.com/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Glean Blog", "url": "https://www.glean.com/blog", "feed": null, "link_pattern": "glean\\.com/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Coveo Blog", "url": "https://www.coveo.com/blog/", "feed": "https://www.coveo.com/blog/feed/", "link_pattern": null, "strip_query": true}
+{"name": "ClearML Blog", "url": "https://clear.ml/blog", "feed": null, "link_pattern": "clear\\.ml/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "ZenML Blog", "url": "https://www.zenml.io/blog", "feed": "https://www.zenml.io/blog/rss.xml", "link_pattern": null, "strip_query": true}
+{"name": "deepset Blog", "url": "https://www.deepset.ai/blog", "feed": null, "link_pattern": "deepset\\.ai/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Anyscale Blog", "url": "https://www.anyscale.com/blog", "feed": null, "link_pattern": "anyscale\\.com/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Fin.ai Research", "url": "https://fin.ai/research/", "feed": null, "link_pattern": "fin\\.ai/research/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Databricks Blog", "url": "https://www.databricks.com/blog", "feed": null, "link_pattern": "databricks\\.com/blog/(?!what-is-)[a-z0-9-]+/?$", "strip_query": true}
+{"name": "dltHub Blog", "url": "https://dlthub.com/blog", "feed": null, "link_pattern": "dlthub\\.com/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "ClickHouse Blog", "url": "https://clickhouse.com/blog", "feed": null, "link_pattern": "clickhouse\\.com/blog/[a-z0-9.-]+/?$", "strip_query": true}
+{"name": "Cube Blog", "url": "https://cube.dev/blog", "feed": null, "link_pattern": "cube\\.dev/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Supabase Blog", "url": "https://supabase.com/blog", "feed": null, "link_pattern": "supabase\\.com/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Dagster Blog", "url": "https://dagster.io/blog", "feed": null, "link_pattern": "dagster\\.io/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Airbyte Blog", "url": "https://airbyte.com/blog", "feed": null, "link_pattern": "airbyte\\.com/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "SoftwareMill Blog", "url": "https://softwaremill.com/blog/", "feed": "https://softwaremill.com/blog.rss", "link_pattern": "softwaremill\\.com/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "ngrok Blog", "url": "https://ngrok.com/blog", "feed": null, "link_pattern": "ngrok\\.com/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Educative Blog", "url": "https://www.educative.io/blog", "feed": null, "link_pattern": "educative\\.io/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Salespeak Blog", "url": "https://salespeak.ai/blog", "feed": null, "link_pattern": "salespeak\\.ai/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "UserJot Blog", "url": "https://userjot.com/blog", "feed": null, "link_pattern": "userjot\\.com/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Didit Blog", "url": "https://didit.me/blog", "feed": null, "link_pattern": "didit\\.me/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "BigData School", "url": "https://bigdataschool.ru/blog", "feed": null, "link_pattern": "bigdataschool\\.ru/blog/(?!news/?$|events/?$)[a-z0-9_-]+/?$", "strip_query": true}
+{"name": "Codenrock Blog", "url": "https://codenrock.com/blog", "feed": null, "link_pattern": "codenrock\\.com/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Lightdash Blog", "url": "https://www.lightdash.com/blog", "feed": null, "link_pattern": "lightdash\\.com/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Eugene Yan", "url": "https://eugeneyan.com/writing/", "feed": "https://eugeneyan.com/rss/", "link_pattern": null, "strip_query": true}
+{"name": "Chip Huyen", "url": "https://huyenchip.com/blog/", "feed": "https://huyenchip.com/feed.xml", "link_pattern": null, "strip_query": true}
+{"name": "Philipp Schmid", "url": "https://www.philschmid.de/", "feed": "https://www.philschmid.de/rss", "link_pattern": null, "strip_query": true}
+{"name": "Sebastian Raschka", "url": "https://sebastianraschka.com/blog/", "feed": "https://sebastianraschka.com/rss_feed.xml", "link_pattern": null, "strip_query": true}
+{"name": "Sebastian Raschka (Magazine)", "url": "https://magazine.sebastianraschka.com", "feed": "https://magazine.sebastianraschka.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "Simon Willison", "url": "https://simonwillison.net/", "feed": "https://simonwillison.net/atom/entries/", "link_pattern": null, "strip_query": true}
+{"name": "Martin Fowler", "url": "https://martinfowler.com/", "feed": "https://martinfowler.com/feed.atom", "link_pattern": null, "strip_query": true}
+{"name": "Jack Vanlightly", "url": "https://jack-vanlightly.com/blog", "feed": "https://jack-vanlightly.com/blog?format=rss", "link_pattern": null, "strip_query": true}
+{"name": "Laurent Luce", "url": "https://www.laurentluce.com/", "feed": "https://www.laurentluce.com/feed/", "link_pattern": null, "strip_query": true}
+{"name": "Aleksa Gordić", "url": "https://www.aleksagordic.com/blog", "feed": null, "link_pattern": "aleksagordic\\.com/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "luminousmen", "url": "https://luminousmen.com/", "feed": null, "link_pattern": "luminousmen\\.com/post/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "e10v", "url": "https://e10v.me/", "feed": null, "link_pattern": "e10v\\.me/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Simon Späti (ssp.sh)", "url": "https://www.ssp.sh/blog/", "feed": null, "link_pattern": "ssp\\.sh/blog/[a-z0-9-]+/?$", "strip_query": true}
+{"name": "Alexander Dyakonov", "url": "https://alexanderdyakonov.wordpress.com/", "feed": "https://alexanderdyakonov.wordpress.com/feed/", "link_pattern": null, "strip_query": true}
+{"name": "Pragmatic Data", "url": "https://pragmaticdataorg.wordpress.com/", "feed": "https://pragmaticdataorg.wordpress.com/feed/", "link_pattern": null, "strip_query": true}
+{"name": "Decoding ML", "url": "https://decodingml.substack.com", "feed": "https://decodingml.substack.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "The Neural Maze", "url": "https://theneuralmaze.substack.com", "feed": "https://theneuralmaze.substack.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "Neural Bits", "url": "https://neuralbits.substack.com", "feed": "https://neuralbits.substack.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "Sarthak AI", "url": "https://sarthakai.substack.com", "feed": "https://sarthakai.substack.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "The Data & AI Ecosystem", "url": "https://thedataecosystem.substack.com", "feed": "https://thedataecosystem.substack.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "Data Products (Chad Sanderson)", "url": "https://dataproducts.substack.com", "feed": "https://dataproducts.substack.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "Hello Interview", "url": "https://hellointerview.substack.com", "feed": "https://hellointerview.substack.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "AI Interview Prep", "url": "https://aiinterviewprep.substack.com", "feed": "https://aiinterviewprep.substack.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "BuildML", "url": "https://buildml.substack.com", "feed": "https://buildml.substack.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "Maarten Grootendorst", "url": "https://newsletter.maartengrootendorst.com", "feed": "https://newsletter.maartengrootendorst.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "The AI Edge", "url": "https://newsletter.theaiedge.io", "feed": "https://newsletter.theaiedge.io/feed", "link_pattern": null, "strip_query": true}
+{"name": "ByteByteGo", "url": "https://blog.bytebytego.com", "feed": "https://blog.bytebytego.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "AlgoMaster", "url": "https://blog.algomaster.io", "feed": "https://blog.algomaster.io/feed", "link_pattern": null, "strip_query": true}
+{"name": "Surfalytics", "url": "https://blog.surfalytics.com", "feed": "https://blog.surfalytics.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "Jay Alammar (Language Models)", "url": "https://languagemodels.co", "feed": "https://languagemodels.co/feed", "link_pattern": null, "strip_query": true}
+{"name": "Cobus Greyling", "url": "https://cobusgreyling.medium.com", "feed": "https://cobusgreyling.medium.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "Shaw Talebi", "url": "https://shawhin.medium.com", "feed": "https://shawhin.medium.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "Scitator (Sergey Kolesnikov)", "url": "https://scitator.medium.com", "feed": "https://scitator.medium.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "VK Team", "url": "https://vkteam.medium.com", "feed": "https://vkteam.medium.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "Nathan Rosidi", "url": "https://nathanrosidi.medium.com", "feed": "https://nathanrosidi.medium.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "Luis Sena", "url": "https://luis-sena.medium.com", "feed": "https://luis-sena.medium.com/feed", "link_pattern": null, "strip_query": true}
+{"name": "Ivan Gor", "url": "https://ivan-gor.medium.com", "feed": "https://ivan-gor.medium.com/feed", "link_pattern": null, "strip_query": true}

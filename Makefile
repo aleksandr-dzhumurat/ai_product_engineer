@@ -139,4 +139,10 @@ run-tg-interviewer:
 	DATA_DIR=${CURRENT_DIR}/data \
 	PYTHONPATH=${CURRENT_DIR}/src/rag \
 	DOTENV_FILE=${CURRENT_DIR}/.env \
-	uv run python src/rag/tg_bot.py
+	uv run python src/rag/tg_bot.py --mode rag
+
+run-english-teacher:
+	DATA_DIR=${CURRENT_DIR}/data \
+	PYTHONPATH=${CURRENT_DIR}/src/rag \
+	DOTENV_FILE=${CURRENT_DIR}/.env \
+	uv run python src/rag/tg_bot.py --mode eng

@@ -4,22 +4,34 @@
 
 Who am I? Мой [linkedin](https://www.linkedin.com/in/aleksandr-dzhumurat/) и [tg: Машинист продакшна](https://t.me/locomotive_production_driver), где я пишу о продуктовом ML
 
+
+Курс построен таким образом чтобы дать максимально широкое понимание темы “Запуск ML продукта” с глубоким пониманием каждого отдельного этапа
+
+- Business understanding
+- Exploratory data analysis
+- Experiment planning
+- MVP and prepare service for deploy
+
+
 Курс включает
 
 * базовый ML - разбираем основые основные алгоримы (c формулами!) и ML библитеки (от scikit-learn до sentence-transformers)
 * воркшопы по ML тулам: MLFlow, Streamlit, Langfuse, hyperopt.
 * сервисы и их взаимодействие: Docker, S3 (minIO), FastAPI, PineCone, Telegram как пользовательский интерфейc, Ollama
 
+
+Чего не будет в курсе
+
+- глубокого погпужения в нейросети не будет
+- devops часть трогать не будем
+
+
 Ресурсы
 * Курс полностью доступен в Google Colab (ноутбуки адаптированы для запуска локально)
 * Ссылка на данные для курса - скопируйие директорию с данными к себе [google drive](https://drive.google.com/drive/folders/1FMLKfNZZyFgzOhWjOiyeN3XvCsjT5-ET)
 * [Вопросы к экзамену](slides/ml_breadth_questions.md) - тут по факту список вопросов для собесов
-* Справочник: [Stuart Russell, Peter Norvig: Artificial Intelligence: A Modern Approach](https://people.engr.tamu.edu/guni/csce625/slides/AI.pdf)
 * [Введение в ML от Константина Воронцова](http://www.machinelearning.ru/wiki/images/f/fc/Voron-ML-Intro-slides.pdf)
-* [ML intro от Высшей школы экономики](https://yadi.sk/i/RajIebEkmqgzw)
 
-
-Приятного просмотра!
 
 ## Содержание курса
 
@@ -40,6 +52,8 @@ Who am I? Мой [linkedin](https://www.linkedin.com/in/aleksandr-dzhumurat/) и
 ## Введение в ML
 
 ### Лекция 01 vol 1: введение в ML. Изучаем линейную регрессию
+
+[Начинаем с подготовки данных](slides/lecture_00_prepare_env.md#data-preparation)
 
 | Материалы | Видео |
 |-----------|-------|
@@ -150,31 +164,11 @@ Who am I? Мой [linkedin](https://www.linkedin.com/in/aleksandr-dzhumurat/) и
 | [Google ADK framework](https://github.com/aleksandr-dzhumurat/ai_product_engineer/tree/main/dockerfiles/agent) | [![Лекция 09: Telegram бот + AI agent](http://img.youtube.com/vi/CJAptUEGojA/0.jpg)](http://www.youtube.com/watch?v=CJAptUEGojA "Лекция 09: Telegram бот + AI agent") |
 
 
-# Подробнее о курсе
 
-![ml_mindmap](img/ml_mindmap.png)
+## Доп лекция
 
-
-Курс построен таким образом чтобы дать максимально широкое понимание темы “Запуск ML продукта” с глубоким пониманием каждого отдельного этапа
-
-- Business understanding
-- Exploratory data analysis
-- Experiment planning
-- MVP and prepare service for deploy
-
-# Программа курса
-
-Будет шесть занятий (с лабораторными), в каждой из которых разберём одну тему из области ML и один прикладной инструмент
-
-Темы
 
 - [Многорукие бандиты](https://youtu.be/3jurSlIe2Q8?si=BKfPlgMis6G77ZTg) как пример realtime ML, изучаем FastAPI.
-- [Обучение без учителя](https://youtu.be/TT5Kd1Zmwpo?si=WDn0QKIH3yLhNH8m): кластеризация, снижение размерности, изучаем Streamlit
-
-Чего не будет в курсе
-
-- глубокого погпужения в нейросети не будет
-- devops часть трогать не будем
 
 # Курсовой проект
 

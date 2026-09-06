@@ -1,0 +1,9 @@
+{"stem": "001_Unsloth", "source": "https://unsloth.ai/blog", "parser": "parse_unsloth"}
+{"stem": "002_Anyscale", "source": "https://www.anyscale.com/blog", "parser": "parse_anyscale"}
+{"stem": "003_Lightning_AI", "source": "https://lightning.ai/blog/", "parser": "parse_lightning"}
+{"stem": "004_Hopsworks", "source": "https://www.hopsworks.ai/blog", "parser": "parse_hopsworks"}
+{"stem": "005_Instacart_index_page", "source": "https://tech.instacart.com/", "parser": "parse_instacart"}
+{"stem": "006_Nebius_legacy_domain", "source": "https://nebius.com/blog", "parser": "parse_nebius"}
+{"stem": "007_Uber_AI", "source": "https://www.uber.com/us/en/blog/engineering/uber-ai/", "parser": "parse_uber"}
+{"stem": "008_Databricks", "source": "https://www.databricks.com/blog/category/databricks-ai", "parser": "parse_databricks"}
+{"stem": "009_Pinecone", "source": "https://www.pinecone.io/blog/?category=Engineering&view=list", "parser": "parse_pinecone"}

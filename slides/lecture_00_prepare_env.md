@@ -1,6 +1,6 @@
 [![Лекция 04 vol 1: Организация кода в ML проектах](http://img.youtube.com/vi/yFGYz8XAw30/0.jpg)](http://www.youtube.com/watch?v=yFGYz8XAw30 "Лекция 04 vol 1: Организация кода в ML проектах")
 
-start with [installing uv](https://docs.astral.sh/uv/getting-started/installation/)
+Start by [installing uv](https://docs.astral.sh/uv/getting-started/installation/)
 
 How to code using agents: [learn cursor](https://cursor.com/learn)
 
@@ -64,21 +64,21 @@ jupyter notebook jupyter_notebooks --ip 0.0.0.0 --port 8887 \
 # Data preparation
 
 
-Go to [google drive](https://drive.google.com/drive/my-drive) and create directory ai_product_engineer_course 
+Go to [google drive](https://drive.google.com/drive/my-drive) and create a directory called ai_product_engineer_course 
 
 ![collab_dir_creation](img/collab_dir_creation.png)
 
-Step 1: download data to the local machine or copy to our google drive: [ML for products](https://drive.google.com/drive/folders/1FMLKfNZZyFgzOhWjOiyeN3XvCsjT5-ET?usp=drive_link)
+Step 1: download the data to your local machine, or copy it to our Google Drive: [ML for products](https://drive.google.com/drive/folders/1FMLKfNZZyFgzOhWjOiyeN3XvCsjT5-ET?usp=drive_link)
 
 ![datasets](img/datasets.png)
 
-Upload jupyter_notebooks from your local machine to google drive. It is just an option, for sure you can run all jupyter code on local machine
+Upload jupyter_notebooks from your local machine to Google Drive. This is optional — you can also run all the Jupyter code locally
 
 ![jupyter_notebooks_dir](img/jupyter_notebooks_dir.png)
 
-Also upload an src dir to Google Drive.
+Also upload the src directory to Google Drive.
 
-Open first notebook [vol_00_pre_requirements_01_machine_learning_intro.ipynb](https://github.com/aleksandr-dzhumurat/ai_product_engineer/blob/main/jupyter_notebooks/vol_00_pre_requirements_01_machine_learning_intro.ipynb) and enjoy!
+Open the first notebook [vol_00_pre_requirements_01_machine_learning_intro.ipynb](https://github.com/aleksandr-dzhumurat/ai_product_engineer/blob/main/jupyter_notebooks/vol_00_pre_requirements_01_machine_learning_intro.ipynb) and enjoy!
 
 ## Local option
 
@@ -132,7 +132,7 @@ Configure with .devcontainr/devcontainer.json
 }
 ```
 
-For extension search `Ctrl`+`Shift`+`P`
+To search for extensions, press `Ctrl`+`Shift`+`P`
 
 Интересная опция с Cloud.ru https://cloud.ru/ - есть возможность  Удаленно подключиться к убунте и настроить докер по инструкции для убунты
 

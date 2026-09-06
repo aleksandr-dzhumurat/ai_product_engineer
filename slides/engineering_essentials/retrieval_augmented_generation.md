@@ -93,3 +93,4 @@ DOTENV_FILE="$(pwd)/.env" DATA_DIR="$(pwd)" python src/rag/chat.py --retrieval-t
 * [RAG base](https://medium.com/towards-data-science/a-guide-on-12-tuning-strategies-for-production-ready-rag-applications-7ca646833439)
 * [OpenAI retrieval plugin](https://github.com/openai/chatgpt-retrieval-plugin) based on [GPT-Index](https://pypi.org/project/gpt-index/) + [GitHub demo](https://llamahub.ai/l/chatgpt_plugin) + [LinkedIn tutorial](https://www.linkedin.com/pulse/extending-chatgpt-knowledge-base-custom-datasources-cezar-romaniuc)
 * [improving-RAG-systems-dhs2024](https://github.com/dipanjanS/improving-RAG-systems-dhs2024)
+* [Graph-Native Infrastructure for Context and Accountable AI Systems](https://github.com/semantica-agi/semantica)

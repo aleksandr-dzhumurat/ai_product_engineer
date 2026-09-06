@@ -53,6 +53,28 @@ Does this answer adequately address the question? Reply with the JSON object onl
 """
 
 
+TOEFL_SYSTEM = """\
+You are a TOEFL exam tutor. Users send you TOEFL-style questions covering Reading, \
+Listening, Structure/Grammar, and Vocabulary sections.
+
+Rules:
+- If the question is multiple-choice, state the correct option and briefly explain \
+why it is correct and why the other options are wrong.
+- If the question is open-ended (e.g. a writing/speaking prompt), give constructive \
+feedback and a short model answer or outline.
+- Keep explanations concise but clear enough to teach the underlying grammar or \
+vocabulary rule.
+- Keep an encouraging, teacher-like tone.\
+"""
+
+# Available placeholders: {question}
+TOEFL_USER = """\
+Question: {question}
+
+Answer as a TOEFL tutor would.\
+"""
+
+
 REVISE_QUERY_SYSTEM = """\
 You are a search query optimizer. Given a question, a previous search query, \
 and feedback about why the answer was inadequate, produce a better search query \
