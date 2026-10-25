@@ -4,10 +4,16 @@ Query documents stored in a ChromaDB collection.
 from __future__ import annotations
 
 import argparse
+import sys
+from pathlib import Path
 from typing import List, Sequence
 
 import requests
-from connections import BaseConnection, ChromaConnection
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from rag.agent.config import EMBEDDING_MODEL_NAME, OLLAMA_HOST, VECTOR_DB_BACKEND
+from rag.connections import BaseConnection, ChromaConnection, WeaviateConnection
 
 
 def fetch_query_embedding(query: str, host: str, model: str, timeout: float = 60.0) -> List[float]:
@@ -90,12 +96,18 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--persist-dir",
         default="data/chroma",
-        help="ChromaDB persistence directory (default: data/chroma).",
+        help="ChromaDB persistence directory, Chroma backend only (default: data/chroma).",
+    )
+    parser.add_argument(
+        "--backend",
+        default=VECTOR_DB_BACKEND,
+        choices=["chroma", "weaviate"],
+        help=f"Vector store backend (default: {VECTOR_DB_BACKEND}, override with VECTOR_DB_BACKEND).",
     )
     parser.add_argument(
         "--collection",
         default="documents",
-        help="ChromaDB collection name (default: documents).",
+        help="Vector DB collection name (default: documents).",
     )
     parser.add_argument(
         "--limit",
@@ -110,13 +122,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--embedding-model",
-        default="granite4:350m",
-        help="Ollama embedding model (default: granite4:350m).",
+        default=EMBEDDING_MODEL_NAME,
+        help=f"Ollama embedding model (default: {EMBEDDING_MODEL_NAME}).",
     )
     parser.add_argument(
         "--ollama-host",
-        default="http://localhost:11434",
-        help="Ollama API host (default: http://localhost:11434).",
+        default=OLLAMA_HOST,
+        help=f"Ollama API host (default: {OLLAMA_HOST}).",
     )
     return parser
 
@@ -124,34 +136,42 @@ def build_arg_parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> None:
     parser = build_arg_parser()
     args = parser.parse_args(argv)
-    client = ChromaConnection()
+    if args.backend == "weaviate":
+        client = WeaviateConnection()
+    else:
+        client = ChromaConnection()
 
     try:
-        client.get_collection(args.collection)
-    except Exception as exc:
-        raise SystemExit(
-            f"Collection '{args.collection}' was not found. "
-            "Ingest documents first using src/rag/ingestion.py."
-        ) from exc
+        try:
+            client.get_collection(args.collection)
+        except Exception as exc:
+            raise SystemExit(
+                f"Collection '{args.collection}' was not found: {exc}.\n"
+                "Ingest documents first using src/rag/ingestion.py."
+            ) from exc
 
-    print(f"Generating embedding for query: '{args.query}'")
-    query_embedding = fetch_query_embedding(
-        args.query,
-        host=args.ollama_host,
-        model=args.embedding_model,
-    )
-    print(f"Embedding dimension: {len(query_embedding)}")
-    print(f"Searching in collection: {args.collection}")
-    print()
+        print(f"Generating embedding for query: '{args.query}'")
+        query_embedding = fetch_query_embedding(
+            args.query,
+            host=args.ollama_host,
+            model=args.embedding_model,
+        )
+        print(f"Embedding dimension: {len(query_embedding)}")
+        print(f"Searching in collection: {args.collection}")
+        print()
 
-    results = query_collection(
-        client,
-        args.collection,
-        args.limit,
-        include_distances=not args.no_distances,
-        query_embedding=query_embedding,
-    )
-    print_results(results, include_distances=not args.no_distances)
+        results = query_collection(
+            client,
+            args.collection,
+            args.limit,
+            include_distances=not args.no_distances,
+            query_embedding=query_embedding,
+        )
+        print_results(results, include_distances=not args.no_distances)
+    finally:
+        close = getattr(client.client, "close", None)
+        if close is not None:
+            close()
 
 
 if __name__ == "__main__":

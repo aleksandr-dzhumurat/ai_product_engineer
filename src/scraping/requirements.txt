@@ -16,3 +16,5 @@ opentelemetry-exporter-otlp-proto-http # OTLP export transport: metrics.py
 openai                  # Nebius (OpenAI-compatible) client: llm_client.py
 backoff                 # retry/backoff decorator: llm_client.py
 python-dotenv           # loads src/scraping/.env: llm_client.py, tg_pusher.py
+pandas>=2.0              # WikiArt dataset and tag tables
+PyYAML                   # optional WikiArt service-data configuration

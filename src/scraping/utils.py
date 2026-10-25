@@ -10,8 +10,9 @@ from __future__ import annotations
 import json
 import logging
 import os
+import tarfile
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
@@ -77,7 +78,7 @@ def append_run(journal_path: Path = DEFAULT_JOURNAL_PATH, **fields) -> None:
     {"run_time": <UTC ISO timestamp>, **fields}. Gives an auditable history of
     when each scraper last ran and what it produced."""
     journal_path.parent.mkdir(parents=True, exist_ok=True)
-    entry = {"run_time": datetime.now(timezone.utc).isoformat(), **fields}
+    entry = {"run_time": datetime.now(UTC).isoformat(), **fields}
     with journal_path.open("a", encoding="utf-8") as f:
         f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
@@ -89,7 +90,7 @@ def push_event(path: Path, event: str, **fields) -> None:
     an mhtml snapshot landing, a blogpost being discovered) rather than just
     one summary row per run (that's what append_run/runs_journal.jsonl is for)."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    entry = {"event": event, "timestamp": datetime.now(timezone.utc).isoformat(), **fields}
+    entry = {"event": event, "timestamp": datetime.now(UTC).isoformat(), **fields}
     with path.open("a", encoding="utf-8") as f:
         f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
@@ -135,3 +136,67 @@ def load_mhtml_ids(path: Path = DEFAULT_EVENTS_LOG_PATH) -> dict[str, str]:
             if entry.get("event") == "mhtml_retrieved" and "stem" in entry and "mhtml_id" in entry:
                 ids[entry["stem"]] = entry["mhtml_id"]
     return ids
+
+
+
+def extract_tar_gz(archive_path, output_directory):
+    """
+    # Example usage:
+    archive_path = "archive.tar.gz"
+    output_directory = "data"
+
+    extract_tar_gz(archive_path, output_directory)
+    """
+    if not os.path.exists(archive_path):
+        raise FileNotFoundError(f"Archive file '{archive_path}' not found.")
+
+    # Create the output directory if it doesn't exist
+    if not os.path.exists(output_directory):
+        os.makedirs(output_directory)
+
+    # Extract the contents of the tar.gz archive
+    with tarfile.open(archive_path, "r:gz") as tar:
+        tar.extractall(output_directory)
+
+
+def create_tar_gz(directory_path, output_path):
+    # Check if the directory exists
+    if not os.path.exists(directory_path):
+        raise FileNotFoundError(f"Directory '{directory_path}' not found.")
+
+    with tarfile.open(output_path, 'w:gz') as archive:
+        # Walk through the directory and add files to the archive
+        for root, _, files in os.walk(directory_path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                # Archive only the files without their parent directory
+                archive.add(file_path, arcname=os.path.relpath(file_path, directory_path))
+
+
+logger = logging.getLogger('my_logger')
+logging.basicConfig(format='%(asctime)s: %(message)s', level=logging.INFO)
+
+
+def write_jsonl(records: list[dict], output_path: str):
+    with open(output_path, 'w', encoding='utf-8') as file:
+        file.writelines(json.dumps(record, ensure_ascii=False) + '\n' for record in records)
+
+def read_jsonl(input_path: str) -> list[dict]:
+    result = []
+    with open(input_path, 'r', encoding='utf-8') as file:
+        for line in file:
+            line = line.strip()
+            if not line:
+                continue
+            result.append(json.loads(line))
+    return result
+
+
+def _process_artwork_file(args: tuple[str, str]) -> tuple[str, str]:
+    """Compatibility for already-running WikiArt jobs that pickle this path."""
+    if __package__:
+        from .scrape_wikiart import _process_artwork_file as process
+    else:
+        from scrape_wikiart import _process_artwork_file as process
+
+    return process(args)

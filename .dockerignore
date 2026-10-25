@@ -1,0 +1,28 @@
+# Git and IDE
+.git
+.gitignore
+.history
+.claude
+.idea
+.vscode
+.DS_Store
+.env
+.env.*
+
+# Virtual environments and caches
+.venv
+*/.venv
+**/.venv
+__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+
+# Heavy local data directories (mounted via volumes at runtime)
+data/
+data/**
+
+# Notebooks and documentation
+jupyter_notebooks/
+slides/
+*.md

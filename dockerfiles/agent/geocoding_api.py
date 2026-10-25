@@ -54,10 +54,14 @@ class GooglePlaceApi:
             params.update({"location": location_param, 'radius': radius, "query": q})
 
         response = requests.get(self.url, params=params, headers={}).json()
+        if response.get('status') not in ('OK', 'ZERO_RESULTS'):
+            error_msg = response.get('error_message', response.get('status', 'Unknown error'))
+            raise RuntimeError(f"Places API request failed: {error_msg} (status: {response.get('status')})")
+
         if self.API_TYPE == 'findplacefromtext':
-            response = response['candidates']
+            response = response.get('candidates', [])
         else:
-            response = response['results']
+            response = response.get('results', [])
         return response
 
     def find_place(self, place_name: str):
@@ -70,14 +74,14 @@ class GooglePlaceApi:
         response = requests.get(url, params=params)
         data = response.json()
 
-        if data['status'] == 'OK':
+        if data.get('status') == 'OK' and data.get('results'):
             location = data['results'][0]['geometry']['location']
             latitude = location['lat']
             longitude = location['lng']
+            return f'{latitude},{longitude}'
         else:
-            print(data)
-            print('Geocoding failed')
-        return f'{latitude},{longitude}'
+            error_msg = data.get('error_message', data.get('status', 'Unknown error'))
+            raise RuntimeError(f"Geocoding failed: {error_msg} (status: {data.get('status')})")
 
 
 def main():

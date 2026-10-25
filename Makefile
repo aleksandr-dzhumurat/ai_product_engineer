@@ -37,7 +37,8 @@ build-tg:
 run-sagemaker-train:
 	docker run -it --rm \
 	--env-file ${CURRENT_DIR}/.env  \
-	-v "${CURRENT_DIR}/data:/srv/data" \
+	-e DATA_DIR=/opt/ml/data \
+	-v "${CURRENT_DIR}/data:/opt/ml/data" \
 	-v "${CURRENT_DIR}/src:/opt/ml/model" \
 	-v "${CURRENT_DIR}/src:/opt/ml/code" \
 	sagemaker:latest train
@@ -88,14 +89,12 @@ run-train:
 run-service:
 	docker run -it --rm \
 	--env-file ${CURRENT_DIR}/.env  \
-	-e CONFIG_DIR=/srv/configs \
+	-e DATA_DIR=/srv/data \
 	-p 8002:8000 \
-	-v "${CURRENT_DIR}/configs:/srv/configs" \
 	-v "${CURRENT_DIR}/data:/srv/data" \
 	-v "${CURRENT_DIR}/dockerfiles/api/src:/srv/src" \
-	-v "${CURRENT_DIR}/src:/srv/src/ml_tools" \
+	-v "${CURRENT_DIR}/src:/srv/ml_tools" \
 	--name demo_api_service \
-	--network ai_product_engineer_backtier_network \
 	api:latest serve
 
 run-streamlit:
@@ -113,6 +112,9 @@ run-streamlit:
 
 run-chroma:
 	docker-compose --env-file .env up chroma
+
+run-weaviate:
+	docker-compose --env-file .env up weaviate
 
 ingest: run-chroma
 	uv run python src/ingestion.py "$(SOURCE_DIR)" \
@@ -137,12 +139,52 @@ chat:
 
 run-tg-interviewer:
 	DATA_DIR=${CURRENT_DIR}/data \
-	PYTHONPATH=${CURRENT_DIR}/src/rag \
+	PYTHONPATH=${CURRENT_DIR}/src \
 	DOTENV_FILE=${CURRENT_DIR}/.env \
 	uv run python src/rag/tg_bot.py --mode rag
 
 run-english-teacher:
 	DATA_DIR=${CURRENT_DIR}/data \
-	PYTHONPATH=${CURRENT_DIR}/src/rag \
+	PYTHONPATH=${CURRENT_DIR}/src \
 	DOTENV_FILE=${CURRENT_DIR}/.env \
 	uv run python src/rag/tg_bot.py --mode eng
+
+REFS ?= data/references
+MANIFEST ?= $(REFS)/MANIFEST
+
+# Make treats positional arguments as targets. Consume repository goals only
+# when clone is requested, so other invocations still report unknown targets.
+ifneq ($(filter clone,$(MAKECMDGOALS)),)
+override CLONE_GOALS := $(strip $(foreach goal,$(MAKECMDGOALS),$(if $(findstring /,$(goal)),$(goal))))
+ifneq ($(CLONE_GOALS),)
+.PHONY: $(CLONE_GOALS)
+$(CLONE_GOALS): ;
+endif
+endif
+
+.PHONY: clone
+clone:
+	@usage() { echo "usage: make clone owner/repo (or make clone REPO_PATH=https://github.com/owner/repo)" >&2; exit 1; }; \
+	if [ -n "$$REPO_PATH" ] && [ -n "$$CLONE_GOALS" ]; then usage; fi; \
+	repo_path="$${REPO_PATH:-$$CLONE_GOALS}"; \
+	repo_path=$${repo_path#https://github.com/}; \
+	repo_path=$${repo_path%/}; \
+	case "$$repo_path" in \
+		*/*/*|/*|*/|*[!a-zA-Z0-9_./-]*) usage ;; \
+		*/*) ;; \
+		*) usage ;; \
+	esac; \
+	repo_name=$${repo_path##*/}; \
+	repo_name=$${repo_name%.git}; \
+	case "$$repo_name" in ''|.|..) usage ;; esac; \
+	repo_url="https://github.com/$$repo_path"; \
+	dest="$$REFS/$$repo_name"; \
+	if [ -d "$$dest" ]; then \
+		echo "$$dest already exists, skipping"; \
+	else \
+		mkdir -p "$$REFS" && \
+		git clone --depth 1 --quiet "$$repo_url" "$$dest" && \
+		commit=$$(git -C "$$dest" rev-parse --short HEAD) && \
+		printf "%s\t%s\t%s\t%s\n" "$$repo_name" "$$repo_url" "$$commit" "$$(date +%F)" >> "$$MANIFEST" && \
+		echo "cloned $$repo_url -> $$dest @ $$commit"; \
+	fi

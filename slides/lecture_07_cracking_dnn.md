@@ -9,181 +9,214 @@ Code examples
 * [PyTorch: rewind all](https://colab.research.google.com/drive/1p1aAaauy_LZlZ5ZKLvwc6cdYkVhbZ-8B?usp=sharing)
 * [PyTorchUltimateMaterial](https://github.com/DataScienceHamburg/PyTorchUltimateMaterial)
 
-# Perceptron explained
+# PyTorch layers
 
-Один нейрон (перцептрон)
+* [https://www.youtube.com/playlist?list=PLtBw6njQRU-rwp57C0oIVt26ZgjG9NI](https://www.youtube.com/playlist?list=PLtBw6njQRU-rwp57C0oIVt26ZgjG9NI)
+* [https://introtodeeplearning.com/](https://introtodeeplearning.com/)
 
+# Перцептрон
+
+## Один нейрон
+
+```mermaid
+graph LR
+    x1["x₁"] -->|"w₁"| sum(("Σ"))
+    x2["x₂"] -->|"w₂"| sum
+    x3["x₃"] -->|"w₃"| sum
+    b["b (смещение)"] --> sum
+    sum -->|"z = Σ wᵢxᵢ + b"| act["f(z)"]
+    act --> out["a (выход)"]
 ```
-x₁ ─┐
-x₂ ─┤─ Σ(wᵢxᵢ + b) → f(z) → выход
-x₃ ─┘
-```
 
-- $w$ — веса (что важно)
-- $b$ — смещение (bias)
-- $f$ — функция активации (нелинейность)
+- $x_i$ — входы нейрона
+- $w_i$ — веса: показывают, насколько важен каждый вход (чем больше вес по модулю, тем сильнее вход влияет на результат)
+- $b$ — смещение (bias): сдвигает порог срабатывания нейрона независимо от входов
+- $z = \sum_i w_i x_i + b$ — линейная комбинация входов
+- $f$ — функция активации (нелинейность), $a = f(z)$ — выход нейрона
 
-Без нелинейных функций активации сеть из любого числа слоёв — это просто линейное преобразование.
+**Зачем нужна нелинейность.** Без неё сеть из любого числа слоёв — это просто одно линейное преобразование: композиция двух линейных слоёв $W_2(W_1 x) = (W_2 W_1)x$ сводится к одному слою с матрицей $W_2 W_1$. Именно нелинейные активации позволяют сети аппроксимировать сложные зависимости.
 
----
-
-## Прямой проход (Forward pass)
+## Прямой проход
 
 ```python
 # Один слой
-z = W @ x + b       # линейная комбинация
-a = relu(z)          # активация
+z = W @ x + b  # линейная комбинация
+a = relu(z)  # активация
 ```
 
-Данные проходят слой за слоем: вход → скрытые слои → выход.
+Данные проходят слой за слоем: вход → скрытые слои → выход. Выход каждого слоя становится входом следующего.
 
-Функции активации
+### Функции активации
 
-| Функция | Формула | Где |
-|---------|---------|-----|
+| Функция | Формула | Где применяется |
+|---------|---------|-----------------|
 | ReLU | $\max(0, x)$ | скрытые слои |
-| Sigmoid | $\frac{1}{1+e^{-x}}$ | бинарная классификация |
-| Softmax | $\frac{e^{x_i}}{\sum_j e^{x_j}}$ | многоклассовая классификация |
-| GELU | $x \cdot \Phi(x)$ | трансформеры |
-| Tanh | $\frac{e^x - e^{-x}}{e^x + e^{-x}}$ | RNN |
+| Sigmoid | $\frac{1}{1+e^{-x}}$ | бинарная классификация (выход в диапазоне (0, 1) трактуется как вероятность) |
+| Softmax | $\frac{e^{x_i}}{\sum_j e^{x_j}}$ | многоклассовая классификация (выходной слой; превращает вектор в распределение вероятностей, сумма равна 1) |
+| GELU | $x \cdot \Phi(x)$, где $\Phi$ — функция распределения стандартного нормального закона | трансформеры |
+| Tanh | $\frac{e^x - e^{-x}}{e^x + e^{-x}}$ | RNN (выход в диапазоне (−1, 1), центрирован относительно нуля) |
 
 ---
 
-## Обратное распространение (Backpropagation)
+## Обратное распространение ошибки
 
-1. Считаем ошибку (loss) на выходе — например, CrossEntropy (y — истинные метки, $\hat{y}$ — предсказания модели)
+Обратное распространение (backpropagation) — алгоритм, который эффективно вычисляет градиенты функции потерь по всем параметрам сети, двигаясь от выхода ко входу.
+
+1. Считаем ошибку (loss) на выходе. Например, для бинарной классификации используется бинарная кросс-энтропия ($y$ — истинные метки, $\hat{y}$ — предсказания модели):
 
    $$L = -\sum \left[ y \cdot \log(\hat{y}) + (1 - y) \cdot \log(1 - \hat{y}) \right]$$
 
-2. Берём производную loss по каждому параметру ($W, b$) через chain rule
-3. Обновляем параметры ($W, b$) в сторону уменьшения loss
+   Для многоклассовой классификации: $L = -\sum_k y_k \log \hat{y}_k$.
+2. Берём производную loss по каждому параметру ($W, b$) через правило цепочки (chain rule).
+3. Обновляем параметры ($W, b$) в сторону уменьшения loss.
 
-Chain rule:
+**Правило цепочки.** Для одного веса $w$, где $z = wx + b$, $a = f(z)$:
 
 $$\frac{\partial L}{\partial w} = \frac{\partial L}{\partial a} \cdot \frac{\partial a}{\partial z} \cdot \frac{\partial z}{\partial w}$$
 
-**Example**
- 
-$$
-f(x, z) = \sin(x \cdot z)^2
-$$
+Идея: влияние веса на loss складывается из цепочки «вес → $z$ → $a$ → loss», и производные по звеньям цепочки перемножаются.
 
-Render in mermaid diagram
+### Пример
 
-```mermaid
+$$f(x, z) = \sin\left((x \cdot z)^2\right)$$
+
+Схема вычислений (граф вычислений):
+
 ```mermaid
 graph LR
-    x["x"] --> mul(("*"))
+    x["x"] --> mul(("×"))
     z["z"] --> mul
     mul --> sq(("^2"))
     sq --> sinnode(("sin"))
-    sinnode --> y["y"]
+    sinnode --> y["f"]
 ```
- 
-Partial derivatives (chain rule)
- 
-$$
-\frac{\partial f}{\partial x} = \cos\!\left((x \cdot z)^2\right) \cdot 2(x \cdot z) \cdot z
-$$
- 
-$$
-\frac{\partial f}{\partial z} = \cos\!\left((x \cdot z)^2\right) \cdot 2(x \cdot z) \cdot x
-$$
- 
-Numerical evaluation at $x = 1,\ z = 2$
- 
-$$
-\left.\frac{\partial f}{\partial x}\right|_{x=1,\, z=2}
-= \cos(4) \cdot 2(1 \cdot 2) \cdot 2
-= 8\cos 4
-\approx -5.23
-$$
+
+Разобьём функцию на шаги: $u = x \cdot z$, $v = u^2$, $f = \sin v$. Тогда частные производные по правилу цепочки:
+
+$$\frac{\partial f}{\partial x} = \cos\left((x \cdot z)^2\right) \cdot 2(x \cdot z) \cdot z$$
+
+$$\frac{\partial f}{\partial z} = \cos\left((x \cdot z)^2\right) \cdot 2(x \cdot z) \cdot x$$
+
+Численная проверка при $x = 1,\ z = 2$ (тогда $u = 2$, $v = 4$):
+
+$$\left.\frac{\partial f}{\partial x}\right|_{x=1,\, z=2} = \cos(4) \cdot 2(1 \cdot 2) \cdot 2 = 8\cos 4 \approx -5.23$$
+
+$$\left.\frac{\partial f}{\partial z}\right|_{x=1,\, z=2} = \cos(4) \cdot 2(1 \cdot 2) \cdot 1 = 4\cos 4 \approx -2.61$$
+
+Именно так работает backprop: сначала прямой проход вычисляет $u, v, f$ и запоминает их, затем обратный проход перемножает локальные производные каждого узла.
+
+## Градиентный спуск и оптимизаторы
 
 Шаг градиентного спуска:
 
 $$W \gets W - \eta \frac{\partial L}{\partial W}$$
+
 $$b \gets b - \eta \frac{\partial L}{\partial b}$$
 
-где $\frac{\partial L}{\partial W}, \frac{\partial L}{\partial b}$ — градиенты
+где $\frac{\partial L}{\partial W}, \frac{\partial L}{\partial b}$ — градиенты (направление наибольшего роста loss, поэтому идём в обратную сторону), $\eta$ — скорость обучения (learning rate): размер шага. Слишком большой $\eta$ приводит к расходимости, слишком маленький — к очень медленному обучению.
 
-Проблемы:
-- Затухающий градиент — в глубоких сетях градиент умножается много раз и стремится к 0. Решение: ReLU, batch norm, residual connections.
-- Взрывной градиент — Градиенты очень большие, веса обновляются слишком сильно → обучение нестабильно.
+**Метод оптимизации** — способ обновления весов по градиентам (градиентный спуск и его варианты: Momentum, AdaGrad, Adam и другие).
 
-Opetimization method - способ обновления весов (градиентный спуск и разные его вариации: adam, etc).
+### Эпоха и пакеты
 
-Epoch: перемешиваем датасет и разбиваем на батчи. Далее считаем градиенты по батчам и обновляем веса, каждая эпоха - это один проход по всему датасету.
+Перемешиваем набор данных и разбиваем его на пакеты (батчи). Для каждого пакета вычисляем градиенты и обновляем веса. Одна эпоха — один полный проход по всему набору данных. Обучение на пакетах (mini-batch) быстрее, чем на всём наборе сразу, и при этом даёт более устойчивую оценку градиента, чем обучение на одном примере.
 
-Momentum helps gradient descent move in a smoother, more consistent direction by remembering where it was going before.
+### Momentum (моментум)
 
-AdaGrad adapts the learning rate for each parameter individually, increasing it for infrequent features and decreasing it for frequent ones.
+Сглаживает движение градиентного спуска: алгоритм накапливает направление предыдущих шагов, как катящийся шар с инерцией.
 
-Adam combines the benefits of both momentum and AdaGrad, making it a popular choice for deep learning.
+$$v_t = \beta v_{t-1} + g_t, \qquad \theta \gets \theta - \eta v_t$$
 
-Это похоже на методы второго порядка, когда используем не только направление но и кривизну.
+Это ускоряет движение вдоль устойчивых направлений и гасит колебания поперёк узких «оврагов» функции потерь.
 
-DNN проблемы:
+### AdaGrad
 
-* Not enough data
-* not enough features or features not expressive
-* model too simple
+Адаптирует скорость обучения отдельно для каждого параметра: увеличивает её для редко обновляемых параметров (например, связанных с редкими признаками) и уменьшает для часто обновляемых.
 
+$$G_t = G_{t-1} + g_t^2, \qquad \theta \gets \theta - \frac{\eta}{\sqrt{G_t} + \varepsilon} g_t$$
 
-# Exploding/Vanishing Gradients
+Недостаток: накопленная сумма $G_t$ только растёт, поэтому шаг со временем затухает почти до нуля. Этот недостаток исправляет RMSProp, заменяя сумму скользящим средним.
 
+### Adam
 
-## Vanishing gradients (затухающие градиенты)
+Объединяет идеи Momentum (скользящее среднее градиентов $m_t$) и AdaGrad/RMSProp (скользящее среднее квадратов градиентов $v_t$), поэтому широко используется в глубоком обучении.
 
-Если градиенты слишком большие или маленькие → обучение нарушается
+$$m_t = \beta_1 m_{t-1} + (1-\beta_1) g_t, \qquad v_t = \beta_2 v_{t-1} + (1-\beta_2) g_t^2$$
 
-- Backpropagation updates weights using the chain rule, multiplying gradients at each layer.
-- If the activation function (e.g., sigmoid, tanh) produces values in (0,1), their derivatives are also small.
-- Multiplying small numbers repeatedly shrinks gradients exponentially → layers at the beginning get close to zero updates.
+$$\theta \gets \theta - \eta \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \varepsilon}$$
+
+Здесь $\hat{m}_t, \hat{v}_t$ — оценки с поправкой на смещение в начале обучения.
+
+Деление на $\sqrt{\hat{v}_t}$ отчасти играет роль учёта кривизны функции, как в методах второго порядка (там используется матрица вторых производных — гессиан). Но Adam остаётся методом первого порядка: он использует только градиенты и не вычисляет гессиан.
+
+### Проблемы при обучении глубоких сетей
+
+- **Затухающий градиент**: в глубоких сетях градиент многократно перемножается и стремится к 0. Возможные решения: ReLU, пакетная нормализация и остаточные связи (подробнее — в следующем разделе).
+- **Взрывной градиент**: градиенты становятся очень большими, веса обновляются слишком сильно, обучение нестабильно.
+
+### Общие причины плохого качества модели
+
+Помимо проблем с градиентами, качество может страдать по причинам, не связанным с оптимизацией:
+
+- **Недостаточно данных** — модель не может выучить закономерность и переобучается на немногочисленных примерах.
+- **Недостаточно признаков или они малоинформативны** — в данных просто нет сигнала, по которому можно предсказать ответ; никакая оптимизация этого не исправит.
+- **Слишком простая модель** — не хватает ёмкости (слоёв, нейронов), чтобы описать зависимость (недообучение, underfitting).
+
+---
+
+# Взрывающиеся и затухающие градиенты
+
+Если градиенты становятся слишком большими или слишком маленькими, обучение нарушается. Причина общая: при обратном распространении градиенты перемножаются на каждом слое (правило цепочки), поэтому в глубокой сети малые множители дают затухание, а большие — взрыв.
+
+## Затухающие градиенты
+
+Что происходит:
+
+- При обратном распространении градиент для каждого слоя получается перемножением производных всех слоёв, лежащих выше.
+- Производные сигмоиды и tanh малы: у сигмоиды они не превышают 0.25, а в области насыщения (при больших по модулю входах) стремятся к 0.
+- Многократное перемножение малых чисел приводит к экспоненциальному уменьшению градиентов — первые слои почти перестают обновляться.
 
 Результат:
 
-- Потеря способности сети обучать нижние слои
-- Очень медленная сходимость
-- "застреваем" в неоптимальном минимуме
+- Потеря способности сети обучать нижние слои (именно они отвечают за базовые признаки).
+- Очень медленная сходимость.
+- «Застревание» в неоптимальном решении: функция потерь перестаёт убывать, хотя качество модели ещё далеко от хорошего.
 
-Причины
-
-Малые веса + сигмоидная/tanh активация:
+Причины: малые веса и функции активации sigmoid/tanh.
 
 $$\sigma'(x) = \sigma(x)(1-\sigma(x)) \le 0.25$$
 
-Множитель < 1 на каждом слое → градиент быстро стремится к 0
+Множитель меньше 1 на каждом слое → градиент быстро стремится к 0. Например, для 10 слоёв с сигмоидой градиент уменьшается не менее чем в $4^{10} \approx 10^6$ раз.
 
-## Exploding gradients (взрывающиеся градиенты)
+## Взрывающиеся градиенты
 
-Что происходит
+Что происходит: градиенты становятся очень большими, веса обновляются слишком сильно, обучение нестабильно.
 
-Градиенты очень большие, веса обновляются слишком сильно → обучение нестабильно
+Причины:
 
-Причины
-- Большие начальные веса
-- Длинная сеть → многократное умножение больших матриц
-- Некорректная активация (ReLU с большим входом)
+- Большие начальные веса.
+- Длинная сеть → многократное умножение больших матриц (если норма весовых матриц больше 1, градиент растёт экспоненциально).
+- Неограниченные активации (например, ReLU не насыщается и не ограничивает значения сверху), из-за чего большие входы приводят к большим выходам и градиентам.
 
-Симптомы
-- Loss becomes NaN or infinity.
-- Веса резко прыгают - обучение никогда не сойдется
+Симптомы:
 
+- Функция потерь принимает значение NaN или бесконечность.
+- Веса резко прыгают, обучение не сходится.
 
 ## Как бороться
 
-Для vanishing gradients
+### Для затухающих градиентов
 
-Использовать "хорошие" активации
-- ReLU, LeakyReLU, GELU → градиенты не затухают
+**Использовать «хорошие» активации.** ReLU, LeakyReLU, GELU помогают уменьшить затухание: у ReLU производная равна 1 при положительных входах, поэтому градиент не уменьшается при прохождении через слой.
 
-Инициализация весов
-- Xavier/Glorot, He
+**Правильная инициализация весов.** Веса выбираются так, чтобы дисперсия сигнала и градиента не менялась от слоя к слою:
 
-Нормализация
-- BatchNorm → стабилизирует распределение. Нормализует активации внутри батча → ускоряет обучение, снижает зависимость от инициализации.
+- Xavier/Glorot — для sigmoid/tanh: $\mathrm{Var}(w) = \frac{2}{n_{in} + n_{out}}$
+- He — для ReLU: $\mathrm{Var}(w) = \frac{2}{n_{in}}$
 
-Нормализация:
+**Нормализация.** BatchNorm стабилизирует распределение: нормализует активации внутри пакета, ускоряет обучение и снижает зависимость от инициализации.
+
+Нормализация (здесь $\mu$ и $\sigma$ — среднее и стандартное отклонение по пакету; на практике к $\sigma$ добавляют малую константу, чтобы не делить на 0):
 
 $$\hat{x} = \frac{x - \mu}{\sigma}$$
 
@@ -191,238 +224,115 @@ $$\hat{x} = \frac{x - \mu}{\sigma}$$
 
 $$y = \gamma \cdot \hat{x} + \beta$$
 
-где $\gamma$ и $\beta$ — обучаемые параметры.
+где $\gamma$ и $\beta$ — обучаемые параметры. Они нужны, чтобы сеть при необходимости могла вернуть исходное распределение и не теряла выразительность из-за нормализации.
 
-Shortcut/Residual connections: ResNet → позволяет градиенту "протекать" через сеть
+**Пропускающие (остаточные) связи.** В ResNet блок вычисляет $y = F(x) + x$, то есть вход добавляется к выходу блока. Градиент проходит через сложение без изменений, поэтому у него есть «короткий путь» к ранним слоям, минуя перемножение производных.
 
-Для exploding gradients
+### Для взрывающихся градиентов
 
-Gradient clipping
+**Ограничение нормы градиента (gradient clipping).** Если норма градиента превышает порог, градиент масштабируется вниз до этого порога (направление сохраняется):
+
 ```python
 torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
 ```
 
-Меньший learning rate
+**Уменьшить скорость обучения.** Меньший шаг не даёт огромному градиенту «выбросить» веса.
 
-Хорошая инициализация
+**Хорошая инициализация.** Те же Xavier/He: не слишком большие начальные веса.
 
-Использовать нормализацию
-- BatchNorm, LayerNorm
+**Использовать нормализацию.** BatchNorm, LayerNorm (пакетная и послойная нормализация) удерживают значения активаций в разумном диапазоне.
 
-Вывод
+### Вывод
 
 | Проблема | Симптом | Решение |
 |----------|---------|---------|
-| Vanishing | Градиенты близки к 0, ранние слои не учатся | ReLU, BatchNorm, Residual, Xavier/He |
-| Exploding | Градиенты огромные, loss → NaN | Gradient clipping, уменьшить LR, нормализация |
+| Затухание | Градиенты близки к 0, ранние слои не обучаются | ReLU, BatchNorm, остаточные связи, Xavier/He |
+| Взрыв | Градиенты слишком велики, функция потерь → NaN | Ограничение нормы градиента, уменьшение скорости обучения, нормализация |
 
-## Saddles, Flat Regions & Poor Optimization
+## Седловые точки, плоские области и проблемы оптимизации
 
-Even if vanishing/exploding gradients don’t occur, gradients can still be problematic in saddle points or plateaus.
+Даже если градиенты не затухают и не взрываются, обучение может замедляться в седловых точках и на плоских участках функции потерь.
 
-What Happens?
+Что происходит:
 
-- Saddle Points: Points where gradients are close to zero but are not local minima (some dimensions have increasing loss, others decreasing).
-- Flat Regions: Areas where gradients vanish temporarily, slowing learning drastically (e.g., bad weight initialization).
+- **Седловые точки**: градиенты близки к нулю, но это не локальные минимумы; в одних направлениях функция потерь растёт, в других — уменьшается. В пространстве высокой размерности (миллионы параметров) седловые точки встречаются намного чаще, чем настоящие локальные минимумы.
+- **Плоские области**: участки, где градиенты временно становятся очень малыми, из-за чего обучение сильно замедляется (например, при неудачной инициализации весов).
 
-Solutions
+Способы решения:
 
-- Use adaptive optimizers (Adam, RMSProp) to navigate flat areas faster.
-- Use momentum-based optimizers (SGD with momentum, Nesterov) to escape saddle points.
-- Try learning rate schedules (cosine annealing, warm restarts).
-
----
-
-
-# Variational Autoencoders (VAEs)
-
-Variational Autoencoders are a type of generative model that learns to encode data into a compressed representation and then decode it back, while also being able to generate new, similar data.
-
-A VAE consists of two main parts:
-
-Encoder: Compresses input data (like images) into a lower-dimensional latent space representation. Unlike standard autoencoders, the encoder outputs parameters of a probability distribution (typically mean and variance) rather than a single fixed point.
-
-Decoder: Takes samples from this latent space and reconstructs them back into the original data format.
-
-What Makes Them "Variational"? The key innovation is that VAEs don't just map inputs to fixed points in latent space. Instead, they:
-
-1. Map inputs to probability distributions in latent space
-2. Sample from these distributions during training
-3. Ensure the latent space is continuous and well-structured
-
-This is done by forcing the learned distributions to be similar to a standard normal distribution (mean 0, variance 1) using something called the KL divergence term in the loss function.
-
-The Loss Function
-
-VAEs optimize two objectives simultaneously:
-
-- Reconstruction loss: How well can the decoder recreate the original input?
-- KL divergence: How close is the latent distribution to a standard normal distribution?
-
-By learning smooth, continuous latent representations, VAEs can:
-- Generate new data by sampling random points from the latent space
-- Interpolate smoothly between different data points
-- Learn meaningful features in an unsupervised way
-
-Common Applications
-
-- Image generation
-- Data compression
-- Anomaly detection
-- Drug molecule design
-- Music generation
-
-# PyTorch layers
-
-[https://www.youtube.com/playlist?list=PLtBw6njQRU-rwp57C0oIVt26ZgjG9NI](https://www.youtube.com/playlist?list=PLtBw6njQRU-rwp57C0oIVt26ZgjG9NI)
-
-[https://introtodeeplearning.com/](https://introtodeeplearning.com/)
-
-Let me break down each activation function with their pros and cons, focusing on key aspects like gradient behavior and computational stability:
-
-Linear:
-
-- Pros:
-    - Simple computation
-    - Good for final layer in regression tasks
-- Cons:
-    - Cannot learn complex patterns
-    - No nonlinearity introduced
-    - Gradient is constant
-
-Binary Step:
-
-- Pros:
-    - Simple for binary classification
-    - Clear threshold decision
-- Cons:
-    - Non-differentiable
-    - Cannot handle multiple classes
-    - Binary output only (0 or 1)
-    - Gradient is zero everywhere except at threshold
-
-Sigmoid:
-
-- Pros:
-    - Normalized output (0 to 1)
-    - Good for binary classification
-    - Smooth gradient
-- Cons:
-    - Suffers from vanishing gradient
-    - Not zero-centered
-    - Computationally expensive
-    - Saturates at both ends
-
-TanH:
-
-- Pros:
-    - Zero-centered (-1 to 1)
-    - Stronger gradients than sigmoid
-    - Good for hidden layers
-- Cons:
-    - Still has vanishing gradient problem
-    - Computationally expensive
-    - Saturates at extremes
-
-ReLU:
-
-- Pros:
-    - Computationally efficient
-    - No vanishing gradient for positive values
-    - Helps with sparse activation
-    - Faster convergence
-- Cons:
-    - "Dying ReLU" problem (neurons can die)
-    - Not zero-centered
-    - Unbounded output
-
-Leaky ReLU:
-
-- Pros:
-    - Prevents dying ReLU
-    - All benefits of ReLU
-    - Small negative slope
-- Cons:
-    - Still not zero-centered
-    - Performance can be inconsistent
-    - Slope parameter needs to be predefined
-
-PReLU:
-
-- Pros:
-    - Adaptive slope parameter
-    - Learns the optimal slope
-    - Prevents dying ReLU
-- Cons:
-    - Additional parameters to train
-    - Can overfit on small datasets
-    - More computational overhead
-
-ELU:
-
-- Pros:
-    - Smooth gradient near zero
-    - Can output negative values
-    - More robust to noise
-- Cons:
-    - Computationally more expensive than ReLU
-    - Still can saturate for negative inputs
-    - Alpha parameter needs to be predefined
-
-Swish:
-
-- Pros:
-    - Self-gated
-    - Smooth function
-    - Better performance than ReLU in deep networks
-- Cons:
-    - Computationally expensive
-    - Not always better than ReLU for shallow networks
-    - Can be harder to implement
-
-Maxout:
-
-- Pros:
-    - Generalizes ReLU and leaky ReLU
-    - No saturation
-    - Strong theoretical properties
-- Cons:
-    - Doubles the number of parameters
-    - Computationally expensive
-    - Higher memory requirements
-
-General Recommendations:
-
-1. Start with ReLU - it's simple and works well in most cases
-2. If dying ReLU is an issue, try Leaky ReLU or ELU
-3. For deeper networks, consider Swish or PReLU
-4. Use Sigmoid/TanH only for specific cases (like LSTM gates)
-5. Avoid Binary Step in most cases
-6. Consider computational resources when choosing between advanced functions
+- Использовать адаптивные оптимизаторы (Adam, RMSProp): они увеличивают шаг там, где градиенты малы, и быстрее проходят плоские участки.
+- Использовать оптимизаторы с моментумом (SGD с Momentum, Nesterov): накопленная «инерция» помогает проскочить седловую точку, где мгновенный градиент почти равен нулю.
+- Использовать расписания изменения скорости обучения: косинусное затухание (плавное уменьшение $\eta$ по косинусу), перезапуски (периодический возврат $\eta$ к большому значению, чтобы выбраться из неудачной области) и разогрев (warmup — постепенное увеличение $\eta$ в начале обучения для стабильности).
 
 ---
 
-## PyTorch Convolutions & Related Layers: Conv2D, Dropout, MaxPooling2D, Dense
+# Вариационные автокодировщики (VAE)
 
-PyTorch provides powerful tools for building convolutional neural networks (CNNs), and some of the key layers include Conv2D, Dropout, MaxPooling2D, and Dense (Fully Connected Layers).
+Вариационные автокодировщики — генеративные модели, которые кодируют данные в сжатое представление, восстанавливают их и могут создавать новые похожие данные.
+
+VAE состоит из двух основных частей:
+
+- **Кодировщик**: преобразует входные данные (например, изображения) в представление меньшей размерности — в латентное пространство. В отличие от обычного автокодировщика, он выдаёт параметры распределения вероятностей (обычно среднее $\mu$ и дисперсию $\sigma^2$), а не одну фиксированную точку.
+- **Декодировщик**: получает выборки из латентного пространства и восстанавливает данные в исходном формате.
+
+**Почему они называются «вариационными»?** VAE отображает входные данные не в фиксированные точки латентного пространства, а в распределения вероятностей. Точное распределение $p(z \mid x)$ вычислить невозможно, поэтому оно приближается более простым распределением $q(z \mid x)$ (кодировщиком), а параметры подбираются методами вариационного вывода — отсюда название. Модель:
+
+1. Отображает входные данные в распределения вероятностей в латентном пространстве.
+2. Выбирает случайные значения из этих распределений во время обучения.
+3. Формирует непрерывное и структурированное латентное пространство.
+
+Для этого распределения приближаются к стандартному нормальному распределению (среднее 0, дисперсия 1) с помощью слагаемого KL-дивергенции в функции потерь.
+
+**Трюк репараметризации.** Операция «взять случайную выборку» не дифференцируема, поэтому через неё нельзя пустить градиент. Решение: выбираем шум $\varepsilon \sim \mathcal{N}(0, I)$ отдельно и считаем
+
+$$z = \mu + \sigma \cdot \varepsilon$$
+
+Случайность теперь вынесена во внешний вход $\varepsilon$, а $\mu$ и $\sigma$ вычисляются сетью, и градиент проходит через них.
+
+## Функция потерь
+
+VAE одновременно оптимизирует две цели:
+
+- **Ошибка реконструкции**: насколько точно декодировщик восстанавливает исходные данные (например, среднеквадратичная ошибка или кросс-энтропия).
+- **KL-дивергенция**: насколько распределение в латентном пространстве близко к стандартному нормальному распределению.
+
+$$L = \underbrace{\lVert x - \hat{x} \rVert^2}_{\text{реконструкция}} + \underbrace{D_{KL}\big(q(z \mid x) \,\Vert\, \mathcal{N}(0, I)\big)}_{\text{регуляризация}}$$
+
+Для гауссовского кодировщика KL-слагаемое считается в явном виде: $-\tfrac{1}{2}\sum\left(1 + \log\sigma^2 - \mu^2 - \sigma^2\right)$.
+
+Две цели конкурируют: одна только реконструкция даёт «рваное» латентное пространство (как у обычного автокодировщика), а один только KL — одинаковые распределения для всех входов (информация теряется). Баланс между ними и даёт гладкое пространство, пригодное для генерации.
+
+Благодаря гладким и непрерывным латентным представлениям VAE могут:
+
+- Генерировать новые данные, выбирая случайные точки в латентном пространстве и пропуская их через декодировщик.
+- Плавно интерполировать между разными объектами (точки между двумя кодами дают осмысленные промежуточные объекты).
+- Извлекать содержательные признаки без учителя.
+
+Типичные области применения:
+
+- Генерация изображений
+- Сжатие данных
+- Обнаружение аномалий (аномальные объекты плохо восстанавливаются, и ошибка реконструкции у них велика)
+- Проектирование молекул лекарственных веществ
+- Генерация музыки
 
 ---
 
-##  Conv2D (2D Convolutional Layer)
+# Свёрточные нейронные сети (CNN)
 
- Purpose: Extracts spatial features from an input image using a sliding kernel (filter).
+PyTorch предоставляет инструменты для создания свёрточных нейронных сетей (CNN). К основным слоям относятся Conv2d, Dropout, MaxPool2d и Linear (в других фреймворках — Conv2D, MaxPooling2D, Dense: полносвязный слой).
 
- Formula:
+## Conv2d (двумерный свёрточный слой)
 
-Each pixel in the output feature map is computed as:
+**Назначение:** извлекает пространственные признаки изображения с помощью скользящего ядра (фильтра).
 
-Output=∑(Kernel×Patch)+Bias\text{Output} = \sum (\text{Kernel} \times \text{Patch}) + \text{Bias}
+**Формула.** Каждый элемент выходной карты признаков вычисляется так:
 
-Output=∑(Kernel×Patch)+Bias
+$$\text{Output} = \sum (\text{Kernel} \times \text{Patch}) + \text{Bias}$$
 
-where the kernel slides across the input image.
+Ядро перемещается по входному изображению; в каждой позиции его значения поэлементно умножаются на соответствующий участок (patch) изображения и суммируются. Одно и то же ядро применяется ко всем позициям, поэтому параметров намного меньше, чем у полносвязного слоя, и слой находит признак независимо от его положения.
 
- Example Code in PyTorch:
+Пример кода на PyTorch:
 
 ```python
 import torch
@@ -431,131 +341,127 @@ import torch.nn as nn
 conv = nn.Conv2d(in_channels=3, out_channels=16, kernel_size=3, stride=1, padding=1)
 ```
 
- in_channels = 3 (RGB image with 3 channels)
+- `in_channels = 3` — RGB-изображение с 3 каналами
+- `out_channels = 16` — число фильтров, создаётся 16 карт признаков
+- `kernel_size = 3` — фильтр 3×3
+- `stride = 1` — шаг: ядро сдвигается на 1 пиксель
+- `padding = 1` — добавляет рамку из нулей, чтобы размер выхода равнялся размеру входа
 
- out_channels = 16 (number of filters, creates 16 feature maps)
+Размер выхода: $H_{out} = \left\lfloor \frac{H + 2p - k}{s} \right\rfloor + 1$ (для $k=3, p=1, s=1$ размер сохраняется). Число параметров слоя: $16 \cdot (3 \cdot 3 \cdot 3 + 1) = 448$.
 
- kernel_size = 3 (3×3 filter)
-
- stride = 1 (moves 1 pixel at a time)
-
- padding = 1 (keeps output size same as input)
-
- Effect: Helps detect features like edges, textures, and shapes.
+**Эффект:** помогает находить такие признаки, как границы, текстуры и формы. Ранние слои выделяют простые признаки (линии, края), более глубокие — сложные (части объектов).
 
 ---
 
-##  MaxPooling2D (Downsampling Layer)
+## MaxPool2d (слой уменьшения размерности)
 
- Purpose: Reduces spatial size (height & width) to:
+**Назначение:** уменьшает пространственные размеры (высоту и ширину), чтобы:
 
-- Decrease computation cost
-- Extract dominant features
-- Reduce overfitting
+- Снизить вычислительные затраты
+- Выделить наиболее выраженные признаки
+- Уменьшить переобучение (и добиться небольшой устойчивости к сдвигу объекта на изображении)
 
- How It Works?
+**Принцип работы:**
 
-- A pooling window (e.g., 2×2) slides over the image.
-- Takes the maximum value from each region.
+- Окно пулинга (например, 2×2) перемещается по изображению.
+- Из каждой области выбирается максимальное значение.
 
- Example Code in PyTorch:
+Пример кода на PyTorch:
 
 ```python
 pool = nn.MaxPool2d(kernel_size=2, stride=2)
 ```
 
- kernel_size = 2 (2×2 pooling)
+- `kernel_size = 2` — окно 2×2
+- `stride = 2` — окно сдвигается на 2 пикселя (окна не перекрываются, высота и ширина уменьшаются вдвое)
 
- stride = 2 (moves 2 pixels at a time)
-
- Effect: Reduces image size while preserving important information.
+**Эффект:** уменьшает размер изображения, сохраняя важную информацию. У слоя нет обучаемых параметров.
 
 ---
 
-##  Dropout (Regularization Layer)
+## Dropout (слой регуляризации)
 
- Purpose: Prevents overfitting by randomly dropping neurons during training.
+**Назначение:** предотвращает переобучение, случайным образом отключая часть нейронов во время обучения.
 
- Example Code in PyTorch:
+Пример кода на PyTorch:
 
 ```python
-dropout = nn.Dropout(p=0.5)  # 50% neurons randomly set to zero
-
+dropout = nn.Dropout(p=0.5)  # 50% нейронов случайным образом обнуляются
 ```
 
- p = 0.5 → 50% of neurons are turned off during training.
+`p = 0.5` — во время обучения случайным образом отключается 50% элементов слоя (при каждом проходе — разные). Оставшиеся значения масштабируются на $1/(1-p)$, чтобы сохранить среднюю величину сигнала. При инференсе (`model.eval()`) Dropout не применяется.
 
- Effect: Forces the network to learn more robust features by not relying too much on specific neurons.
+**Эффект:** сеть учится извлекать более устойчивые признаки и не полагаться на отдельные нейроны (это можно рассматривать как обучение ансамбля из множества «урезанных» сетей).
 
 ---
 
-##  Dense (Fully Connected Layer)
+## Linear (Dense, полносвязный слой)
 
- Purpose: Converts extracted features into a final decision (classification, regression, etc.).
+**Назначение:** преобразует извлечённые признаки в итоговый результат (классификацию, регрессию и т. д.).
 
- Example Code in PyTorch:
+Пример кода на PyTorch:
 
 ```python
-
 dense = nn.Linear(in_features=128, out_features=10)
-
 ```
 
- in_features = 128 (input neurons)
+- `in_features = 128` — число входных нейронов (длина вектора признаков)
+- `out_features = 10` — число выходных нейронов, например 10 классов CIFAR-10
 
- out_features = 10 (output neurons, e.g., 10 classes for CIFAR-10)
-
- Effect: Combines learned features and makes predictions.
+**Эффект:** объединяет изученные признаки и формирует предсказание. Каждый выход связан со всеми входами, поэтому слой может учитывать комбинации признаков из любых частей изображения.
 
 ---
 
-## Summary: CNN Architecture Example
+## Пример архитектуры CNN
 
 ```python
-
+import torch
 import torch.nn as nn
 
+
 class CNN(nn.Module):
-    def init(self):
-        super(CNN, self).init()
+    def __init__(self):
+        super().__init__()
         self.conv1 = nn.Conv2d(3, 16, 3, padding=1)
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(16, 32, 3, padding=1)
-        self.fc1 = nn.Linear(32 * 8 * 8, 128)  # Fully connected layer
+        self.fc1 = nn.Linear(32 * 8 * 8, 128)  # полносвязный слой
         self.dropout = nn.Dropout(0.5)
-        self.fc2 = nn.Linear(128, 10)  # 10 output classes
+        self.fc2 = nn.Linear(128, 10)  # 10 выходных классов
 
-    def forward(self, x):
-        x = self.pool(torch.relu(self.conv1(x)))
-        x = self.pool(torch.relu(self.conv2(x)))
-        x = x.view(x.shape[0], -1)  # Flatten
-        x = torch.relu(self.fc1(x))
+    def forward(self, x):  # вход: 3×32×32
+        x = self.pool(torch.relu(self.conv1(x)))  # → 16×16×16
+        x = self.pool(torch.relu(self.conv2(x)))  # → 32×8×8
+        x = x.view(x.shape[0], -1)  # развёртка в вектор длиной 2048
+        x = torch.relu(self.fc1(x))  # → 128
         x = self.dropout(x)
-        x = self.fc2(x)
+        x = self.fc2(x)  # → 10 (логиты классов)
         return x
-
 ```
 
-## Key Takeaways
+Размер `32 * 8 * 8` в `fc1` соответствует входным изображениям 32×32 (как в CIFAR-10): после двух слоёв пулинга размер уменьшается с 32 до 8. Для другого размера входа это число нужно пересчитать. На выходе — логиты; Softmax обычно не добавляют в модель, так как `nn.CrossEntropyLoss` применяет его внутри.
 
- Conv2D → Feature extraction
+## Главное
 
- MaxPooling2D → Downsampling
+- Conv2d → извлечение признаков
+- MaxPool2d → уменьшение размерности
+- Dropout → регуляризация
+- Linear (Dense) → формирование итогового результата
 
- Dropout → Regularization
+Это основа моделей классификации изображений на базе CNN.
 
- Dense (Linear) → Final decision making
+## Типичная архитектура: CNN с BatchNorm
 
-This is the foundation of CNN-based image classification models! 
-
-# Typical usage
+В реальных сетях после свёрток обычно добавляют BatchNorm: он ускоряет обучение и делает его устойчивее (см. раздел про затухающие градиенты). Порядок блока: свёртка → BatchNorm → активация → пулинг.
 
 ```python
+import torch
 import torch.nn as nn
 
+
 class CNN(nn.Module):
-    def init(self):
-        super(CNN, self).init()
+    def __init__(self):
+        super().__init__()
         self.conv1 = nn.Conv2d(3, 16, 3, padding=1)
         self.bn1 = nn.BatchNorm2d(16)
         self.conv2 = nn.Conv2d(16, 32, 3, padding=1)
@@ -568,138 +474,93 @@ class CNN(nn.Module):
     def forward(self, x):
         x = self.pool(torch.relu(self.bn1(self.conv1(x))))
         x = self.pool(torch.relu(self.bn2(self.conv2(x))))
-        x = x.view(x.shape[0], -1)  # Flatten
+        x = x.view(x.shape[0], -1)  # развёртка в вектор
         x = torch.relu(self.fc1(x))
         x = self.dropout(x)
         x = self.fc2(x)
         return x
-
 ```
 
-## Specialized CNN Architectures: LeNet, AlexNet, GoogleNet, ResNet
+## Кратко об известных архитектурах CNN
 
-These architectures are enhancements of the typical CNN to improve accuracy, efficiency, and depth.
+- **LeNet-5 (1998):** одна из первых успешных CNN; применялась для распознавания рукописных цифр.
+- **AlexNet (2012):** показала эффективность ReLU, Dropout и обучения на GPU при классификации изображений.
+- **GoogLeNet (2014):** ввела модули Inception для параллельного извлечения признаков разных масштабов; свёртки 1×1 уменьшают число каналов и тем самым снижают вычислительные затраты.
+- **ResNet (2015):** использует остаточные связи, облегчающие обучение очень глубоких сетей (десятки и сотни слоёв).
 
----
+| Архитектура | Год | Ключевая особенность | Применение |
+|-------------|-----|----------------------|------------|
+| LeNet | 1998 | Компактная CNN | Распознавание цифр |
+| AlexNet | 2012 | ReLU, Dropout, GPU | Классификация изображений |
+| GoogLeNet | 2014 | Модули Inception, свёртки 1×1 | Классификация изображений |
+| ResNet | 2015 | Остаточные связи | Глубокие CNN |
 
-## 1. LeNet-5 (1998) – The Pioneer
-
- First successful CNN for handwritten digit recognition (MNIST).
-
- Uses small kernels (5x5), two convolutional layers, and fully connected layers.
-
- No batch normalization or ReLU, only tanh/sigmoid activations.
-
- Architecture:
-
-Conv2D (5x5) → MaxPool → Conv2D (5x5) → MaxPool → Fully Connected → Output
-
- Used for: Digit recognition (MNIST, postal codes).
+Остаточные связи из ResNet стали стандартным приёмом и используются во многих современных архитектурах. Позднее появились компактные и эффективные модели MobileNet и EfficientNet, ориентированные на экономию вычислений.
 
 ---
 
-## 2. AlexNet (2012) – The Breakthrough
+# Рекуррентные нейронные сети (RNN)
 
- Won ImageNet Challenge 2012 with ReLU activation and dropout to prevent overfitting.
+Основная идея RNN — ячейка памяти, которая хранит информацию с предыдущих временных шагов и влияет на последующие выходы. Это позволяет обрабатывать последовательности произвольной длины (текст, звук, временные ряды).
 
- Uses large filters in the first convolution layer (11x11).
+Ячейка памяти включает:
 
- Introduced GPU training for CNNs.
+- **Скрытое состояние:** хранит информацию с предыдущих шагов и обновляется на каждом временном шаге.
+- **Рекуррентные связи:** скрытое состояние предыдущего шага подаётся на вход следующего. При этом на каждом временном шаге используются одни и те же веса, поэтому число параметров не зависит от длины последовательности.
 
- Architecture:
+На каждом временном шаге $t$ скрытое состояние $h_t$ вычисляется следующим образом:
 
-Conv2D (11x11) → MaxPool → Conv2D (5x5) → MaxPool → Multiple Conv2D → Fully Connected
-
- Used for: Large-scale image classification.
-
----
-
-## 3. GoogleNet (2014) – The Inception Model
-
- Introduced Inception Modules to use multi-scale filters (1x1, 3x3, 5x5) simultaneously.
-
- Reduces computational cost using 1x1 convolutions (bottleneck layers).
-
- Much deeper than AlexNet but still computationally efficient.
-
- Architecture:
-
- Inception Modules → Multi-scale feature extraction.
-
- 1x1 Conv → Reduces depth before large convolutions (dimensionality reduction).
-
- Auxiliary Classifiers → Extra outputs to help gradient flow in deep networks.
-
- Used for: General-purpose image recognition.
-
----
-
-## 4. ResNet (2015) – The Deep Learning Revolution
-
- Solves vanishing gradient problem using skip connections (residual blocks).
-
- Trained very deep networks (up to 1000+ layers).
-
- Won ImageNet 2015 with 152-layer ResNet.
-
- Architecture:
-
-Conv2D → Residual Block (skip connection) → Multiple Residual Blocks → Fully Connected
-
- Used for: Deep image recognition (e.g., medical imaging, autonomous driving).
-
----
-
-## Comparison Summary
-
-| Model | Year | Depth | Key Feature | Used for |
-| --- | --- | --- | --- | --- |
-| LeNet | 1998 | ~7 | Small CNN, Tanh activation | MNIST, digits |
-| AlexNet | 2012 | ~8 | ReLU, Dropout, GPU acceleration | ImageNet |
-| GoogleNet | 2014 | ~22 | Inception Modules, 1x1 Conv | Large-scale classification |
-| ResNet | 2015 | 50-152 | Residual Blocks (skip connections) | Deep learning, medical images |
-
- ResNet is still widely used today, while GoogleNet inspired models like EfficientNet & MobileNet.
-
-# Recurring Neural Network
-
-- The core idea behind RNNs is the memory cell, which stores information from previous time steps to influence future outputs.
-- A memory cell consists of:
-    - Hidden state (hth_tht): Stores information from previous steps and is updated at each time step.
-    - Recurrent connections: The same weights are applied at every time step to process sequences.
-
-At each time step ttt, the hidden state hth_tht is computed as:
-
-```shell
-h_t = tanh(W_hh · h_(t-1) + W_xh · x_t)
+```text
+h_t = tanh(W_hh · h_(t-1) + W_xh · x_t + b_h)
 y_t = W_hy · h_t
 ```
 
- Model training using Backpropagation Through Time (BPTT). For a sequence of length T, this means multiplying the same weight matrix W_hh repeatedly — T times. This causes: Vanishing Gradient. When processing long sequences, information from earlier time steps fades away (vanishing gradients), making it hard for RNNs to remember distant dependencies.
+Здесь $x_t$ — вход на шаге $t$, $h_{t-1}$ — состояние с предыдущего шага, $y_t$ — выход.
 
- If the eigenvalues of W_hh are < 1, this term decays exponentially with distance. By step 100, the gradient reaching h_1 is effectively zero — the model simply stops learning long-range connections.
+## Затухание градиента в RNN
 
- Even without gradient issues, the hidden state h_t has fixed size. The entire history must be compressed into a vector of e.g. 512 dimensions regardless of sequence length.
+Обучение выполняется методом обратного распространения во времени (Backpropagation Through Time, BPTT): сеть «разворачивается» по времени в глубокую сеть с общими весами, и градиент проходит назад по всем шагам. Для последовательности длины $T$ одна и та же матрица весов $W_{hh}$ перемножается многократно. На длинных последовательностях это может приводить к затуханию градиента: информация с ранних шагов постепенно теряется, и сети становится трудно учитывать дальние зависимости.
 
+Если наибольшее по модулю собственное (или сингулярное) значение $W_{hh}$ меньше 1, соответствующий множитель экспоненциально убывает с увеличением расстояния; к этому добавляется множитель $\tanh'(x) \le 1$ на каждом шаге. Например, к сотому шагу градиент, доходящий до $h_1$, может практически исчезнуть — модель перестаёт обучать дальние зависимости. Если же значение больше 1, наоборот, возникает взрыв градиента (с ним борются ограничением нормы градиента).
 
-why LSTM/GRU were invented — their gating mechanisms give gradients a more direct path backward (the "highway" through the cell state).
+## Ограничение фиксированного размера состояния
 
-RNN improvenents
+Даже при отсутствии проблем с градиентами скрытое состояние $h_t$ имеет фиксированный размер. Поэтому всю историю последовательности приходится сжимать в вектор, например размерности 512, независимо от длины последовательности. Для длинных текстов такой «бутылочное горлышко» неизбежно приводит к потере информации.
 
-- Long Short-Term Memory (LSTM)
-- Gated Recurrent Unit (GRU)
-- Bidirectional RNN (BiRNN)
-- Attention Mechanism
+## LSTM и GRU
 
-| Concept | Handles Vanishing Gradient? | Maintains Long-Term Memory? | Complexity | Speed |
-| --- | --- | --- | --- | --- |
-| Vanilla RNN |  No |  Poor |  Simple |  Fast |
-| LSTM |  Yes |  Strong |  High |  Slower |
-| GRU |  Yes |  Medium |  Medium |  Faster |
-| BiRNN |  Yes |  Strong |  Medium |  Slower |
-| Attention |  Yes |  Strongest |  High |  Fast with parallelization |
+Для решения проблемы затухания были разработаны LSTM и GRU: их механизмы управления потоками информации (вентили) создают для градиентов более прямой путь назад через состояние ячейки.
 
-In plain seq2seq, the decoder only receives the last encoder hidden state h_T — one fixed vector for the whole sentence. In the Attention mechanism, the decoder can directly reach back to any encoder hidden state it finds relevant at each decoding step.
+В LSTM состояние ячейки обновляется аддитивно (путём сложения), а не перемножением на матрицу, поэтому градиент может проходить через много шагов почти без затухания:
+
+$$c_t = f_t \odot c_{t-1} + i_t \odot \tilde{c}_t$$
+
+где вентиль забывания $f_t$ решает, что стереть из памяти, входной вентиль $i_t$ — что записать, а выходной вентиль управляет тем, что из памяти выдать наружу. GRU — упрощённый вариант с двумя вентилями (обновления и сброса) и без отдельного состояния ячейки; параметров меньше, обучается быстрее.
+
+## Развитие архитектур RNN
+
+- Долгая краткосрочная память (LSTM) — отдельная ячейка памяти и три вентиля
+- Управляемый рекуррентный блок (GRU) — упрощённая версия LSTM
+- Двунаправленная RNN (BiRNN) — две RNN читают последовательность слева направо и справа налево, поэтому в каждой позиции учитывается и прошлое, и будущее; подходит, когда доступна вся последовательность целиком (классификация, разметка), но не для генерации «на лету»
+- Механизм внимания (Attention) — прямой доступ к любому шагу последовательности (см. ниже)
+
+| Архитектура | Решает проблему затухания градиента? | Долговременная память | Сложность | Скорость |
+|-------------|--------------------------------------|-----------------------|-----------|----------|
+| Обычная RNN | Нет | Слабая | Низкая | Высокая |
+| LSTM | Да | Хорошая | Высокая | Ниже |
+| GRU | Да | Средняя | Средняя | Выше |
+| BiRNN | Нет (зависит от типа ячейки: обычно строится на LSTM/GRU) | Хорошая | Средняя | Ниже |
+| Attention | Да (прямые связи между далёкими шагами) | Очень хорошая | Высокая | Высокая при параллельной обработке |
+
+## Механизм внимания (Attention)
+
+В обычной модели seq2seq (кодировщик-декодировщик) декодировщик получает только последнее скрытое состояние кодировщика $h_T$ — один фиксированный вектор для всего предложения. Это то самое узкое место, описанное выше.
+
+Механизм Attention позволяет декодировщику на каждом шаге обращаться к любому скрытому состоянию кодировщика, которое важно для текущего предсказания. Для этого на каждом шаге декодирования вычисляются веса важности $\alpha_{ti}$ (через Softmax, сумма равна 1), и строится контекстный вектор — взвешенная сумма всех состояний кодировщика:
+
+$$c_t = \sum_i \alpha_{ti} h_i$$
+
+Так информация с любого шага доступна напрямую, а градиент имеет короткий путь к далёким позициям — это решает обе проблемы: и «бутылочное горлышко», и затухание на дальних зависимостях.
 
 # Refs
 

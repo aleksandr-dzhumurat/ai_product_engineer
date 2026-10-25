@@ -1,89 +1,118 @@
+"""Telegram interface for the review search API (long polling)."""
+
+import logging
 import os
 
-import requests
-from jinja2 import Template
-
-from telegram import __version__ as TG_VER
-
-try:
-    from telegram import __version_info__
-except ImportError:
-    __version_info__ = (0, 0, 0, 0, 0)  # type: ignore[assignment]
-
-if __version_info__ < (20, 0, 0, "alpha", 1):
-    raise RuntimeError(
-        f"This example is not compatible with your current PTB version {TG_VER}. To view the "
-        f"{TG_VER} version of this example, "
-        f"visit https://docs.python-telegram-bot.org/en/v{TG_VER}/examples.html"
-    )
-from telegram import ForceReply, Update
+import httpx
+from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 
+logger = logging.getLogger(__name__)
+SEARCH_URL = os.getenv("SEARCH_API_URL", "http://api:8000/search")
+MESSAGE_LIMIT = 3500  # Also safe for non-BMP characters counted as UTF-16 units.
 
-TOKEN = os.environ['TG_BOT_TOKEN']
-SEARCH_URL = os.environ['SEARCH_API_URL']
 
-def prepare_html(input_json_array: dict):
-    """
-        lines = [
-            {'content': 'I get that awful tickly dry cough'},
-        ]
-    """
-    template_str = """
-    {% for line in lines %}
-    <i>result:</i> {{ line['content'] }}
-    {% endfor %}
-    """
-    template = Template(template_str)
-    html_content = template.render(lines=input_json_array)
+def split_messages(text, limit=MESSAGE_LIMIT):
+    """Keep plain-text messages below Telegram's UTF-16 length limit."""
+    chunks, current, size = [], [], 0
+    for character in text:
+        width = 2 if ord(character) > 0xFFFF else 1
+        if size + width > limit:
+            chunks.append("".join(current))
+            current, size = [], 0
+        current.append(character)
+        size += width
+    if current:
+        chunks.append("".join(current))
+    return chunks
 
-    return html_content
 
-def dialog_router(human_query: str):
-    import re
-    answer = f'Hello, bro? Do you wanna search: {human_query}'
-    payload = {
-        "text": human_query
-    }
-    response = requests.post(SEARCH_URL, json=payload)
-    answer = [{'content': re.sub(r"<.*?>", "", i['content'])} for i in response.json()]
-    # make a response
-    return {'final_answer': True, 'answer': answer}
+async def dialog_router(human_query, client):
+    response = await client.post(SEARCH_URL, json={"text": human_query, "num": 5})
+    response.raise_for_status()
+    results = response.json()
+    if not isinstance(results, list) or any(
+        not isinstance(item, dict)
+        or not isinstance(item.get("content"), str)
+        or not isinstance(item.get("asin"), str)
+        for item in results
+    ):
+        raise ValueError("Invalid search API response")
+    return results[:5]
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Send a message when the command /start is issued."""
-    user = update.effective_user
-    await update.message.reply_html(
-        rf"Hi {user.mention_html()}! Use /help for help",
-        reply_markup=ForceReply(selective=True),
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_message:
+        await update.effective_message.reply_text(
+            "Отправьте поисковый запрос, например dry cough. Я найду отзывы на товары. /help — помощь."
+        )
+
+
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_message:
+        await update.effective_message.reply_text(
+            "Введите слова для поиска по отзывам. Ответ содержит найденные тексты, "
+            "а не медицинские рекомендации."
+        )
+
+
+async def bot_dialog(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    message = update.effective_message
+    if message is None or not message.text:
+        return
+    query = message.text.strip()
+    if not query or len(query) > 2000:
+        await message.reply_text("Введите непустой запрос длиной до 2000 символов.")
+        return
+    try:
+        results = await dialog_router(query, context.application.bot_data["search_client"])
+    except (httpx.HTTPError, ValueError):
+        # Do not log URLs, tokens, user messages or upstream response bodies.
+        logger.warning("Search API request failed")
+        await message.reply_text("Поиск временно недоступен. Попробуйте позже.")
+        return
+    if not results:
+        await message.reply_text("Ничего не найдено. Попробуйте изменить запрос.")
+        return
+    answer = "\n\n".join(
+        f"{number}. Товар: {item['asin']}\n{item['content']}"
+        for number, item in enumerate(results, start=1)
     )
+    for chunk in split_messages(answer):
+        # No parse_mode: HTML in reviews remains text, not Telegram markup.
+        await message.reply_text(chunk, parse_mode=None)
 
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Send a message when the command /help is issued."""
-    response = [
-        "Send me a phrase and I will perform a search for you!"
-    ]
-    for i in response:
-        await update.message.reply_text(i)
 
-async def bot_dialog(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user_tg = update.effective_user
-    user = {'user_id': user_tg.id, 'user_name': user_tg.username}
-    print(user)
-    bot_response = dialog_router(update.message.text)
-    if bot_response['final_answer']:
-        responce = prepare_html(bot_response['answer'])
-        await update.message.reply_html(responce)
-    else:
-        await update.message.reply_text(bot_response['answer'])
+async def post_init(application):
+    application.bot_data["search_client"] = httpx.AsyncClient(timeout=40)
 
-def main() -> None:
-    """Start the bot."""
-    application = Application.builder().token(TOKEN).build()
+
+async def post_shutdown(application):
+    client = application.bot_data.get("search_client")
+    if client:
+        await client.aclose()
+
+
+async def on_error(update, context):
+    logger.error("Telegram update handling failed (%s)", type(context.error).__name__)
+
+
+def main():
+    token = os.getenv("TG_BOT_TOKEN")
+    if not token:
+        raise RuntimeError("Set TG_BOT_TOKEN in .env before starting the bot")
+    logging.basicConfig(level=logging.INFO)
+    # Telegram request URLs include the bot token.
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("httpcore").setLevel(logging.WARNING)
+    application = (
+        Application.builder().token(token)
+        .post_init(post_init).post_shutdown(post_shutdown).build()
+    )
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, bot_dialog))
-    # Run the bot until the user presses Ctrl-C
+    application.add_error_handler(on_error)
     application.run_polling()
 
 

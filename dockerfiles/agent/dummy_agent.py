@@ -2,8 +2,8 @@ import json
 import os
 import re
 import typing as t
+from pathlib import Path
 
-import openai
 from dotenv import load_dotenv
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
@@ -15,7 +15,9 @@ from langchain.prompts import (
 )
 from langchain_openai import ChatOpenAI
 
-print(load_dotenv())
+# Anchored to this file's own location (dockerfiles/agent/dummy_agent.py -> repo root)
+# so it always loads the project .env regardless of CWD.
+print(load_dotenv(Path(__file__).resolve().parent.parent.parent / ".env"))
 
 
 def read_template(template_file_name: str, params: t.Optional[dict] = None):
@@ -25,8 +27,15 @@ def read_template(template_file_name: str, params: t.Optional[dict] = None):
         msg_template = f.read()
     return msg_template
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
-llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.1)
+nebius_api_key = os.environ.get("NEBIUS_API_KEY", "")
+if not nebius_api_key:
+    print("⚠️  NEBIUS_API_KEY is not set - LLM calls will fail")
+llm = ChatOpenAI(
+    model=os.environ.get("LLM_MODEL") or os.environ.get("NEBIUS_MODEL", "google/gemma-3-27b-it"),
+    temperature=0.1,
+    base_url=os.environ.get("LLM_BASE_URL") or os.environ.get("NEBIUS_BASE_URL", "https://api.tokenfactory.nebius.com/v1/"),
+    api_key=nebius_api_key,
+)
 
 openai_template = read_template('openai_event_preparing')
 
