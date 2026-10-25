@@ -114,6 +114,9 @@ run-streamlit:
 run-chroma:
 	docker-compose --env-file .env up chroma
 
+run-weaviate:
+	docker-compose --env-file .env up weaviate
+
 ingest: run-chroma
 	uv run python src/ingestion.py "$(SOURCE_DIR)" \
 	  --embedding-model $(EMBED_MODEL) \
@@ -137,12 +140,12 @@ chat:
 
 run-tg-interviewer:
 	DATA_DIR=${CURRENT_DIR}/data \
-	PYTHONPATH=${CURRENT_DIR}/src/rag \
+	PYTHONPATH=${CURRENT_DIR}/src \
 	DOTENV_FILE=${CURRENT_DIR}/.env \
 	uv run python src/rag/tg_bot.py --mode rag
 
 run-english-teacher:
 	DATA_DIR=${CURRENT_DIR}/data \
-	PYTHONPATH=${CURRENT_DIR}/src/rag \
+	PYTHONPATH=${CURRENT_DIR}/src \
 	DOTENV_FILE=${CURRENT_DIR}/.env \
 	uv run python src/rag/tg_bot.py --mode eng

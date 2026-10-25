@@ -10,6 +10,9 @@ Usage examples::
     # List all links found in Markdown files under a directory
     PYTHONPATH="$(pwd)" python src/rag/files_processing.py --show-links --input-dir data/md_docs
 
+    # Build conversion_log.jsonl from .md files in one or more (comma-separated) directories
+    PYTHONPATH="$(pwd)" python src/rag/files_processing.py --build-index --input-dir data/md_docs,jupyter_notebooks
+
     # Filter links.jsonl to only include entries with review_link = true
     cat slides/links.jsonl | python3 -c "import sys,json; [print(line.strip()) for line in sys.stdin if json.loads(line).get('review_link')]" > slides/links_filtered.jsonl
 """
@@ -20,6 +23,7 @@ import hashlib
 import json
 import os
 import re
+import time
 import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -207,16 +211,18 @@ def log_entry_to_document_index(
     source_path: Path,
     destination_path: Path,
     *,
-    log_path: Path = None,
+    log_path: Path | None = None,
 ) -> None:
     """
     Append a JSON line describing a completed notebook-to-markdown conversion.
     """
+    if log_path is None:
+        log_path = Path(os.environ.get("DATA_DIR", "data")) / "md_docs/conversion_log.jsonl"
     log_path.parent.mkdir(parents=True, exist_ok=True)
     entry = {
         "source_dir": str(source_path.parent),
         "source_file_name": source_path.name,
-        "desctination_file": str(destination_path),
+        "desctination_file": str(destination_path.resolve()),
     }
     with log_path.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(entry, ensure_ascii=False) + "\n")
@@ -284,26 +290,31 @@ def show_links(input_dir: Path) -> None:
     print(f"\nLinks saved to {output_path}")
 
 
-def build_index(input_dir: Path) -> None:
-    """Scan input_dir for .md files and write a conversion_log.jsonl for ingestion."""
-    entries = get_directory_tree(input_dir, extension=".md")
+def build_index(input_dirs: Sequence[Path], *, log_dir: Path | None = None, print_ingestion_hint: bool = True) -> None:
+    """Scan input_dirs for .md files and write a single combined conversion_log.jsonl for ingestion."""
+    if isinstance(input_dirs, Path):
+        input_dirs = [input_dirs]
+    entries: list[dict] = []
+    for input_dir in input_dirs:
+        entries.extend(get_directory_tree(input_dir, extension=".md"))
     if not entries:
-        raise SystemExit(f"No .md files found under {input_dir}")
+        raise SystemExit(f"No .md files found under {', '.join(str(d) for d in input_dirs)}")
 
-    log_path = input_dir / "conversion_log.jsonl"
+    log_path = (log_dir or input_dirs[0]) / f"conversion_log_{int(time.time())}.jsonl"
     with log_path.open("w", encoding="utf-8") as fh:
         for entry in entries:
             md_path: Path = entry["input_path"]
             record = {
                 "source_dir": str(md_path.parent),
                 "source_file_name": md_path.name,
-                "desctination_file": str(md_path),
+                "desctination_file": str(md_path.resolve()),
             }
             fh.write(json.dumps(record, ensure_ascii=False) + "\n")
             print(f"  {md_path}")
 
-    print(f"\nIndexed {len(entries)} files -> {log_path}")
-    print(f'\nTo ingest into ChromaDB run:\n  DATA_DIR="$(pwd)" python src/rag/ingestion.py --log-path {log_path} --reset-collection')
+    print(f"\nIndexed {len(entries)} files from {len(input_dirs)} dir(s) -> {log_path}")
+    if print_ingestion_hint:
+        print(f'\nTo ingest into ChromaDB run:\n  DATA_DIR="$(pwd)" python src/rag/ingestion.py --log-path {log_path} --collection <collection_name> --reset-collection')
 
 
 def main(argv: Sequence[str] | None = None) -> None:
@@ -313,25 +324,23 @@ def main(argv: Sequence[str] | None = None) -> None:
     parser.add_argument("--chunk-overlap", type=int, default=200, help="Chunk overlap (default: 200).")
     parser.add_argument("--show-links", action="store_true", help="List all links in .md files.")
     parser.add_argument("--build-index", action="store_true", help="Build conversion_log.jsonl from .md files for ingestion.")
-    parser.add_argument("--input-dir", help="Directory to scan for .md files.")
+    parser.add_argument("--input-dir", help="Directory (or comma-separated directories) to scan for .md files.")
+    parser.add_argument("--log-dir", help="Directory for the conversion log (default: first --input-dir).")
     args = parser.parse_args(argv)
 
-    if args.build_index:
+    if args.build_index or args.show_links:
         if not args.input_dir:
-            raise SystemExit("--input-dir is required when using --build-index")
-        dir_path = Path(args.input_dir).expanduser()
-        if not dir_path.is_dir():
-            raise SystemExit(f"Directory not found: {dir_path}")
-        build_index(dir_path)
-        return
-
-    if args.show_links:
-        if not args.input_dir:
-            raise SystemExit("--input-dir is required when using --show-links")
-        dir_path = Path(args.input_dir).expanduser()
-        if not dir_path.is_dir():
-            raise SystemExit(f"Directory not found: {dir_path}")
-        show_links(dir_path)
+            raise SystemExit("--input-dir is required when using --build-index or --show-links")
+        dir_paths = [Path(p).expanduser() for p in args.input_dir.split(",") if p.strip()]
+        for dir_path in dir_paths:
+            if not dir_path.is_dir():
+                raise SystemExit(f"Directory not found: {dir_path}")
+        if args.build_index:
+            log_dir = Path(args.log_dir).expanduser() if args.log_dir else None
+            build_index(dir_paths, log_dir=log_dir)
+        else:
+            for dir_path in dir_paths:
+                show_links(dir_path)
         return
 
     if not args.input:

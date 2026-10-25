@@ -114,6 +114,20 @@ services:
     volumes:
       - ./data/chroma:/chroma/chroma
     restart: unless-stopped
+  weaviate:
+    image: cr.weaviate.io/semitechnologies/weaviate:latest
+    container_name: weaviate
+    ports:
+      - "8080:8080"
+      - "50051:50051"
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODEL: 'none' # Or configure a local embedding provider like Ollama/GPT4All
+    volumes:
+      - ./data/weaviate:/var/lib/weaviate
+    restart: unless-stopped
 networks:
   backtier_network:
     driver: bridge

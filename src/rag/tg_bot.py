@@ -10,11 +10,14 @@ from __future__ import annotations
 import argparse
 import base64
 import logging
+import sys
 from datetime import datetime
 from pathlib import Path
 
-from agent import prompts
-from agent.config import (
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from rag.agent import prompts
+from rag.agent.config import (
     COLLECTION_NAME,
     LLM_API_KEY,
     LLM_BASE_URL,
@@ -23,7 +26,7 @@ from agent.config import (
     TG_BOT_TOKEN,
     VISION_MODEL,
 )
-from agent.graph import AgentState, _get_db_client, graph
+from rag.agent.graph import AgentState, _get_db_client, graph
 from openai import OpenAI
 from telegram import ForceReply, Update
 from telegram.ext import (

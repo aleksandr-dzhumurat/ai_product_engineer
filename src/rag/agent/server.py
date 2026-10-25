@@ -1,7 +1,7 @@
 """FastAPI wrapper exposing the RAG QA agent over HTTP.
 
 Run:
-    uv run uvicorn agent.server:app --host 0.0.0.0 --port 8001
+    uv run uvicorn rag.agent.server:app --host 0.0.0.0 --port 8001  (PYTHONPATH=src)
 """
 from __future__ import annotations
 
@@ -9,8 +9,8 @@ import asyncio
 import logging
 from typing import Any
 
-from agent.config import LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY
-from agent.graph import AgentState, graph
+from rag.agent.config import LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY
+from rag.agent.graph import AgentState, graph
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 

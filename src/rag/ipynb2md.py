@@ -18,10 +18,14 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, Iterable, List
+from typing import Any
 
-from files_processing import (  # noqa: E402
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from rag.files_processing import (
     DEFAULT_OUTPUT_DIR,
     convert_file,
     get_directory_tree,
@@ -55,8 +59,8 @@ def _language_from_metadata(nb_root: dict[str, Any]) -> str:
     return mapping.get(language, language)
 
 
-def _format_outputs(outputs: Iterable[dict[str, Any]]) -> List[str]:
-    blocks: List[str] = []
+def _format_outputs(outputs: Iterable[dict[str, Any]]) -> list[str]:
+    blocks: list[str] = []
     for output in outputs:
         output_type = output.get("output_type")
         if output_type == "stream":
@@ -84,7 +88,7 @@ def convert_notebook(input_path: Path) -> str:
         notebook = json.load(fh)
 
     language = _language_from_metadata(notebook)
-    md_sections: List[str] = []
+    md_sections: list[str] = []
 
     for cell in notebook.get("cells", []):
         cell_type = cell.get("cell_type")

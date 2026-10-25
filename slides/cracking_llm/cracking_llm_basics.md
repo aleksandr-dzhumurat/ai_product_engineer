@@ -1,41 +1,8 @@
 # Week 03
 
-## Summary of the Lecture on Neural Networks and Activation Functions
+## Feedforward Neural Networks
 
-### 1. Introduction to Neural Networks
-- Context: The lecture explores the fundamentals of neural networks, their training, and applications to tasks like classification.
-- Plan:
-  - Build intuition from logistic regression to neural networks.
-  - Cover training principles, activation functions, and regularization techniques.
-  - Use PyTorch for practical implementation.
-
----
-
-### 2. From Logistic Regression to Neural Networks
-- Logistic Regression Review:
-  - Used for binary classification.
-  - Formula: $P = \sigma(\mathbf{w}^T \mathbf{x} + b)$, where $\sigma$ is the sigmoid function:
-    $$\sigma(z) = \frac{1}{1 + e^{-z}}$$
-  - Optimizes parameters $\mathbf{w}, b$ by minimizing binary cross-entropy loss.
-- Limitations of Logistic Regression:
-  - Assumes a linear decision boundary.
-  - Fails on non-linearly separable data (e.g., XOR problem).
-
-- Kernel Methods and Feature Transformation:
-  - Idea: Transform inputs to a higher-dimensional space to achieve linear separability.
-  - Problem: Kernels are fixed, and hand-picking the optimal kernel is impractical for complex data.
-
-- Neural Network Construction:
-  - Stacked Logistic Regressions: Each neuron applies a logistic regression (linear transformation + sigmoid). Hidden layers transform features iteratively.
-  - Matrix Formulation: Input $\mathbf{x} \in \mathbb{R}^n$, weights $\mathbf{W} \in \mathbb{R}^{m \times n}$, bias $\mathbf{b} \in \mathbb{R}^m$. Activation: $\mathbf{z} = \mathbf{Wx} + \mathbf{b}$, then apply non-linearity (e.g., sigmoid).
-  - Architecture Terminology:
-    - Input Layer: Raw features.
-    - Hidden Layers: Feature extractors (non-linear transformations).
-    - Output Layer: Final classification/regression (e.g., logistic or linear).
-
----
-
-### 3. Training Neural Networks
+### Training Neural Networks
 - Loss Function:
   - Binary Classification: Cross-entropy loss.
   - Regression: Mean squared error (MSE).
@@ -49,7 +16,7 @@
 
 ---
 
-### 4. Activation Functions
+### Activation Functions
 - Purpose: Introduces non-linearity to model complex patterns. Without it, stacked layers reduce to a single linear transformation.
 
 - Sigmoid Function:
@@ -72,25 +39,11 @@
 
 - Recommendation: Use ReLU as default for hidden layers, especially in deep networks.
 
----
 
-### 5. Key Takeaways
-- Neural Networks: Stacked non-linear transformations enable modeling of complex decision boundaries.
-- Training: Requires careful initialization, backpropagation, and optimization to avoid vanishing/exploding gradients.
-- Activation Functions: Sigmoid and tanh are obsolete for hidden layers; ReLU and variants are standard.
 - Practical Tips:
   - Normalize inputs to stabilize training.
   - Use softmax for multi-class classification.
   - Address exploding gradients via learning rate tuning, weight initialization, and batch norm.
-
----
-
-## Summary of the Lecture: Building a Fully Connected Neural Network in PyTorch
-
-### Key Concepts and Objectives
-- Goal: Construct a fully connected neural network to approximate a cosine function ($\cos(x)$) for a regression task.
-- Tools: PyTorch is used for building and training the network.
-- Core Idea: A neural network is composed of linear layers ($\mathbf{W}\mathbf{x} + \mathbf{b}$) and activation functions (tanh, ReLU, etc.), stacked to form a computational graph for backpropagation.
 
 ---
 
@@ -152,8 +105,6 @@
 - Scaling: For large models, rely on empirical scaling laws to extrapolate hyperparameters.
 
 ---
-
-# Week 04
 
 ## Recurrent Neural Networks (RNNs)
 
@@ -251,23 +202,16 @@ While English has an estimated 600,000 words, an LLM might have a vocabulary of 
 
 ---
 
-# Week 05
+## From RNNs to Transformers and Attention in Machine Translation
 
-## Summary: From RNNs to Transformers and Attention in Machine Translation
-
-### Abstract
-This lecture transitions from RNNs to attention-based architectures, focusing on machine translation. It covers RNN limitations, encoder-decoder design, the attention mechanism, and the shift toward Transformers.
-
----
-
-### 1. Machine Translation as Conditional Language Modeling
+### Machine Translation as Conditional Language Modeling
 - Task Definition: Given source sentence in $L_1$, generate target sentence in $L_2$:
   $$Y = \arg\max \sum_{i=1}^m P(y_i | y_1, \dots, y_{i-1}, X, \theta)$$
 - Vocabulary: Different vocabularies for source and target. Special tokens BOS/EOS required.
 
 ---
 
-### 2. RNN-Based Encoder-Decoder Architecture
+### RNN-Based Encoder-Decoder Architecture
 
 #### Encoder
 - Objective: Encode the source sentence into a fixed-dimensional context vector $h_E$.
@@ -284,7 +228,7 @@ This lecture transitions from RNNs to attention-based architectures, focusing on
 
 ---
 
-### 3. Limitations of RNNs in Machine Translation
+### Limitations of RNNs in Machine Translation
 1. Fixed Context Vector: All source information compressed into a single vector → information loss for long sequences.
 2. Vanishing Gradients: Hard to retain context from early time steps.
 3. Sequential Processing: Inefficient for parallel computation.
@@ -330,7 +274,7 @@ $$\text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\r
 - Example: when generating "morning" in English, the decoder attends to "Morgen" in German.
 - Attention weights are directly visualizable as alignment maps between source and target tokens.
 
-#### Why Attention Matters
+Why Attention Matters
 1. **Long-range dependencies:** Models relationships between distant elements without relying on sequential memory.
 2. **Contextual understanding:** "bank" meaning depends on context — attention captures which other tokens are relevant.
 3. **Parallelization:** Attention-based models process all elements simultaneously, unlike sequential RNNs.
@@ -348,29 +292,11 @@ Translating "She gave him a book because he asked for it" — when generating "i
 
 ---
 
-### 6. Practical Implementation: RNN with Attention for Machine Translation
-- Dataset: Synthetic date-formatting task ("March 13, 2023" → "2023-03-13").
-- Steps:
-  1. Generate source/target pairs; tokenize; encode as token indices.
-  2. Encoder: RNN with embedding and GRU layers. Decoder: RNN with attention + linear layer.
-  3. Train with teacher forcing; minimize cross-entropy via gradient descent.
-  4. Inference: Greedy/beam search until EOS.
-
----
-
 ### Mathematical Formulation Summary
 
 $$P(Y|X) = \prod_{i=1}^m P(y_i | y_1, \dots, y_{i-1}, X)$$
 $$\alpha_i = \text{softmax}_i(f_\text{align}(h_t^D, h_i^E))$$
 $$c_t = \sum_i \alpha_i h_i^E$$
-
----
-
-# Week 06
-
-## Overview
-
-This week covers the full Transformer architecture, how LLMs generate text, the BERT vs GPT distinction, attention types, efficient fine-tuning, knowledge distillation, search/retrieval architectures, large-context techniques, and training-time regularization.
 
 ---
 
@@ -585,7 +511,7 @@ The encoder and decoder are not just "parts of a model" — they represent diffe
 
 BERT (Bidirectional Encoder Representations from Transformers) was introduced by Google AI in 2018.
 
-### Key Characteristics
+Key Characteristics
 1. **Transformer-Based Architecture:** Built on the encoder; uses bidirectional self-attention.
 2. **Bidirectional Context:** Understands each word by looking at both preceding and following words simultaneously — unlike GPT (left-to-right) or traditional RNNs.
 3. **Pre-training Tasks:**
@@ -593,7 +519,7 @@ BERT (Bidirectional Encoder Representations from Transformers) was introduced by
    - **NSP (Next Sentence Prediction):** Trains the model to determine if two sentences are consecutive.
 4. **Fine-Tuning:** After pre-training, BERT is fine-tuned on specific tasks with labeled data.
 
-### Contextual vs. Static Embeddings
+Contextual vs. Static Embeddings
 ```
 # Word2Vec: "bank" always the same vector
 "I went to the bank"     → [0.23, -0.45, 0.67, ...]
@@ -609,8 +535,7 @@ BERT (Bidirectional Encoder Representations from Transformers) was introduced by
 - BERT-large: 24 layers, 340M parameters.
 - DistilBERT, ALBERT, RoBERTa: lighter or optimized versions.
 
-### Applications
-Text classification, NER, extractive QA (SQuAD), summarization, machine translation.
+Applications: Text classification, NER, extractive QA (SQuAD), summarization, machine translation.
 
 ---
 

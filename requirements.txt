@@ -36,7 +36,9 @@ gensim
 implicit
 google-genai
 catalyst
+pytorch-lightning
 chromadb
+weaviate-client
 langchain
 langchain-text-splitters
 langchain_huggingface
