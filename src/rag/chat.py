@@ -9,17 +9,20 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
-from agent.config import (
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from rag.agent.config import (
     COLLECTION_NAME,
     LANGFUSE_HOST,
     LANGFUSE_PUBLIC_KEY,
     LANGFUSE_SECRET_KEY,
     LLM_MODEL,
 )
-from agent.graph import AgentState, _get_db_client, graph
+from rag.agent.graph import AgentState, _get_db_client, graph
 
 NEBIUS_MODELS_JSON = Path(__file__).resolve().parent.parent / "nebius_batch_llm_inference" / "nebius_models.json"
 

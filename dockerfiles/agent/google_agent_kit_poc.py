@@ -1,32 +1,41 @@
 # --- AI Travel Assistant Agent with Google Places API Integration ---
-# This agent uses the Google ADK to orchestrate the Gemini model, giving it
-# the ability to call Google Places API via proper ADK function tools.
+# Rewritten with PydanticAI (https://ai.pydantic.dev/) running on Nebius
+# Token Factory: https://docs.tokenfactory.nebius.com/integrations/agents/pydantic
+#
+# The agent talks to Nebius via the OpenAI-compatible API using NebiusProvider;
+# NEBIUS_API_KEY and optional LLM_MODEL / LLM_BASE_URL overrides are read from
+# the repo .env. Google Places access stays in plain Python tool functions,
+# which PydanticAI exposes to the model automatically.
 
 import asyncio
 import os
 import sys
+from pathlib import Path
 from typing import Any, Dict
 
 from dotenv import load_dotenv
+
+# Anchored to this file's own location (dockerfiles/agent -> repo root)
+# so it always loads the project .env regardless of CWD.
+print(load_dotenv(Path(__file__).resolve().parent.parent.parent / ".env"))
+
+from openai import AsyncOpenAI
+from pydantic_ai import Agent
+from pydantic_ai.models.openai import OpenAIChatModel
+from pydantic_ai.providers.nebius import NebiusProvider
+
 from geocoding_api import GooglePlaceApi
 
-print(load_dotenv())
-
-from google.adk.agents import LlmAgent
-from google.adk.models import Gemini
-from google.adk.runners import InMemoryRunner
-from google.adk.tools.function_tool import FunctionTool
-from google.genai.types import Content, Part
-
 # --- Configuration ---
-AGENT_NAME = "GooglePlacesAgent"
-MODEL_NAME = "models/gemini-2.0-flash-live-001"
-APP_NAME = "TravelPlannerApp"
+DEFAULT_BASE_URL = "https://api.studio.nebius.com/v1"
+MODEL_NAME = (
+    os.environ.get("LLM_MODEL")
+    or os.environ.get("NEBIUS_MODEL", "Qwen/Qwen3-32B-fast")
+)
 
-# Set up Google API authentication
-api_key = os.environ.get("GEMINI_API_KEY")
+api_key = os.environ.get("NEBIUS_API_KEY")
 if not api_key:
-    raise ValueError("GEMINI_API_KEY environment variable is required")
+    raise ValueError("NEBIUS_API_KEY environment variable is required")
 
 TRAVEL_INSTRUCTION = """
 You are a World-Class AI Travel Planner specializing in finding places, calculating routes,
@@ -42,7 +51,7 @@ When a user asks about places or locations, use the appropriate tools to get rea
 Always provide specific, actionable travel advice with maps links.
 """
 
-# --- Tool Creation ---
+# --- Tools (PydanticAI turns these plain functions into model tools) ---
 
 # Initialize GooglePlaceApi globally
 places_api = GooglePlaceApi()
@@ -127,84 +136,50 @@ def search_places(query: str, location: str) -> Dict[str, Any]:
             "status": "error"
         }
 
-def create_google_places_tools():
-    """
-    Create ADK FunctionTool instances for Google Places API integration.
-    """
-    coordinates_tool = FunctionTool(
-        func=get_coordinates
-    )
-    search_tool = FunctionTool(
-        func=search_places
-    )
+# --- Agent ---
 
-    return [coordinates_tool, search_tool]
-
-# ---  ---
-
-def create_travel_agent():
-    """Agent Initialization
-    
-    Create the travel agent with Google Places API tools
-    """
-    llm = Gemini(
-        model_name=MODEL_NAME,
-        api_key=api_key
+def create_travel_agent() -> Agent:
+    """Create the travel agent with Google Places API tools on Nebius."""
+    base_url = (
+        os.environ.get("LLM_BASE_URL")
+        or os.environ.get("NEBIUS_BASE_URL")
+        or DEFAULT_BASE_URL
     )
-    tools = create_google_places_tools()
-    agent = LlmAgent(
-        name=AGENT_NAME,
-        model=llm,
-        instruction=TRAVEL_INSTRUCTION,
-        tools=tools
+    if base_url.rstrip("/") != DEFAULT_BASE_URL:
+        # Non-default Nebius endpoint: bring our own OpenAI-compatible client
+        provider = NebiusProvider(
+            api_key=api_key,
+            openai_client=AsyncOpenAI(base_url=base_url, api_key=api_key),
+        )
+    else:
+        provider = NebiusProvider(api_key=api_key)
+
+    model = OpenAIChatModel(MODEL_NAME, provider=provider)
+    return Agent(
+        model,
+        instructions=TRAVEL_INSTRUCTION,
+        tools=[get_coordinates, search_places],
     )
-    return agent
 
 async def main():
     """Main execution function"""
 
     print("--- AI Travel Assistant Agent with Google Places API ---")
-    print(f"Agent: {AGENT_NAME} using {MODEL_NAME}")
-    print("Tools: Google Places API (via GooglePlaceApi + FunctionTool)")
+    print(f"Agent: TravelPlannerAgent using {MODEL_NAME} via Nebius (PydanticAI)")
+    print("Tools: get_coordinates, search_places (Google Places API)")
     print("-" * 60)
 
     try:
         agent = create_travel_agent()
-        runner = InMemoryRunner(
-            agent=agent,
-            app_name=APP_NAME,
-        )
-        user_id = "test_user_001"
-        session = await runner.session_service.create_session(
-            app_name=APP_NAME, user_id=user_id
-        )
-        session_id = session.id
-
-        print(f"[SYSTEM] Session created for User ID: {user_id}")
-        print(f"[SYSTEM] Agent tools: {[tool.name for tool in agent.tools]}")
-        print("-" * 60)
         user_query_text = "I'm planning a trip to Paphos, Cyprus. Can you help me find good restaurants and tourist attractions there? Please provide Google Maps links for each place."
         print(f"[USER] {user_query_text}")
 
-        # Create content for agent
-        user_content = Content(
-            parts=[Part(text=user_query_text)],
-            role="user"
-        )
-
         print("\n[AGENT] Processing your request using Google Places tools...")
         print("-" * 60)
-        async for event in runner.run_async(
-            user_id=user_id,
-            session_id=session_id,
-            new_message=user_content
-        ):
-            if hasattr(event, 'content') and event.content:
-                print(f"[AGENT RESPONSE] {event.content}")
-            elif hasattr(event, 'text') and event.text:
-                print(f"[AGENT RESPONSE] {event.text}")
-            else:
-                print(f"[AGENT EVENT] {event}")
+        result = await agent.run(user_query_text)
+        print(f"[AGENT RESPONSE] {result.output}")
+        usage = result.usage()
+        print(f"[SYSTEM] Token usage: requests={len(usage.requests)} total={usage.total_tokens}")
 
     except Exception as e:
         print(f"[ERROR] Failed to run agent: {e}")

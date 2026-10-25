@@ -1,26 +1,29 @@
-"""Ingest Markdown documents into ChromaDB using the conversion log.
+"""Ingest Markdown documents into a vector store using the conversion log.
 
 Usage:
-    DATA_DIR="$(pwd)"python src/rag/ingestion.py --log-path data/nebius_site/conversion_log_811e314c.jsonl
-    python src/rag/ingestion.py --log-path data/md_docs/conversion_log.jsonl --collection my_collection
+    DATA_DIR="$(pwd)" python src/rag/ingestion.py --backend chroma --log-path data/nebius_site/conversion_log_811e314c.jsonl
+    python src/rag/ingestion.py --backend chroma --log-path data/md_docs/conversion_log.jsonl --collection my_collection
 """
 from __future__ import annotations
 
 import argparse
 import json
+import sys
 import time
 from collections.abc import Iterable, Sequence
 from pathlib import Path
 
-from agent.config import (
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from rag.agent.config import (
     COLLECTION_NAME,
     EMBEDDING_MODEL_NAME,
     EMBEDDING_SIZE,
     OLLAMA_HOST,
 )
-from connections import BaseConnection, ChromaConnection
-from embedder import Embedder, EmbeddingModel, OllamaEmbedder
-from files_processing import chunk_document
+from rag.connections import BaseConnection, get_backend
+from rag.embedder import Embedder, EmbeddingModel, OllamaEmbedder
+from rag.files_processing import chunk_document
 
 
 def load_transformation_log(log_path: Path) -> list[dict]:
@@ -75,13 +78,25 @@ def ingest(
     chunk_size: int,
     chunk_overlap: int,
     embedder: Embedder,
+    fulltext: bool = False,
 ) -> int:
     try:
         client.get_collection(collection_name)
         print(f"Using existing collection: {collection_name}")
+        if fulltext:
+            print("Note: --fulltext only applies when the collection is created; "
+                  "use --reset-collection to rebuild it with a full-text index.")
     except Exception:
         print(f"Creating new collection: {collection_name}")
-        client.create_collection(collection_name)
+        schema = None
+        if fulltext:
+            # Local Chroma (>= 1.5) supports an FTS index on the document key.
+            from chromadb import FtsIndexConfig, K, Schema
+
+            schema = Schema()
+            schema.create_index(config=FtsIndexConfig(), key=K.DOCUMENT)
+            print("Full-text (FTS) index enabled on documents")
+        client.create_collection(collection_name, schema=schema)
 
     documents: list[str] = []
     metadatas: list[dict[str, str]] = []
@@ -155,6 +170,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help="Delete and recreate the collection if it exists (useful for dimension changes).",
     )
     parser.add_argument(
+        "--fulltext",
+        action="store_true",
+        help="Additionally build a full-text (FTS) index on documents when creating the collection "
+             "(local Chroma >= 1.5; combine with --reset-collection to rebuild an existing one).",
+    )
+    parser.add_argument(
         "--batch-size",
         type=int,
         default=50,
@@ -171,6 +192,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         type=int,
         default=200,
         help="Chunk overlap for the splitter (default: 200).",
+    )
+    parser.add_argument(
+        "--backend",
+        required=True,
+        choices=["chroma", "weaviate"],
+        help="Vector store backend to ingest into (supported: chroma, weaviate).",
     )
     parser.add_argument(
         "--embedding-model",
@@ -208,7 +235,7 @@ def main(argv: Sequence[str] | None = None) -> None:
 
     model = EmbeddingModel(name=args.embedding_model, embedding_size=args.embedding_size)
     embedder = OllamaEmbedder(host=args.ollama_host, model=model, timeout=args.request_timeout)
-    client = ChromaConnection()
+    client = get_backend(args.backend)
 
     # Handle collection reset if requested
     if args.reset_collection:
@@ -227,13 +254,18 @@ def main(argv: Sequence[str] | None = None) -> None:
         chunk_size=args.chunk_size,
         chunk_overlap=args.chunk_overlap,
         embedder=embedder,
+        fulltext=args.fulltext,
     )
 
-    collection = client.get_collection(args.collection)
-    doc_count = collection.count()
+    if args.backend == "weaviate":
+        doc_count = client.get_collection(args.collection).aggregate.over_all(
+            total_count=True
+        ).total_count
+    else:
+        doc_count = client.get_collection(args.collection).count()
     print(
         f"Ingested {total} chunks from {len(entries)} files into collection "
-        f"'{args.collection}' (total documents in collection: {doc_count})"
+        f"'{args.collection}' on {args.backend} (total documents in collection: {doc_count})"
     )
 
 
