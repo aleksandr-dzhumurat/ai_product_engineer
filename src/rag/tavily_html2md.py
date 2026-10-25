@@ -7,9 +7,12 @@ Usage:
 import argparse
 import fnmatch
 import hashlib
+import sys
 from pathlib import Path
 
-from files_processing import (
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from rag.files_processing import (
     convert_file,
     get_directory_tree,
     log_entry_to_document_index,

@@ -775,21 +775,21 @@ The Math Formula Explained
 Intervention_Cost(t) = Base_Cost × (1 + fatigue_factor^previous_campaigns) × urgency_multiplier
 ```
 
-- Base_Cost: Normal cost of sending a discount (e.g., $10)
+- Base_Cost: Normal cost of sending a discount (e.g., \$10)
 - fatigue_factor: How much each previous campaign reduces effectiveness (e.g., 1.5)
 - previous_campaigns: How many times you’ve contacted this user before
 - urgency_multiplier: How desperate the situation is
 
 Example Calculation
 
-- Base discount cost: $10
+- Base discount cost: \$10
 - Fatigue factor: 1.3 (each campaign makes next one 30% less effective)
 - User has received 3 previous campaigns
 - High urgency situation: 2x multiplier
 
-Cost = $10 × (1 + 1.3³) × 2 = $10 × 3.197 × 2 = $63.94
+Cost = \$10 × (1 + 1.3³) × 2 = \$10 × 3.197 × 2 = \$63.94
 
-The true cost is much higher than the $10 discount because:
+The true cost is much higher than the \$10 discount because:
 1. The customer is getting annoyed
 2. Future campaigns will be even less effective
 3. You might actually push them to cancel
@@ -1073,7 +1073,7 @@ Business Case: “We’d rather contact too many users than miss any potential c
 - Customer acquisition cost > retention cost
 - High customer lifetime value
 - Competitive market (can’t afford to lose customers)
-- Example: “Each churned customer costs us $500 in lost revenue”
+- Example: “Each churned customer costs us \$500 in lost revenue”
 
 ### Use F1-Score When:
 
@@ -1114,7 +1114,7 @@ Business Interpretation:
 
 Marketing Team (cares about Precision): “Only 40% of our campaigns targeted real churners. We’re wasting 60% of our retention budget!”
 
-Customer Success Team (cares about Recall): “We saved 200 customers but lost 100 we never contacted. That’s $50,000 in lost revenue!”
+Customer Success Team (cares about Recall): “We saved 200 customers but lost 100 we never contacted. That’s \$50,000 in lost revenue!”
 
 CEO (cares about AUC-ROC): “The model can distinguish churners from loyal customers 82% of the time. That’s pretty good - we can build a business around this.”
 
@@ -1137,9 +1137,9 @@ Here’s a detailed business example showing how AUC-ROC enables flexible thresh
 Company: CloudDocs (document collaboration software)
 Users: 50,000 active subscribers
 Monthly Churn Rate: 5% (2,500 users)
-Customer Acquisition Cost: $150
-Average Customer Lifetime Value: $1,200
-Retention Campaign Cost: $25 per user
+Customer Acquisition Cost: \$150
+Average Customer Lifetime Value: \$1,200
+Retention Campaign Cost: \$25 per user
 
 ### The Model
 Your churn prediction model has AUC-ROC = 0.85, meaning it’s quite good at ranking users by churn risk.
@@ -1150,7 +1150,7 @@ Your churn prediction model has AUC-ROC = 0.85, meaning it’s quite good at ran
 
 Business Conditions:
 - Stable revenue
-- Normal marketing budget: $50,000/month
+- Normal marketing budget: \$50,000/month
 - Can contact up to 2,000 users with retention campaigns
 
 Threshold Selection:
@@ -1175,7 +1175,7 @@ Results:
 
 Business Conditions:
 - Need to hit quarterly targets
-- Extra marketing budget approved: $100,000
+- Extra marketing budget approved: \$100,000
 - Sales team has capacity for 4,000 interventions
 - CEO says: “I don’t want to lose ANY customers this quarter!”
 
@@ -1202,7 +1202,7 @@ Business Impact: Higher total profit despite lower precision!
 
 Business Conditions:
 - Budget cuts across the board
-- Marketing budget slashed to $15,000/month
+- Marketing budget slashed to \$15,000/month
 - Customer success team reduced by 50%
 - CFO says: “Only spend money on sure bets!”
 
@@ -1230,7 +1230,7 @@ Business Impact: Lower total saves, but much higher efficiency!
 Business Conditions:
 - Major competitor launches aggressive pricing
 - Churn rate spikes to 8% (4,000 users at risk)
-- Emergency retention budget: $200,000
+- Emergency retention budget: \$200,000
 - VP Sales: “We need to fight for every customer!”
 
 Threshold Adjustment:

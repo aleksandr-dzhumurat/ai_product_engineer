@@ -1,5 +1,6 @@
 catboost
 requests
+python-dotenv>=1.1.0
 numpy
 pandas
 PyYAML==6.0.1

@@ -6,6 +6,8 @@ plotly
 # serve
 fastapi
 uvicorn
+requests
+streamlit>=1.49
 # experiments
 mlflow-skinny==2.16.2
 hyperopt
@@ -16,6 +18,8 @@ scikit-learn
 umap-learn
 PyYAML==6.0.1
 # data processing
+pandas>=2.0
+tqdm
 polars==1.15.0
 pyarrow==18.1.0
 # browser automation
@@ -36,12 +40,16 @@ gensim
 implicit
 google-genai
 catalyst
+pytorch-lightning
 chromadb
+weaviate-client
 langchain
+langchain-core>=1
 langchain-text-splitters
 langchain_huggingface
 tiktoken
 google-cloud-storage
 gcsfs
 mindbase-layer @ git+https://github.com/aleksandr-dzhumurat/automation_toolkit.git
-langfuse
+pydantic-ai-slim>=1.87,<2
+langfuse>=5

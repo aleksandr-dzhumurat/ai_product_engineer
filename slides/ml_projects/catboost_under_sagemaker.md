@@ -339,7 +339,7 @@ aws sagemaker delete-endpoint \
 | Free tier | 125 hrs/month, first 2 months |
 | Input format | `{"features": [...]}` JSON |
 | Output format | `{"predictions": [...], "probabilities": [...]}` |
-| Idle cost | ~$0.065/hr after free tier |
+| Idle cost | ~\$0.065/hr after free tier |
 
 ---
 

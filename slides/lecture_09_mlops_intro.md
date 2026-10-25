@@ -1,326 +1,390 @@
+# Лекция: введение в MLOps
 
-# Введение в MLOps
+## Ноутбуки и порядок практики
 
-![ivi_main](img/ml_dev_design.png)
+| Шаг | Ноутбук | Что сделать |
+| --- | --- | --- |
+| 1 | [Классификатор с MLflow](https://github.com/aleksandr-dzhumurat/ai_product_engineer/blob/main/jupyter_notebooks/vol_01_ml_products_02_mflow_powered_classifier.ipynb) | Разберите обучение классификатора и отслеживание экспериментов с помощью MLflow. |
 
-References
-* [genai-platform](https://huyenchip.com/2024/07/25/genai-platform.html)
-* [ml system design](https://www.linkedin.com/feed/update/activity:7274347641138728961)
-* [MLOps maturity model](https://www.linkedin.com/feed/update/activity:7229381328490622976)
+---
 
-## Шаг 1: среда разработки
+## План лекции (общая длительность ≈ 44 мин 16 с)
 
-Скачать дамп [messages.db](https://drive.google.com/file/d/1Ej6pV_GAXFDGxMk45Dntn2pnSlnn6IRs/view?usp=sharing) и положить в директорию [data](./data)
+1. Зачем появился MLOps
+2. Жизненный цикл модели и разделение ответственности
+3. Модель зрелости MLOps: уровни 0–4
+4. Зачем компании ML-платформа
+5. Материалы для самостоятельного изучения
+6. Практикум: подготовка модели к эксплуатации
+7. Итоги
 
-Запустить сборку докер-контейнера для разработки
+Таймкоды относятся к субтитрам записи. После конспекта приведены дополнительные пояснения к среде экспериментов, CI/CD и проектированию ML-систем.
 
-```shell
-make build
+---
+
+## 1. Зачем появился MLOps `[00:00 – 05:37]`
+
+**Обученная модель — только часть работающего ML-продукта.** Чтобы пользователь получил предсказание, нужно подготовить данные, сохранить модель, запустить сервис и следить за его работой. Со временем требуется обновлять и данные, и саму модель.
+
+В начале лекции приводится пример того, как эта работа была устроена без выделенных MLOps-специалистов. ML-инженер самостоятельно:
+
+1. Готовил признаки и обучал модель, например градиентный бустинг.
+2. Упаковывал модель в Docker и разворачивал на сервере.
+3. Настраивал мониторинг и дашборды в Grafana.
+4. Писал **runbook** — инструкцию для дежурного инженера: как обнаружить проблему и восстановить работу сервиса.
+
+DevOps-инженер следил за инфраструктурой: доступностью серверов, памятью, диском и процессами. Если сервис падал, он мог перезапустить его по инструкции. Но исправить ошибку подготовки признаков или разобраться в ухудшении качества модели одного перезапуска недостаточно.
+
+### Что изменилось с ростом числа моделей
+
+Пока у компании одна модель, ручные действия ещё можно координировать. Когда команд и моделей становится больше, растёт число окружений, зависимостей, обновлений и способов развёртывания. Одну модель также может потребоваться запускать на нескольких экземплярах сервиса.
+
+**Проблема масштаба:** каждая команда создаёт собственный процесс эксплуатации, а поддержке приходится разбираться во всём этом разнообразии.
+
+```mermaid
+flowchart TD
+    A["Больше ML-команд и моделей"] --> B["Больше сервисов, зависимостей и обновлений"]
+    B --> C["Растёт объём ручной поддержки"]
+    C --> D["Нужны общие процессы и автоматизация"]
+    D --> E["Практики MLOps"]
 ```
 
-## Шаг 2
+**MLOps (Machine Learning Operations)** — практики организации разработки, доставки и эксплуатации ML-систем. Они помогают воспроизводить результаты, надёжно обновлять модели, обнаруживать проблемы и сокращать путь от эксперимента до работающего продукта.
 
-Этап EDA (Exploratory Data Analysis) - запускаем Jupyter чтобы "покопаться" в данных
+В лекции появление MLOps объясняется через выделение специалистов, которые сопровождают весь цикл модели. Конкретное распределение задач зависит от компании: MLOps — это также процессы и инструменты, а не только название должности.
 
-```shell
-make notebook
+---
+
+## 2. Жизненный цикл модели и разделение ответственности `[05:37 – 11:11]`
+
+### Из чего состоит ML-система
+
+На схеме разделены два режима работы: исследование гипотез и управляемая эксплуатация. Сохранены основные компоненты исходной иллюстрации, а переходы между ними показаны явно.
+
+![Research и production: данные, эксперименты, обучение и выпуск модели](img/mlops_research_prod.png)
+
+[Редактируемая схема Excalidraw](img/mlops_research_prod.excalidraw) · [Векторная версия SVG](img/mlops_research_prod.svg)
+
+**Как читать схему:**
+
+- **Слева — данные:** сырые события, очищенные наборы и признаки.
+- **Сверху — research:** интерактивный анализ, эксперименты и проверка гипотез.
+- **Между контурами — Git и CI:** в production передают проверенный код и конфигурацию пайплайна. Состояние ноутбука не переносится.
+- **Снизу — production:** воспроизводимое обучение создаёт кандидата; проверки, staging и решение о выпуске отделяют его от активной модели в сервисе.
+- **Справа — общие инструменты:** tracking, хранилища артефактов, окружения, наблюдаемость и связь версий.
+
+Серые стрелки показывают данные и результаты, синий пунктир — запуск и управление, зелёные стрелки — продвижение модели к выпуску. Пользовательские события и новые метки возвращаются в данные следующего цикла.
+
+**Важно:** production здесь включает управляемые процессы обучения и эксплуатации. Новая обученная модель не заменяет работающую автоматически: она должна пройти процедуру выпуска.
+
+Схема адаптирована по исходной иллюстрации Aurimas Griciūnas «Efficient Machine Learning Experimentation Environments».
+
+Упрощённо полный цикл выглядит так:
+
+```mermaid
+flowchart TD
+    A["Сырые данные: события, логи, сообщения"] --> B["Очистка и подготовка данных"]
+    B --> C["Расчёт признаков"]
+    C --> D["Обучение модели"]
+    D --> E["Оценка и валидация"]
+    E --> F["Сохранение версии модели"]
+    F --> G["Развёртывание в сервисе"]
+    G --> H["Предсказания и действия пользователей"]
+    H --> I["Мониторинг и сбор обратной связи"]
+    I --> A
 ```
 
-Открываем браузер по ссылке [localhost:8888](http://localhost:8888/)
+Обратная связь замыкает цикл. Например, рекомендательная система показывает фильмы, а клики пользователей становятся данными для оценки и последующего обучения.
 
-После EDA сохраняем файл [scored_corpus.csv](https://drive.google.com/file/d/1lRpQOCwxwt0JAU9wDUOvhJ3CaYZMYFO_/view?usp=share_link) в директорию `data` (либо можно скачать из google drive по ссылке)
+### Три представления данных
 
-# Шаг 3: Эксплуатация модели
+- **Raw data — сырые данные.** Исходные события приложений, логи и другие записи.
+- **Curated data — подготовленные данные.** Данные после очистки, удаления дубликатов и согласования форматов.
+- **Features — признаки.** Величины, которые использует модель: например, число просмотров пользователя за неделю.
 
-Скачиваем размеченный датасет [по ссылке](https://drive.google.com/file/d/1MrxsEbeeJnIMdjL_GjsYysdKADyF5EQo/view?usp=sharing)
+На исходной схеме признаки доступны через **Feature Store** — систему хранения и предоставления признаков для обучения и получения предсказаний. Это один из вариантов архитектуры; необходимость отдельного Feature Store зависит от задач команды.
 
-добавляем модель с микросервис
+### Кто за что отвечает
 
-* [__main__](../src/train.py) - обучить модель с качеством f1 больше 0.86106
-    *  Bert для фичей
-    * более сложная модель (бустинг?)
-* [pridict_labell](../src/service.py) - загрузить модель в сервис и реализовать API
-    * `feed`
-    * `/messages/<string:identifier>'`
-* прислать PR в репозиторий
+Лектор предлагает полезную метафору: **Data Scientist реализует отдельные блоки, а MLOps помогает сделать так, чтобы работали стрелки между ними.**
 
-# Experimentation environment
-
-What does an 𝗘𝗳𝗳𝗲𝗰𝘁𝗶𝘃𝗲 𝗠𝗮𝗰𝗵𝗶𝗻𝗲 𝗟𝗲𝗮𝗿𝗻𝗶𝗻𝗴 𝗘𝘅𝗽𝗲𝗿𝗶𝗺𝗲𝗻𝘁𝗮𝘁𝗶𝗼𝗻 𝗘𝗻𝘃𝗶𝗿𝗼𝗻𝗺𝗲𝗻𝘁 look like?
-
-MLOps practices are there to improve Machine Learning Product development velocity, the biggest bottlenecks happen when Experimentation Environments and other infrastructure elements are integrated poorly.
-
-Let’s look into the properties that an effective Experimentation Environment should have. As a MLOps engineer you should strive to provide these to your users and as a Data Scientist, you should know what you should be demanding for.
-
-𝟭: Access to the raw data. While handling raw data is the responsibility of Data Engineering function, Data Scientists need the ability to explore and analyze available raw data and decide which of it needs to be moved upstream the Data Value Chain (2.1).
-
-𝟮: Access to the curated data. Curated data might be available in the Data Warehouse but not exposed via a Feature Store. Such Data should not be exposed for model training in production environments. Data Scientists need the ability to explore curated data and see what needs to be pushed downstream (3.1).
-
-𝟯: Data used for training of Machine Learning models should be sourced from a Feature Store if the ML Training pipeline is ready to be moved to the production stage.
-
-𝟰: Data Scientists should be able to easily spin up different types of compute clusters - might it be Spark, Dask or any other technology - to allow effective Raw and Curated Data exploration.
-
-𝟱: Data Scientists should be able to spin up a production like remote Machine Learning Training pipeline in development environment ad-hoc from the Notebook, this increases speed of iteration significantly.
-
-𝟲: There should be an automated setup in place that would perform the testing and promotion to a higher env when a specific set of Pull Requests are created. E.g. a PR from feature/* to release/* branch could trigger a CI/CD process to test and deploy the ML Pipeline to a pre-prod environment.
-
-𝟳: Notebooks and any additional boilerplate code for CI/CD should be part of your Git integration. Make it crystal clear where a certain type of code should live - a popular way to do this is providing repository templates with clear documentation.
-
-𝟴: Experiment/Model Tracking System should be exposed to both local and remote pipelines.
-
-𝟗: Notebooks have to be running in the same environment that your production code will run in. Incompatible dependencies should not cause problems when porting applications to production. It can be achieved by running Notebooks in containers.
-
-### General Trade-offs to Demonstrate
-
-| Trade-off | Considerations |
+| Участник | Пример ответственности |
 |---|---|
-| **Availability vs Consistency** | CAP theorem. For ML serving, availability is usually prioritised — a stale prediction is better than no prediction. Use eventual consistency for feature stores. |
-| **Storage** | Hot/warm/cold tiers: Redis (hot, < 1 ms) → Cassandra/DynamoDB (warm, < 10 ms) → S3/BigQuery (cold, seconds–minutes). Move data down tiers as it ages. |
-| **Messaging** | Kafka for durable, high-throughput event streaming. Use consumer groups for parallel processing. Partition by user/entity ID for ordering guarantees within a group. |
-| **Caching** | Cache at multiple levels: API response cache, feature cache, embedding cache. TTL must balance freshness with compute savings. |
-| **Autoscaling** | Scale inference replicas based on P95 latency or QPS. Be aware of cold-start cost if model loading is slow — keep a warm pool. |
-| **Compute** | Batch jobs benefit from spot/preemptible instances (cheap, but can be interrupted — design for idempotency). Real-time serving needs on-demand instances for reliability. |
+| **Data Scientist / ML-инженер** | Проверить гипотезу, написать код признаков и обучения, выбрать метрики, оценить модель |
+| **Data Engineer** | Подготовить надёжные потоки и наборы данных для использования другими командами |
+| **MLOps-инженер** | Настроить запуск пайплайнов, доставку моделей, окружения, наблюдаемость и восстановление после сбоев |
+| **DevOps / инфраструктурная команда** | Обеспечить работу вычислительной инфраструктуры и общих средств эксплуатации |
 
-# CI/CD
+Границы могут пересекаться. Выделенная MLOps-команда не снимает с автора модели ответственности за корректность её кода и качество предсказаний.
 
-Makefile
+**Пример из лекции:** ML-инженер пишет расчёт полезного признака. Затем этот расчёт запускается регулярно через оркестратор, например Airflow. Нужно обеспечить расписание, доступ к данным, обработку ошибок и возможность повторного запуска.
 
-```python
-tag:
-	assets/set_git_tag.sh
+Инструменты решают разные задачи: **experiment tracking** хранит параметры и результаты запусков; **model registry** управляет версиями моделей и связанными метаданными; оркестратор управляет выполнением шагов. В одной платформе эти возможности могут быть объединены.
 
-make pep8:
-	autopep8 --in-place --aggressive --aggressive --recursive .
+---
 
-version:
-	assets/increment_version.sh && \
-	git add setup.py
+## 3. Модель зрелости MLOps `[11:11 – 24:11]`
 
-clean-cache:
-	find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$)" | xargs rm -rf
+**Модель зрелости** помогает оценить текущие процессы и выбрать следующий шаг автоматизации. В рассматриваемой [модели Microsoft](https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/mlops-maturity-model) пять уровней — **от 0 до 4**.
 
+### Что меняется от уровня к уровню
+
+| Уровень | Основная характеристика |
+|---|---|
+| **0. Нет MLOps** | Обучение, проверки и развёртывание выполняются вручную; отслеживание качества разрознено |
+| **1. DevOps без MLOps** | Автоматизированы сборки и тесты кода, но выпуск моделей всё ещё зависит от ручной работы ML-команды |
+| **2. Автоматизированное обучение** | Обучение воспроизводимо, результаты отслеживаются централизованно; выпуск модели ещё может быть ручным |
+| **3. Автоматизированное развёртывание моделей** | Проверки и доставка моделей связаны в автоматизированный процесс выпуска |
+| **4. Полная автоматизация MLOps-процессов** | Обучение, проверка и выпуск образуют согласованный цикл с обратной связью из эксплуатации |
+
+### Пример: ручной выпуск модели `[15:19 – 18:24]`
+
+На уровне 0 специалист обучает модель на своей или удалённой машине. Результат — файл модели или checkpoint нейросети. Затем он подключается к серверу, копирует файл в нужную директорию и перезапускает процесс.
+
+Пока всё работает, такой путь кажется простым. Но при проблеме возникают вопросы: какой код создал этот файл, на каких данных обучалась модель и можно ли воспроизвести результат?
+
+Отдельная проблема — сбор метрик. В рекомендательной системе сначала оценивают модель на подготовленном наборе данных, затем собирают пользовательские события из работающего продукта. Если для каждой модели это отдельная ручная процедура, поддерживать оценку всё труднее.
+
+### Что автоматизируют дальше `[18:24 – 22:20]`
+
+1. **Сборку и проверки.** Изменение кода запускает тесты и подготовку артефактов.
+2. **Обучение.** Пайплайн получает данные, обучает модель, оценивает результат и сохраняет артефакты запуска.
+3. **Доставку модели.** Проверенная версия поступает в целевое окружение через воспроизводимый процесс.
+4. **Обратную связь и решения.** Метрики эксплуатации помогают определить, требуется ли обновление и можно ли принять новую модель.
+
+В лекции также обсуждается автоматизация **A/B-тестирования**: часть пользователей получает результаты одной модели, часть — другой; система собирает метрики и сравнивает варианты. Такой эксперимент требует достаточного трафика и заранее выбранных правил оценки.
+
+**Автоматизация решения** означает наличие явных критериев. Например, новая модель проходит проверки качества, затем ограниченный эксперимент, после которого оценивают бизнес-метрику. Сам факт успешного обучения ещё не означает, что модель готова к выпуску.
+
+### Почему не стоит сразу строить максимальный уровень `[12:57 – 15:19]`
+
+Лектор приводит пример стартапа, в котором специалист с опытом крупных компаний построил очень надёжную, но слишком тяжёлую для команды систему. Разработка и доставка изменений замедлились.
+
+**Вывод:** сложность инфраструктуры должна соответствовать масштабу и текущим проблемам. Каждый следующий шаг требует времени, инструментов и людей.
+
+Модель зрелости удобно использовать для обсуждения конкретного улучшения: какие действия сейчас выполняются вручную, сколько времени они занимают и какую проблему устранит автоматизация. Разные части системы могут быть автоматизированы в разной степени.
+
+---
+
+## 4. Зачем компании ML-платформа `[24:11 – 25:15]`
+
+**ML-платформа** объединяет общие возможности для работы с данными, запуска экспериментов, обучения, хранения моделей и их доставки в продукт.
+
+Главный аргумент из лекции — сокращение **time-to-market**, времени от идеи до её использования в продукте. Когда окружения и процессы подготовлены, команда быстрее проверяет гипотезы и выпускает удачные изменения.
+
+```mermaid
+flowchart LR
+    A["Общие инструменты и процессы"] --> B["Меньше ручной настройки"]
+    B --> C["Быстрее проверка гипотез"]
+    C --> D["Быстрее доставка удачных моделей"]
+    D --> E["Раньше обратная связь от продукта"]
 ```
 
-Assets set git tag
+Платформа полезна, если снимает повторяющуюся работу с нескольких команд. При оценке её ценности нужно учитывать и затраты: разработку, поддержку, обучение пользователей. Ускорение экспериментов создаёт больше возможностей найти полезное решение, но само по себе не гарантирует бизнес-результат.
 
-```python
-#!/bin/bash
+---
 
-# Get the current tag name
-current_tag=$(git describe --abbrev=0 --tags)
+## 5. Материалы для самостоятельного изучения `[25:15 – 34:40]`
 
-# Parse the current tag and increment the version
-old_version=$(echo "$current_tag" | sed -E 's/v([0-9]+\.[0-9]+\.[0-9]+)/\1/')
-IFS='.' read -ra version_parts <<< "$old_version"
-((version_parts[2]++))
-new_version="${version_parts[0]}.${version_parts[1]}.${version_parts[2]}"
-new_tag="v$new_version"
+Значительная часть занятия посвящена тому, где продолжить изучение MLOps.
 
-# Update the Git tag
-git tag -d "$current_tag"           # Delete the old tag locally
-git push origin --delete "$current_tag" # Delete the old tag on the remote repository
-git tag "$new_tag"                  # Create the new tag locally
-git push origin "$new_tag"          # Push the new tag to the remote repository
+| Материал | Для чего использовать |
+|---|---|
+| [MLOps maturity model — Microsoft](https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/mlops-maturity-model) | Оценить текущие процессы и спланировать последовательную автоматизацию |
+| [Designing Machine Learning Systems — материалы к книге Chip Huyen](https://github.com/chiphuyen/dmls-book/blob/main/resources.md) | Разобраться в данных, признаках, оценке, развёртывании и мониторинге ML-систем |
+| [Бесплатный курс по MLOps — Evidently](https://www.evidentlyai.com/mlops-tutorials) | Изучить практики оценки и мониторинга моделей и закрепить их на примерах |
+| [Building a Generative AI Platform — Chip Huyen](https://huyenchip.com/2024/07/25/genai-platform.html) | Проследить, как приложение с вызовом модели постепенно обрастает компонентами платформы |
+| [ML и LLM System Design — кейсы Evidently](https://www.evidentlyai.com/ml-system-design) | Найти описания реальных систем и изучить решения компаний с похожими задачами |
 
-echo "Git tag updated from $current_tag to $new_tag"
+**Уточнение к записи:** Building a Generative AI Platform — статья, а репозиторий Designing Machine Learning Systems содержит материалы к книге, а не её полный текст.
+
+При изучении курса Evidently полезно воспроизводить отдельные проверки своими руками.
+
+**Как читать кейс:** начните с задачи и ограничений компании, затем разберите данные, оценку качества, способ развёртывания и мониторинг. Это поможет понять причины архитектурных решений и определить, подходят ли они вашей системе.
+
+---
+
+## 6. Практикум: подготовка модели к эксплуатации `[34:40 – 41:27]`
+
+### Цель практикума
+
+Пройти путь от сохранённой модели до HTTP-сервиса в Docker. Используем **RTB-классификатор** из [src/train.py](../src/train.py). Каркас API подготовлен в [dockerfiles/api/src/main.py](../dockerfiles/api/src/main.py); загрузку модели и предсказание нужно реализовать самостоятельно.
+
+### Шаг 1. Подготовить данные и обучить модель
+
+В директории `data` должен находиться датасет `rtb_classification_data.csv.gz`. Если его нет, получите учебный RTB-датасет у преподавателя. Все команды выполняются из корня репозитория; файл `.env` должен существовать.
+
+```shell
+make build-sagemaker
+make run-sagemaker-train
 ```
 
-Upd version
+В текущем скрипте обучение выполняется на первых **1000 строках**, а модель сохраняется в `data/model_dockerized.cb`. В обучающем контейнере эта директория доступна как `/opt/ml/data`.
 
-```python
-#!/bin/bash
+**Обратите внимание:** скрипт пока не выделяет отложенную выборку и не считает F1. Успешное завершение обучения подтверждает создание артефакта, но не качество модели на новых данных.
 
-# Input code file
-filename="$(pwd)/setup.py"
+### Шаг 2. Запустить каркас API
 
-# Read the current version
-current_version=$(grep -o "version='[0-9.]\+'" "$filename" | cut -d"'" -f2)
-
-# Increment the version
-IFS='.' read -ra version_parts <<< "$current_version"
-((version_parts[2]++))
-new_version="${version_parts[0]}.${version_parts[1]}.${version_parts[2]}"
-
-# Escape slashes in the version string for sed (macOS version)
-escaped_current_version=$(echo "$current_version" | sed -E 's/\//\\\//g')
-escaped_new_version=$(echo "$new_version" | sed -E 's/\//\\\//g')
-
-# Update the version in the file using sed (macOS version)
-sed -i '' "s/version='$escaped_current_version'/version='$escaped_new_version'/g" "$filename"
-
-echo "Version updated from $current_version to $new_version"
+```shell
+make build-api
+make run-service
 ```
 
-# ML system design
+Сервис доступен на [localhost:8002](http://localhost:8002), документация Swagger — на [localhost:8002/docs](http://localhost:8002/docs).
 
-[PDF:ML system design](img/ml_system_design.pdf)
+```shell
+curl http://localhost:8002/ping
+```
 
-**System design** is the process of defining components and their integration, APIs, and data models to build large-scale systems that meet a specified set of functional and non-functional requirements.
+Ожидаемый ответ: `{"message":"pong"}`. Эта проверка подтверждает работу HTTP-сервиса; она не проверяет готовность модели.
 
-- computer networking
-- parallel computing
-- distributed systems
+В API-контейнере директория `data` смонтирована в `/srv/data`, поэтому путь к тому же артефакту — `/srv/data/model_dockerized.cb`. Цель `run-service` явно задаёт соответствующий `DATA_DIR`. Для запуска каркаса не нужны поисковый сервис, MLflow или отдельная Docker-сеть.
 
-System design aims to build systems that are reliable, effective, and maintainable, among other characteristics.
+### Шаг 3. Реализовать загрузку модели и предсказание
 
-- **Reliable systems** handle faults, failures, and errors.
-- **Effective systems** meet all user needs and business requirements.
-- **Maintainable systems** are flexible and easy to scale up or down. The ability to add new features also comes under the umbrella of maintainability.
+В [main.py](../dockerfiles/api/src/main.py) подготовлены схема запроса, схема ответа, `GET /ping` и заглушка `POST /predict`.
 
-**Abstraction** is the art of obfuscating details that we don’t need. It allows us to concentrate on the big picture. Looking at the big picture is vital because it hides the inner complexities, thus giving us a broader understanding of our set goals and staying focused on them.
+1. В функции `lifespan` загрузите `CatBoostClassifier` из `MODEL_PATH` и сохраните в `app.state.model`. Загрузка должна происходить один раз при старте сервиса. Определите понятное поведение при отсутствии или повреждении файла модели.
+2. В обработчике `predict` получите модель через `request.app.state.model`.
+3. Соберите вход для одного предсказания. **Используйте состав и порядок признаков из `model.feature_names_`:** при обучении `get_valuable_columns` может исключить часть категориальных признаков. Типы категориальных значений должны соответствовать обучению.
+4. Верните предсказанный класс и вероятность класса `target=1` как обычные Python `int` и `float`.
 
-### Interview process
+Пример запроса (значения иллюстративные; для проверки модели используйте также реальную строку датасета):
 
-**Ask refining questions**
+```shell
+curl -X POST http://localhost:8002/predict \
+  -H 'Content-Type: application/json' \
+  -d '{"request_context_device_type":"phone","dsp":"example_dsp","ssp":"example_ssp","hour":12,"price":0.5}'
+```
 
-- Requirements that the clients need directly—for example, the ability to send messages in near real-time to friends. (functional)
-- Requirements that are needed indirectly—for example, messaging service performance shouldn’t degrade with increasing user load. (non-functional)
+До реализации обработчика корректный запрос возвращает **HTTP 501** с сообщением `Implement model inference in /predict`. После реализации ожидается **HTTP 200** с полями `prediction` (0 или 1) и `probability` (от 0 до 1, вероятность `target=1`). Невалидный запрос, например `hour=25`, должен возвращать **HTTP 422**.
 
- **Handle the data**
+### Что проверить перед отправкой PR
 
-- What’s the size of the data right now?
-- At what rate is the data expected to grow over time?
-- How will the data be consumed by other subsystems or end users?
-- Is the data read-heavy or write-heavy?
-- Do we need strict consistency of data, or will eventual consistency work?
-- What’s the durability target of the data?
-- What privacy and regulatory requirements do we require for storing or transmitting user data?
-
-**Discuss the components**
-
-Front-end components, load balancers, caches, databases, firewalls, and CDNs are just some examples of system components.
-
-**Discuss trade-offs**
-
-Something is always failing in a big system. We need to integrate fault tolerance and security into our design.
+- Контейнер запускается, `/ping` отвечает, Swagger отображает контракт API.
+- Модель загружается один раз и используется для нескольких запросов.
+- Предсказание API совпадает с прямым вызовом модели на той же строке и с теми же признаками.
+- Некорректные входные данные отклоняются, ошибки загрузки модели понятны.
+- В PR включены код и инструкция запуска; датасет и обученный артефакт не добавляются в Git.
 
 
-# References
+---
 
-* [ML system design interview](https://gist.github.com/aleksandr-dzhumurat/6da16c38a2a692d8d99242145977f82e)
-* [Flant: Настраиваем CI/CD с GitHub Actions и werf: инструкция для новичков](https://habr.com/ru/companies/flant/articles/803251/)
-* [A Visual Guide to CI/CD (Continuous Integration / Continuous Delivery)](https://www.linkedin.com/posts/sahnlam_a-visual-guide-to-cicd-continuous-integration-activity-7311240881695535106-3C0R)
+## 7. Итоги `[41:27 – 44:16]`
 
-### Tech blogs
+1. **MLOps охватывает жизненный цикл модели:** данные, обучение, проверки, выпуск и наблюдение за работой.
+2. **Надёжность и скорость разработки связаны.** Воспроизводимые процессы помогают быстрее вносить изменения и разбираться в сбоях.
+3. **Разделение ответственности требует общей работы.** Автор модели отвечает за её логику и качество, а инфраструктура должна обеспечивать устойчивое выполнение процессов.
+4. **Автоматизацию развивают постепенно.** Сначала определяют конкретные проблемы, затем выбирают инструменты и процессы для их решения.
+5. **Работающий сервис ещё не гарантирует хорошую модель.** Нужно наблюдать за техническим состоянием системы и качеством предсказаний.
 
-- [Engineering at Meta](https://engineering.fb.com/)
-- [Meta Research](https://research.facebook.com/)
-- [AWS Architecture Blog](https://aws.amazon.com/blogs/architecture/)
-    - [AWS system design example](https://www.linkedin.com/posts/jasser-hasni-18b337168_excited-to-share-my-latest-project-activity-7314331284263124993-lrw2)
-- [Amazon Science Blog](https://www.amazon.science/)
-- [Netflix TechBlog](https://netflixtechblog.com/)
-- [Google Research](https://research.google/)
-- [Engineering at Quora](https://quoraengineering.quora.com/)
-- [Uber Engineering Blog](https://eng.uber.com/)
-- [Databricks Blog](https://databricks.com/blog/category/engineering)
-- [Pinterest Engineering](https://medium.com/@Pinterest_Engineering)
-- [BlackRock Engineering](https://medium.com/blackrock-engineering)
-- [Lyft Engineering](https://eng.lyft.com/)
-- [Salesforce Engineering](https://engineering.salesforce.com/)
+На следующем занятии планируется демонстрация Telegram-бота, использующего ML-сервис: Telegram выступит интерфейсом для пользователя.
 
-### ML design interview insights
+---
 
-* [ML system design interview](https://github.com/alirezadir/Machine-Learning-Interviews/blob/main/src/MLSD/ml-system-design.md#3-architectural-components-mvp-logic)
-* [25 essential System Design Interview Questions in 2024](https://www.educative.io/blog/system-design-interview-questions)
-* [system design patterns](https://www.linkedin.com/posts/alexxubyte_systemdesign-coding-interviewtips-activity-7370493772570263552-QFn_)
-* [A complete guide to System Design caching](https://educative.io/blog/system-design-caching)
-* [Insights in System Design: Throughput loss due to high fan-in](https://www.educative.io/blog/throughput-loss-high-fan-in)
-* [Understanding the Causal Consistency Model](https://www.educative.io/blog/causal-consistency-model)
-* [Understanding the Sequential Consistency Model](https://www.educative.io/blog/understanding-sequential-consistency-model)
-* [Amazon System Design case study: How Amazon scales for Prime Day](https://www.educative.io/blog/amazon-system-design-prime-day)
-* [MLOps maturity model with Azure Machine Learning](https://techcommunity.microsoft.com/blog/machinelearningblog/mlops-maturity-model-with-azure-machine-learning/3520625)
-* [system design cheatsheet](https://www.linkedin.com/posts/alexxubyte_systemdesign-coding-interviewtips-activity-7311777929791721473-2WVq)
-* [modern hardware numbers for system](https://hellointerview.substack.com/p/modern-hardware-numbers-for-system)
-* [System design resources](https://www.linkedin.com/posts/nk-systemdesign-one_if-you-want-to-become-good-at-system-design-activity-7371510462602985472-Dndd)
+## Дополнение 1. Как устроить среду экспериментов
 
-### Feature store
+Этот и следующие разделы дополняют конспект записи и развивают темы исходных слайдов.
 
-* [MongoDB AI Integrations](https://www.mongodb.com/docs/atlas/ai-integrations/)
-* [Feature store](https://youtu.be/dvPp7OGkEQw?si=oY76g4qU3fJyuk3q)
-* [Chronon: Airbnb feature store](https://medium.com/airbnb-engineering/chronon-airbnbs-ml-feature-platform-is-now-open-source-d9c4dba859e8)
-* [Feast: ML scoring demo](https://github.com/Redislabs-Solution-Architects/feast-credit-scoring-demo)
-* [Feast Demo](https://github.com/feast-dev/feast-demo)
-* [feature engineering](https://github.com/EmilHvitfeldt/feature-engineering-az)
-* [redis](https://www.linkedin.com/posts/raphaeldelio_if-youre-using-redis-only-to-store-strings-activity-7321143724254662656-IDuL)
-* [redis](https://redis.io/blog/spring-release-2025/#)
-* [redis](https://youtu.be/BqgJ1XL6Gzs?si=UU7a6h3zaWDDmGPD)
-* [ai-dynamo](https://github.com/ai-dynamo/dynamo/releases/tag/v0.1.1)
-* [Data Engineering with Python and AI/LLMs – Data Loading Tutorial](https://youtu.be/T23Bs75F7ZQ)
-* [hopsworks-examples](https://www.hopsworks.ai/hopsworks-examples)
-* [transactions_fraud.py](https://github.com/logicalclocks/hopsworks-tutorials/blob/master/real-time-ai-systems/fraud_online/features/transactions_fraud.py)
-* [aws-emr-containers-pipeline](https://docs.dagster.io/guides/build/external-pipelines/aws/aws-emr-containers-pipeline)
-* [pyspark-pipeline](https://docs.dagster.io/guides/build/external-pipelines/pyspark-pipeline)
-* [Comparing ZenML, Metaflow, and all the other DAG tools](https://www.youtube.com/live/W6hpEO80q20?si=0pCCSn3rXQ6AbG4P)
+**Среда экспериментов (experimentation environment)** — место, где команда исследует данные, строит признаки и сравнивает модели. Её задача — обеспечить быстрый переход от гипотезы к проверяемому результату, который можно воспроизвести и перенести в рабочий пайплайн.
 
-### LLMOps
+### Данные, вычисления и воспроизводимость
 
-* [A Practical Guide to LLM Inference](https://theneuralmaze.substack.com/p/a-practical-guide-to-llm-inference)
-* [NVIDIA models](https://build.nvidia.com/models)
-* [Pay as you go inference](https://inferx.net/)
-* [open-webui](https://github.com/open-webui/open-webui)
-* [production-agentic-rag](https://decodingml.substack.com/p/llmops-for-production-agentic-rag)
-* [LLM and RAG evaluation framework](https://medium.com/decodingml/the-engineers-framework-for-llm-rag-evaluation-59897381c326)
-* [rag-evaluation-with-llm-as-a-judge-synthetic-dataset-creation](https://generativeai.pub/rag-evaluation-with-llm-as-a-judge-synthetic-dataset-creation-7fce566310f5)
-* [MLOps-Basics](https://github.com/graviraja/MLOps-Basics)
-* [ML platform diagrams](https://www.linkedin.com/posts/eric-riddoch_ive-seen-a-lot-of-ml-platform-diagrams-and-activity-7313557141758349313-uLCM)
-* [hopsworks-tutorials-quickstart](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb)
-* [vllm](https://www.hyperstack.cloud/blog/case-study/what-is-vllm-a-guide-to-quick-inference)
-* [vllm](https://www.aleksagordic.com/blog/vllm)
-* [Hydra params config](https://www.linkedin.com/posts/rhajou_ever-get-lost-managing-config-files-for-your-ugcPost-7319958667787702272-jYud)
-* [metadata FS](https://www.linkedin.com/posts/einatorr_metadata-activity-7278054414530072576-fRGD)
-* [steaming feature evaluation](https://www.linkedin.com/feed/update/urn:li:activity:7403537288275595264?commentUrn=urn%3Ali%3Acomment%3A%28activity%3A7403537288275595264%2C7403553049492779008%29&dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287403553049492779008%2Curn%3Ali%3Aactivity%3A7403537288275595264%29)
-* [using-ai-tools-is-easy-understanding-systems-activity-7419665346183237632-fIDi](https://www.linkedin.com/posts/arazvant_using-ai-tools-is-easy-understanding-systems-activity-7419665346183237632-fIDi)
+| Возможность | Зачем она нужна |
+|---|---|
+| **Доступ к сырым и подготовленным данным** | Понять качество источников и найти полезные сигналы |
+| **Согласованная подготовка признаков** | Избежать различий между признаками при обучении и в сервисе |
+| **Вычисления по запросу** | Запускать задачи с подходящим объёмом CPU, GPU и памяти |
+| **Запуск общего пайплайна из ноутбука** | Проверять эксперимент в условиях, близких к целевому окружению |
+| **Отслеживание экспериментов** | Сопоставлять параметры, данные, метрики и артефакты запусков |
+| **Код и конфигурация в Git** | Проследить изменения и повторить эксперимент |
+| **Совместимые окружения** | Снизить число ошибок при переносе кода из исследования в сервис |
 
-### MLOps
+**Feature Store** может помочь переиспользовать признаки и согласовать их расчёт. Для небольшого проекта достаточно более простого решения, если известны версии данных и воспроизводится подготовка признаков.
 
-* [DataBricks MLOps](https://www.youtube.com/playlist?app=desktop&list=PL_MIDuPM12MOcQQjnLDtWCCCuf1Cv-nWL)
-* [do4ds.com](https://do4ds.com/chapters/intro.html)
-* [LLMOps activities](https://www.linkedin.com/posts/aurimas-griciunas_ai-llm-llmops-activity-7280525594012925952-UdHV)
-* [Convert transformers to ONNX](https://www.philschmid.de/convert-transformers-to-onnx)
-* [CLIP model proposed by OpenAI and ONNX](https://www.linkedin.com/feed/update/urn:li:activity:7059164636222283776/)
-* [streamlining-the-machine-learning-workflow-with-onnx-and-onnx-runtime](https://medium.com/@tam.tamanna18/streamlining-the-machine-learning-workflow-with-onnx-and-onnx-runtime-ba2058487cce)
-* [Accelerate and simplify Scikit-learn model inference with ONNX Runtime](https://cloudblogs.microsoft.com/opensource/2020/12/17/accelerate-simplify-scikit-learn-model-inference-onnx-runtime/)
-* [clear.ml](https://clear.ml/)
-* [seldon.io](https://www.seldon.io/)
-* [mlops-a-gentle-introduction-to-mlflow-pipelines](https://medium.com/towards-data-science/mlops-a-gentle-introduction-to-mlflow-pipelines-c7bcec88a6ec)
-* [MLOps crash course](https://www.linkedin.com/feed/update/activity:7177319817434005504)
-* [MLOps course](https://mlops-coding-course.fmind.dev/index.html)
-* [MLOps AWS](https://ai.gopubby.com/mlops-setup-on-aws-with-sagemaker-bff8b8300b53)
-* [mlops-in-a-nutshell-model-registry-metadata-store-and-model-pipeline](https://www.notion.so/MLOps-Zoomcamp-2024-1ccfb057164b4778bd9019fd46dd792a?pvs=21)
-* [a-simple-ci-cd-setup-for-ml-projects](https://medium.com/towards-data-science/a-simple-ci-cd-setup-for-ml-projects-604de7fd64cd)
-* [AWS sagemaker](https://docs.aws.amazon.com/sagemaker/latest/dg/deploy-models-frameworks-triton.html)
-* [triton inference](https://youtu.be/ljqyuDxd_H0?si=Vpi4PiGrmHKSbKqg)
-* [nebius token factory](https://www.linkedin.com/pulse/inside-nebius-token-factory-architecture-behind-scalable-helen-yu-u8yzc)
-* [LitAPI inference](https://www.linkedin.com/posts/arazvant_machinelearning-deeplearning-artificialintelligence-activity-7322537864863334401-qNhA/)
-* [GenAI observability](https://www.linkedin.com/posts/aurimas-griciunas_llm-ai-llmops-activity-7318938126280744961-WFls)
-* [arazvant_deeplearning-artificialintelligence](https://www.linkedin.com/posts/arazvant_deeplearning-artificialintelligence-machinelearning-activity-7313126744759148544-Gf97)
-* [inference providers](https://huggingface.co/blog/inference-providers-nebius-novita-hyperbolic)
-* [Quadrant n8n node](https://www.linkedin.com/posts/evgeniya-sukhodolskaya_qdrant-dropped-an-official-n8n-node-with-activity-7336800664754270209-h8Lq)
-* [How to Whitelabel Your n8n AI Agent INSTANTLY](https://youtu.be/vid7271a6jo?si=034NxQAPHY8Ket2t)
-* [zenml](https://www.zenml.io/blog/llmops-is-about-people-too-the-human-element-in-ai-engineering)
-* [litserve](https://neuralbits.substack.com/p/a-complete-tutorial-on-litservelitapi)
-* [second-brain-ai-assistant-course](https://github.com/decodingml/second-brain-ai-assistant-course/tree/main)
-* [sglang](https://www.linkedin.com/posts/philipp-schmid-a6a2bb196_what-is-sglang-and-why-does-it-matter-sglang-activity-7296907885588959232-BylZ)
-* [vllm-project](https://github.com/vllm-project/production-stack/tree/main/tutorials)
-* [pandas-ai](https://docs.pandas-ai.com/intro) 
-* [ML platform at IBM](https://www.linkedin.com/posts/armand-ruiz_ibm-open-source-our-ai-platform-watsonx-activity-7331997645319675904-vG3_)
-* [skypilot](https://github.com/skypilot-org/skypilot)
-* [n8n](https://www.linkedin.com/posts/ghiles-ms-b36218250_n8n-workflows-to-fine-tune-gpt-to-give-it-activity-7309180583165784064-iC6P)
-* [nebius](https://nebius.com/blog/posts/fine-tuning-llms-with-nebius-ai-studio)
-* [platform.openai.com/docs/guides/fine-tuning/use-a-fine-tuned-model](https://platform.openai.com/docs/guides/fine-tuning/use-a-fine-tuned-model)
-* [fine tune LLaMA on 7b Titanium](https://www.philschmid.de/fine-tune-llama-7b-trainium)
-* [Dialog mode fine tuning](https://www.kaggle.com/code/danielhanchen/kaggle-llama-3-1-8b-conversational-unsloth/notebook)
-* [Gemma 4 fine tune](https://www.linkedin.com/posts/sarthakrastogi_ai-llms-genai-share-7451889809469591552-RndI)
-* [self-hosting-llama-3-1-70b](https://medium.com/@abhinand05/self-hosting-llama-3-1-70b-or-any-70b-llm-affordably-2bd323d72f8d)
+**Контейнеризация** фиксирует окружение выполнения, но сама по себе не обеспечивает воспроизводимость: также нужны версии кода, данных, конфигурации и используемых артефактов.
 
-### Microsoft stack
+```mermaid
+flowchart TD
+    A["Гипотеза в ноутбуке"] --> B["Код и конфигурация в Git"]
+    B --> C["Повторяемый пайплайн обучения"]
+    C --> D["Параметры, метрики и артефакты запуска"]
+    D --> E["Сравнение с базовой моделью"]
+    E --> F["Кандидат для дальнейших проверок"]
+```
 
-- https://learn.microsoft.com/en-us/azure/ai-studio/
-- https://learn.microsoft.com/en-us/azure/ai-studio/concepts/retrieval-augmented-generation
-- https://learn.microsoft.com/en-us/azure/databricks/generative-ai/retrieval-augmented-generation
-- https://www.microsoft.com/en-us/research/blog/graphrag-unlocking-llm-discovery-on-narrative-private-data/
-- https://learn.microsoft.com/en-us/azure/ai-studio/concepts/retrieval-augmented-generation
-- [Asure OpenAI](https://docs.llamaindex.ai/en/stable/examples/customization/llms/AzureOpenAI/)
-- [Asure SearchAI](https://medium.com/microsoftazure/incrementally-indexing-documents-with-azureai-search-integrated-vectorization-6f7150556f62)
-- https://github.com/microsoft/promptflow-rag-project-template/tree/main
-- https://ai.gopubby.com/microsofts-graphrag-autogen-ollama-chainlit-fully-local-free-multi-agent-rag-superbot-61ad3759f06f
+---
+
+## Дополнение 2. CI/CD для ML-систем
+
+**CI (Continuous Integration)** — автоматические проверки при изменениях кода. **CD (Continuous Delivery / Deployment)** — подготовка к выпуску или автоматическое развёртывание изменений. В ML-системе к проверкам программы добавляются проверки данных и модели.
+
+### Что проверяют перед выпуском
+
+- **Код:** тесты подготовки признаков, обучения и получения предсказаний.
+- **Данные:** наличие обязательных полей, допустимые типы и значения, пропуски.
+- **Модель:** качество на отложенных данных и сравнение с принятой базовой версией.
+- **Сервис:** загрузку артефакта, контракт API, потребление ресурсов и время ответа.
+
+Типовая последовательность может выглядеть так:
+
+```mermaid
+flowchart TD
+    A["Изменение кода или конфигурации"] --> B["Тесты и проверки"]
+    B --> C["Обучение и оценка кандидата"]
+    C --> D{"Критерии качества выполнены?"}
+    D -- "Нет" --> E["Сохранить результаты и разобрать причину"]
+    D -- "Да" --> F["Зарегистрировать версию модели"]
+    F --> G["Проверить сервис в тестовом окружении"]
+    G --> H["Выпустить по принятой процедуре"]
+    H --> I["Наблюдать за качеством и работой сервиса"]
+```
+
+Это пример процесса: обучение не обязательно запускать на каждое изменение репозитория. Триггерами могут быть расписание, появление новых данных или отдельный запуск.
+
+### Версии и восстановление
+
+Для каждого выпуска полезно связать **версию кода, данные обучения, конфигурацию, артефакт модели и образ сервиса**. Тогда можно установить происхождение предсказаний и вернуть предыдущую рабочую версию при проблеме.
+
+Git-тег отмечает версию кода, а запись в model registry — конкретный артефакт модели. Они решают разные задачи. Предыдущие версии сохраняют: создание нового выпуска не требует удаления старого тега или перезаписи старой модели.
+
+Makefile может объединять команды разработчика, но автоматизация отдельных команд ещё не образует полный CI/CD-процесс. Важны порядок проверок, сохранение результатов и правила перехода к следующему этапу.
+
+---
+
+## Дополнение 3. Проектирование ML-систем и компромиссы
+
+**ML System Design** — проектирование компонентов ML-системы, их интерфейсов, потоков данных и способов эксплуатации с учётом требований продукта.
+
+[Дополнительный материал: ML System Design (PDF)](img/ml_system_design.pdf)
+
+### Сначала требования
+
+До выбора базы данных или оркестратора нужно понять:
+
+1. **Задачу:** какое действие пользователя или бизнес-процесс улучшает модель?
+2. **Нагрузку:** сколько запросов и данных ожидается, как они будут расти?
+3. **Время ответа:** требуется немедленное предсказание или достаточно пакетного расчёта?
+4. **Свежесть:** насколько быстро новые события должны влиять на признаки и модель?
+5. **Качество:** какими метриками проверяют пользу модели и системы в целом?
+6. **Отказы:** что должен получить пользователь, если модель или источник признаков недоступны?
+7. **Ограничения:** каковы бюджет, доступные компетенции и требования к данным?
+
+**Функциональные требования** описывают действия системы, например классификацию сообщения. **Нефункциональные требования** задают условия работы: время ответа, доступность, масштабирование и удобство сопровождения.
+
+### Компромиссы выбирают под задачу
+
+| Решение | Что сопоставляют |
+|---|---|
+| **Доступность и свежесть данных** | Допустимо ли вернуть результат на устаревших признаках или лучше временно отказаться от предсказания? |
+| **Хранение** | Какие данные нужны немедленно, а какие можно хранить в более дешёвом архиве? |
+| **Потоковая или пакетная обработка** | Оправдывает ли требование свежести стоимость и сложность потока событий? |
+| **Кэширование** | Сколько вычислений удастся сэкономить и как долго результат остаётся актуальным? |
+| **Масштабирование** | Какая нагрузка ожидается, сколько времени занимает запуск нового экземпляра с загруженной моделью? |
+| **Вычислительные ресурсы** | Можно ли прерывать и повторять задачу, сохраняет ли она промежуточный результат? |
+
+Например, резервная подборка популярных фильмов может сохранить полезность рекомендательного сервиса при сбое персонализации. Для другой задачи устаревшее предсказание может оказаться неприемлемым — поведение при отказе определяют заранее.
+
+**Наблюдаемость должна охватывать два слоя:** технические метрики показывают ошибки, задержки и потребление ресурсов; метрики данных и модели помогают обнаружить изменения входных данных и ухудшение качества. Сервис может отвечать быстро и без ошибок, но давать всё менее полезные предсказания.
+
+При проектировании полезно двигаться от общей схемы к деталям: сначала определить потоки данных и ответственности компонентов, затем выбирать конкретные технологии. Архитектура должна объяснять, как система выполняет требования и что происходит при сбое.

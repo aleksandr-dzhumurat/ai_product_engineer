@@ -11,9 +11,9 @@
   * [Рекомендательные системы](slides/lecture_05_recommender_system.md)
   * [Обработка текста](slides/lecture_06_text_preprocessing.md)
   * [Нейросети](slides/lecture_07_cracking_dnn.md)
-  * [AI агенты](slides/lecture_08_ai_agents.md)
+  * [AI агенты](slides/lecture_08_vol_02_ai_agents.md)
   * [MLOps](slides/lecture_09_mlops_intro.md)
-  * [Telegram бот](slides/lecture_10_telegram_bot.md)
+  * [Telegram бот](slides/lecture_10_vol_02_telegram_bot.md)
 
 * **Вопросы и списки литературы**
   * [Вопросы к экзамену](slides/ml_breadth_questions.md)
@@ -39,7 +39,7 @@
   * [System Design](slides/engineering_essentials/system_design.md)
   * [ML System Design](slides/engineering_essentials/ml_system_design.md)
   * [Vector DB Overview](slides/engineering_essentials/vector_db_overview.md)
-  * [RAG](slides/engineering_essentials/retrieval_augmented_generation.md)
+  * [RAG](slides/lecture_08_vol_01_rag.md)
   * [FastAPI](slides/engineering_essentials/fast_api.md)
   * [Database Index](slides/engineering_essentials/database_index_explained.md)
   * [Kafka vs RabbitMQ](slides/engineering_essentials/kafka_vs_rabbit.md)

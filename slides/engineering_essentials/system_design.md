@@ -87,7 +87,9 @@ This section estimates the number of requests a typical server can handle per se
 
 ### CPU Time Formula
 
-$$CPU_{\text{time per program}} = Instruction_{\text{per program}} \times CPI \times CPU_{\text{time per clock cycle}}$$
+$$
+CPU_{\text{time per program}} = Instruction_{\text{per program}} \times CPI \times CPU_{\text{time per clock cycle}}
+$$
 
 Where:
 - $Instruction_{\text{per program}}$ — count of instructions the request consists of (no unit)
@@ -102,13 +104,21 @@ Where:
 
 ### Calculation
 
-$$CPU_{\text{time per clock cycle}} = \frac{1}{3.5 \times 10^9}$$
+$$
+CPU_{\text{time per clock cycle}} = \frac{1}{3.5 \times 10^9}
+$$
 
-$$CPU_{\text{time per program}} = (3.5 \times 10^6) \times 1 \times \frac{1}{3.5 \times 10^9} = 0.001\ \text{second}$$
+$$
+CPU_{\text{time per program}} = (3.5 \times 10^6) \times 1 \times \frac{1}{3.5 \times 10^9} = 0.001\ \text{second}
+$$
 
-$$\text{Total requests a CPU executes in 1 second} = \frac{1}{10^{-3}} = 1000\ \text{requests}$$
+$$
+\text{Total requests a CPU executes in 1 second} = \frac{1}{10^{-3}} = 1000\ \text{requests}
+$$
 
-$$\text{Total requests a 64-core server executes in 1 second} = 64{,}000\ \text{requests}$$
+$$
+\text{Total requests a 64-core server executes in 1 second} = 64{,}000\ \text{requests}
+$$
 
 > Note: changing assumptions (e.g. number of instructions per request) will produce different results. These are back-of-the-envelope calculations (BOTECs) — intentionally simplified, ignoring CPU/memory/IO-bound complexity.
 

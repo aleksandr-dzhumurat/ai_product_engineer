@@ -61,7 +61,9 @@ Out-of-Bag (OOB) оценка
 Each bootstrap sample draws $n$ objects with replacement from a dataset of size $n$.
 The probability that one specific object $x_i$ is never picked across all $n$ draws:
 
-$$P_{\text{OOB}} = \left(1 - \frac{1}{n}\right)^n \xrightarrow{n \to \infty} e^{-1} \approx 0.368$$
+$$
+P_{\text{OOB}} = \left(1 - \frac{1}{n}\right)^n \xrightarrow{n \to \infty} e^{-1} \approx 0.368
+$$
 
 This is a statement about a single object — not the whole dataset yet.
 
@@ -71,7 +73,9 @@ This is a statement about a single object — not the whole dataset yet.
 
 Every object has the same $P_{\text{OOB}}$. By linearity of expectation, the expected number of OOB objects across the entire dataset:
 
-$$E[\text{OOB count}] = \sum_{i=1}^{n} P_{\text{OOB}}(x_i) = n \cdot \left(1 - \frac{1}{n}\right)^n \approx \frac{n}{e}$$
+$$
+E[\text{OOB count}] = \sum_{i=1}^{n} P_{\text{OOB}}(x_i) = n \cdot \left(1 - \frac{1}{n}\right)^n \approx \frac{n}{e}
+$$
 
 ---
 
@@ -79,7 +83,9 @@ $$E[\text{OOB count}] = \sum_{i=1}^{n} P_{\text{OOB}}(x_i) = n \cdot \left(1 - \
 
 Dividing by $n$, because we want the fraction (proportion), not the count.
 
-$$\frac{E[\text{OOB count}]}{n} = \left(1 - \frac{1}{n}\right)^n \approx 0.368$$
+$$
+\frac{E[\text{OOB count}]}{n} = \left(1 - \frac{1}{n}\right)^n \approx 0.368
+$$
 
 Since every object has the same $\approx 0.368$ probability of being left out, the expected fraction of the dataset that ends up OOB is also $\approx 0.368$.
 
@@ -104,7 +110,9 @@ The logic is the same as: if every coin has a 50% chance of heads, then on avera
 
 Теория: Независимые вероятности, умножение вероятностей.
 
-$$P(\text{система работает}) = (0.999)^5 = 0.995 \approx 99.5\%$$
+$$
+P(\text{система работает}) = (0.999)^5 = 0.995 \approx 99.5\%
+$$
 
 ### Практический вывод:
 - Цепочка из N сервисов → SLA деградирует
@@ -137,9 +145,11 @@ $$P(\text{система работает}) = (0.999)^5 = 0.995 \approx 99.5\%$$
 
 Теория: Little's Law + вероятностные пики.
 
-$$L = \lambda \cdot W$$
+$$
+L = \lambda \cdot W
+$$
 
-- \lambda = 200 \times 5 = 1000 queries/sec
+- $\lambda = 200 \times 5 = 1000$ queries/sec
 - W = 0.01 sec
 - L (среднее) = 10 connections
 
@@ -164,7 +174,9 @@ $$L = \lambda \cdot W$$
 
 Как считать по формуле байеса:
 
-$$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$$
+$$
+P(A|B) = \frac{P(B|A)P(A)}{P(B)}
+$$
 
 | Параметр | Значение |
 |---|---|
@@ -174,37 +186,55 @@ $$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$$
 
 Вопрос: система подняла алерт — какова вероятность реального фрода?
 
-$$P(F \mid A) = ?$$
+$$
+P(F \mid A) = ?
+$$
 
 ---
 
 Формула Байеса
 
-$$P(F \mid A) = \frac{P(A \mid F) \cdot P(F)}{P(A)}$$
+$$
+P(F \mid A) = \frac{P(A \mid F) \cdot P(F)}{P(A)}
+$$
 
 где полная вероятность алерта:
 
-$$P(A) = P(A \mid F) \cdot P(F) \;+\; P(A \mid \neg F) \cdot P(\neg F)$$
+$$
+P(A) = P(A \mid F) \cdot P(F) \;+\; P(A \mid \neg F) \cdot P(\neg F)
+$$
 
 ---
 
 Подстановка
 
-$$P(A) = 0,99 \times 0,001 + 0,01 \times 0,999 = 0,00099 + 0,00999 = 0,01098$$
+$$
+P(A) = 0,99 \times 0,001 + 0,01 \times 0,999 = 0,00099 + 0,00999 = 0,01098
+$$
 
-$$\boxed{P(F \mid A) = \frac{0,99 \times 0,001}{0,01098} = \frac{0,00099}{0,01098} \approx 9\%}$$
+$$
+\boxed{P(F \mid A) = \frac{0,99 \times 0,001}{0,01098} = \frac{0,00099}{0,01098} \approx 9\%}
+$$
 
 ---
 
 Частотная интерпретация (1 млн транзакций)
 
-$$\underbrace{1\,000\,000}_{\text{всего}} \times 0{,}001 = \underbrace{1\,000}_{\text{реальный фрод}} \quad \text{и} \quad \underbrace{999\,000}_{\text{честные}}$$
+$$
+\underbrace{1\,000\,000}_{\text{всего}} \times 0{,}001 = \underbrace{1\,000}_{\text{реальный фрод}} \quad \text{и} \quad \underbrace{999\,000}_{\text{честные}}
+$$
 
-$$\text{Алертов на фрод: } 1\,000 \times 0{,}99 = 990$$
+$$
+\text{Алертов на фрод: } 1\,000 \times 0{,}99 = 990
+$$
 
-$$\text{Ложных алертов: } 999\,000 \times 0{,}01 = 9\,990$$
+$$
+\text{Ложных алертов: } 999\,000 \times 0{,}01 = 9\,990
+$$
 
-$$P(F \mid A) = \frac{990}{990 + 9\,990} = \frac{990}{10\,980} \approx 9\%$$
+$$
+P(F \mid A) = \frac{990}{990 + 9\,990} = \frac{990}{10\,980} \approx 9\%
+$$
 
 ---
 
@@ -215,7 +245,9 @@ $$P(F \mid A) = \frac{990}{990 + 9\,990} = \frac{990}{10\,980} \approx 9\%$$
 
 Даже при точности $99\%$ — низкая база $P(F) = 0,1\%$ «захлёстывает» систему ложными срабатываниями.
 
-$$\text{Precision} = \frac{TP}{TP + FP} = \frac{990}{10\,980} \approx 9\%$$
+$$
+\text{Precision} = \frac{TP}{TP + FP} = \frac{990}{10\,980} \approx 9\%
+$$
 
 Вывод: чем реже событие, тем важнее не только *sensitivity*, но и *specificity*.
 
@@ -246,11 +278,15 @@ P(успех с 3 попыток) = 1 - (0.05)^3 = 0.999875
 
 Теория: Binomial distribution → Poisson approximation.
 
-$$\lambda = \frac{100}{10} = 10, \quad P(X \ge 15) \approx e^{-10} \sum_{k=15}^{100} \frac{10^k}{k!}$$
+$$
+\lambda = \frac{100}{10} = 10, \quad P(X \ge 15) \approx e^{-10} \sum_{k=15}^{100} \frac{10^k}{k!}
+$$
 
-Или через нормальную аппроксимацию: \mu = 10, \sigma = \sqrt{10} \approx 3.16.
+Или через нормальную аппроксимацию: $\mu = 10$, $\sigma = \sqrt{10} \approx 3.16$.
 
-$$P(X \ge 15) = P(Z \ge \frac{15-10}{3.16}) \approx P(Z \ge 1.58) \approx 0.057$$
+$$
+P(X \ge 15) = P(Z \ge \frac{15-10}{3.16}) \approx P(Z \ge 1.58) \approx 0.057
+$$
 
 Вывод: ≈5-6% вероятность, что instance получит перегрузку → нужен consistent hashing или least-connections routing.
 
@@ -288,7 +324,9 @@ $$P(X \ge 15) = P(Z \ge \frac{15-10}{3.16}) \approx P(Z \ge 1.58) \approx 0.057$
 
 Теория: Независимые события.
 
-$$P(\text{все битые}) = (0.001)^{30} = 10^{-90}$$
+$$
+P(\text{все битые}) = (0.001)^{30} = 10^{-90}
+$$
 
 Практически невозможно. Но если сбои коррелированы (например, bug в backup script), вероятность резко растёт.
 
@@ -326,12 +364,14 @@ Block after 10,000 attempts → слишком поздно
 Расчёт lower bound
 
 ### Дано:
-* входной поток: \lambda = 1000 rps
-* производительность одного instance: \mu = 100 rps
+* входной поток: $\lambda = 1000$ rps
+* производительность одного instance: $\mu = 100$ rps
 
 ### Минимально необходимое число instance:
 
-$$c_{min} = \frac{\lambda}{\mu} = \frac{1000}{100} = 10$$
+$$
+c_{min} = \frac{\lambda}{\mu} = \frac{1000}{100} = 10
+$$
 
 ⚠️ Это абсолютный минимум, при котором:
 * система работает на 100% загрузке
@@ -345,25 +385,31 @@ $$c_{min} = \frac{\lambda}{\mu} = \frac{1000}{100} = 10$$
 * `c` параллельных серверов \to M/M/c
 
 ### Параметры:
-* \lambda = 1000 rps
-* \mu = 100 rps
+* $\lambda = 1000$ rps
+* $\mu = 100$ rps
 * c = ?
 * коэффициент загрузки:
 
-$$\rho = \frac{\lambda}{c \mu}$$
+$$
+\rho = \frac{\lambda}{c \mu}
+$$
 
 ### Условие устойчивости:
 
-$$\rho < 1$$
+$$
+\rho < 1
+$$
 
 В реальных системах обычно целятся в:
-* \rho \approx 0.6–0.7 — низкие latency
-* \rho \approx 0.7–0.8 — компромисс
-* \rho > 0.8 — очереди растут очень быстро
+* $\rho \approx 0.6\text{–}0.7$ — низкие latency
+* $\rho \approx 0.7\text{–}0.8$ — компромисс
+* $\rho > 0.8$ — очереди растут очень быстро
 
-Возьмём \rho = 0.7:
+Возьмём $\rho = 0.7$:
 
-$$c = \frac{\lambda}{\rho \mu} = \frac{1000}{0.7 \cdot 100} \approx 14.3$$
+$$
+c = \frac{\lambda}{\rho \mu} = \frac{1000}{0.7 \cdot 100} \approx 14.3
+$$
 
 Итог - *"Минимально нужно 10 instance, но это система с загрузкой 100%, очередь будет расти бесконечно. Корректно моделировать это как M/M/c. Обычно целимся в загрузку 60–70%, тогда потребуется около 15 instance. Более точно число выбирается через Erlang C под SLA по latency."*
 
@@ -375,9 +421,9 @@ This is a mathematical statistics / probability theory problem about rerolling a
 
 You roll a die, after which you have two options:
 
-1. Take an amount of $ equal to the number rolled (if you rolled $k$ — you get $\$k$)
+1. Take an amount of dollars equal to the number rolled (if you rolled $k$ — you get $\$k$)
 
-2. Reject the result of the first roll and roll the die a second time. Then take as many $ as came up on the second roll (the second roll can no longer be rejected)
+2. Reject the result of the first roll and roll the die a second time. Then take as many dollars as came up on the second roll (the second roll can no longer be rejected)
 
 **Which strategy should you choose to maximize the expected profit?**
 
@@ -395,17 +441,23 @@ Let $A$ be the first roll and $B$ the second (repeat) roll, where $A, B \in \{1,
 
 Consider $A = 3$. The probability of rolling something lower on the second roll is
 
-$$P(B < A \mid A = 3) = \frac{2}{6},$$
+$$
+P(B < A \mid A = 3) = \frac{2}{6},
+$$
 
 while the probability of rolling something higher is
 
-$$P(B > A \mid A = 3) = \frac{3}{6}.$$
+$$
+P(B > A \mid A = 3) = \frac{3}{6}.
+$$
 
 In other words, most likely the result will be **improved** by rerolling.
 
 Similarly, for $A = 4$:
 
-$$P(B < A \mid A = 4) = \frac{3}{6}, \qquad P(B > A \mid A = 4) = \frac{2}{6}.$$
+$$
+P(B < A \mid A = 4) = \frac{3}{6}, \qquad P(B > A \mid A = 4) = \frac{2}{6}.
+$$
 
 That is, most likely the result will be **worsened** by rerolling.
 
@@ -413,7 +465,9 @@ Based on this, we arrive at the following strategy: **if you rolled 4 or higher,
 
 The threshold value can be determined more precisely by estimating the expected value of the first roll:
 
-$$E = \frac{1}{6} \cdot 1 + \frac{1}{6} \cdot 2 + \dots + \frac{1}{6} \cdot 6 = \frac{21}{6} = 3.5$$
+$$
+E = \frac{1}{6} \cdot 1 + \frac{1}{6} \cdot 2 + \dots + \frac{1}{6} \cdot 6 = \frac{21}{6} = 3.5
+$$
 
 If the first roll came up higher than the expected value, then by rerolling we would, on average, only make the result worse.
 
@@ -421,7 +475,9 @@ If the first roll came up higher than the expected value, then by rerolling we w
 
 If the first roll is a 1, the expected value of this branch is:
 
-$$\text{last}(1,1) \cdot \frac{1}{36} + \text{last}(1,2) \cdot \frac{1}{36} + \dots + \text{last}(1,6) \cdot \frac{1}{36} = \frac{21}{36},$$
+$$
+\text{last}(1,1) \cdot \frac{1}{36} + \text{last}(1,2) \cdot \frac{1}{36} + \dots + \text{last}(1,6) \cdot \frac{1}{36} = \frac{21}{36},
+$$
 
 where $\text{last}(A, B) = B$ — the value of the final roll.
 
@@ -429,7 +485,9 @@ The same holds for first rolls of 2 and 3.
 
 If the first roll is a 4, the expected value of this branch is:
 
-$$4 \cdot \frac{1}{6} = \frac{4}{6},$$
+$$
+4 \cdot \frac{1}{6} = \frac{4}{6},
+$$
 
 since we do not reroll the die.
 
@@ -437,7 +495,9 @@ The same holds for 5 and 6.
 
 Now we add everything up and get:
 
-$$E = \frac{21}{36} + \frac{21}{36} + \frac{21}{36} + \frac{4}{6} + \frac{5}{6} + \frac{6}{6} = 4.25$$
+$$
+E = \frac{21}{36} + \frac{21}{36} + \frac{21}{36} + \frac{4}{6} + \frac{5}{6} + \frac{6}{6} = 4.25
+$$
 
 **Bottom line: the expected value of the optimal strategy is 4.25.**
 

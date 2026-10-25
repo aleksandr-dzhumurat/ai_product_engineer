@@ -6,9 +6,9 @@ ENV PYTHONPATH=/srv \
 
 WORKDIR /srv/
 
-COPY requirements.txt /srv/
+COPY dockerfiles/tg_backend/requirements.txt /srv/requirements.txt
 RUN python3.12 -m pip install --no-cache-dir -r requirements.txt
 
-COPY . /srv/
+COPY dockerfiles/tg_backend/src /srv/src
 
 CMD ["python3.12", "src/app.py"]

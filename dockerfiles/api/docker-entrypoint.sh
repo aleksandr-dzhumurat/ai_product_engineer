@@ -8,7 +8,7 @@ case "$1" in
     PYTHONPATH=$(pwd)/src python3 src/train.py
     ;;
   serve)
-    PYTHONPATH=$(pwd)/src uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+    PYTHONPATH="$(pwd):${PYTHONPATH:-}" uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
     ;;
   streamlit)
     PYTHONPATH=$(pwd)/src streamlit run src/streamlit_app.py --server.port 8501

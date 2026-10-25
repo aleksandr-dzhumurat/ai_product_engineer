@@ -51,17 +51,24 @@ services:
     build:
       context: .
       dockerfile: ./dockerfiles/api/Dockerfile
+    command: serve
     depends_on:
       - search
     env_file:
       - .env
+    environment:
+      ZINCSEARCH_URL: http://search:4080
+      SEARCH_INDEX: ${SEARCH_INDEX:-index12}
+      CONFIG_DIR: /srv/configs
+      DATA_DIR: /srv/data
+      PYTHONPATH: /srv
     volumes:
-      - ./data:/data
+      - ./data:/srv/data
       - ./src:/srv/ml_tools
       - ./configs:/srv/configs
       - ./dockerfiles/api/src:/srv/src
     ports:
-      - "8000:8000"
+      - "8002:8000"
     networks:
       backtier_network:
         aliases:
@@ -71,12 +78,10 @@ services:
     build:
       context: .
       dockerfile: ./dockerfiles/tg_backend/Dockerfile
-    env_file:
-      - .env
+    environment:
+      TG_BOT_TOKEN: ${TG_BOT_TOKEN:-}
+      SEARCH_API_URL: http://api:8000/search
     volumes:
-      - ./data:/data
-      - ./src:/srv/ml_tools
-      - ./configs:/srv/configs
       - ./dockerfiles/tg_backend/src:/srv/src
     depends_on:
       - api
@@ -113,6 +118,20 @@ services:
       - "${CHROMA_PORT:-8000}:8000"
     volumes:
       - ./data/chroma:/chroma/chroma
+    restart: unless-stopped
+  weaviate:
+    image: cr.weaviate.io/semitechnologies/weaviate:latest
+    container_name: weaviate
+    ports:
+      - "8080:8080"
+      - "50051:50051"
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODEL: 'none' # Or configure a local embedding provider like Ollama/GPT4All
+    volumes:
+      - ./data/weaviate:/var/lib/weaviate
     restart: unless-stopped
 networks:
   backtier_network:

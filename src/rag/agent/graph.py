@@ -17,13 +17,13 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, List
 
-from connections import BaseConnection, ChromaConnection
-from embedder import EmbeddingModel, OllamaEmbedder
+from rag.connections import BaseConnection, ChromaConnection, WeaviateConnection
+from rag.embedder import EmbeddingModel, OllamaEmbedder
 from langchain_openai import ChatOpenAI
 from langgraph.graph import END, START, StateGraph
 
-from agent import prompts
-from agent.config import (
+from rag.agent import prompts
+from rag.agent.config import (
     COLLECTION_NAME,
     EMBEDDING_MODEL_NAME,
     EMBEDDING_SIZE,
@@ -32,6 +32,7 @@ from agent.config import (
     LLM_MODEL,
     MAX_ITERATIONS,
     OLLAMA_HOST,
+    VECTOR_DB_BACKEND,
 )
 
 
@@ -63,7 +64,10 @@ _db_client: BaseConnection | None = None
 def _get_db_client() -> BaseConnection:
     global _db_client
     if _db_client is None:
-        _db_client = ChromaConnection()
+        if VECTOR_DB_BACKEND == "weaviate":
+            _db_client = WeaviateConnection()
+        else:
+            _db_client = ChromaConnection()
     return _db_client
 
 

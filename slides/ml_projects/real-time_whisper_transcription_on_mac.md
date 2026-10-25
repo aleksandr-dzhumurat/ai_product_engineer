@@ -163,4 +163,4 @@ if __name__ == "__main__":
 |---|---|---|
 | **BlackHole** | Free / open-source | Recommended. Apple Silicon native, zero latency |
 | **Soundflower** | Free | Largely unmaintained, not recommended on Sonoma+ |
-| **Loopback** (Rogue Amoeba) | ~$99 | Most polished option, visual routing UI |
+| **Loopback** (Rogue Amoeba) | ~\$99 | Most polished option, visual routing UI |

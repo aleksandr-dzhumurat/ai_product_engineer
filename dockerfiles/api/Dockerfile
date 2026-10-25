@@ -9,8 +9,13 @@ COPY dockerfiles/api/requirements.txt /srv/requirements.txt
 
 WORKDIR /srv
 
-RUN uv pip install --system --no-cache -r requirements.txt
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv pip install --system -r requirements.txt
 
 EXPOSE 8000
+
+COPY src /srv/ml_tools
+COPY dockerfiles/api/src /srv/src
+COPY configs /srv/configs
 
 ENTRYPOINT ["docker-entrypoint.sh"]

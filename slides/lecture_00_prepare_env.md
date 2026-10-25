@@ -1,18 +1,21 @@
+# Подготовка окружения
+
 [![Лекция 04 vol 1: Организация кода в ML проектах](http://img.youtube.com/vi/yFGYz8XAw30/0.jpg)](http://www.youtube.com/watch?v=yFGYz8XAw30 "Лекция 04 vol 1: Организация кода в ML проектах")
 
 Start by [installing uv](https://docs.astral.sh/uv/getting-started/installation/)
 
 How to code using agents: [learn cursor](https://cursor.com/learn)
 
-## Creating python environment 
- 
+## Creating python environment
+
 ```shell
-uv venv --python 3.13;
-source .venv/bin/activate;
+uv venv --python 3.13
+source .venv/bin/activate
 uv pip install -r requirements.txt
 ```
 
-### Old way: pyenv 
+### Old way: pyenv
+
 Install deps
 
 ```bash
@@ -21,9 +24,9 @@ brew install openssl xz gdbm
 
 Install python versions
 
-```
+```shell
 pyenv install 3.12 && \
-pyenv virtualenv 3.12 mlproducts-env \
+pyenv virtualenv 3.12 mlproducts-env && \
 source ~/.pyenv/versions/mlproducts-env/bin/activate
 ```
 
@@ -33,7 +36,9 @@ Install requirements
 python3 -m pip install -r requirements.txt
 ```
 
-Set up `.vscode/settings.json`
+### VS Code configuration
+
+Set up `.vscode/settings.json`:
 
 ```json
 {
@@ -44,11 +49,11 @@ Set up `.vscode/settings.json`
     "python.analysis.extraPaths": [
         "${workspaceFolder}/src"
     ],
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": true
 }
 ```
 
-run jupyter
+### Run Jupyter
 
 ```shell
 make run-jupyter
@@ -57,45 +62,44 @@ make run-jupyter
 or use direct command
 
 ```shell
-jupyter notebook jupyter_notebooks --ip 0.0.0.0 --port 8887 \
-	--NotebookApp.token='' --NotebookApp.password='' --allow-root --no-browser 
+jupyter notebook jupyter_notebooks --ip 0.0.0.0 --port 8899 \
+	--NotebookApp.token='' --NotebookApp.password='' --allow-root --no-browser
 ```
 
-# Data preparation
+## Data preparation
 
+For Google Colab, go to [Google Drive](https://drive.google.com/drive/my-drive) and create a directory called `ai_product_engineer_course`.
 
-Go to [google drive](https://drive.google.com/drive/my-drive) and create a directory called ai_product_engineer_course 
-
-![collab_dir_creation](img/collab_dir_creation.png)
+![Создание каталога курса в Google Drive](img/collab_dir_creation.png)
 
 Step 1: download the data to your local machine, or copy it to our Google Drive: [ML for products](https://drive.google.com/drive/folders/1FMLKfNZZyFgzOhWjOiyeN3XvCsjT5-ET?usp=drive_link)
 
-![datasets](img/datasets.png)
+![Датасеты курса в Google Drive](img/datasets.png)
 
-Upload jupyter_notebooks from your local machine to Google Drive. This is optional — you can also run all the Jupyter code locally
+Upload `jupyter_notebooks` from your local machine to Google Drive. This is optional — you can also run all the Jupyter code locally.
 
-![jupyter_notebooks_dir](img/jupyter_notebooks_dir.png)
+![Каталог с учебными ноутбуками](img/jupyter_notebooks_dir.png)
 
-Also upload the src directory to Google Drive.
+Also upload the `src` directory to Google Drive.
 
 Open the first notebook [vol_00_pre_requirements_01_machine_learning_intro.ipynb](https://github.com/aleksandr-dzhumurat/ai_product_engineer/blob/main/jupyter_notebooks/vol_00_pre_requirements_01_machine_learning_intro.ipynb) and enjoy!
 
 ## Local option
 
-Докер для винды (обе опции) https://docs.docker.com/desktop/setup/install/windows-install/
+[Docker Desktop для Windows](https://docs.docker.com/desktop/setup/install/windows-install/)
 
-Подробнее про WSL: https://learn.microsoft.com/en-us/windows/wsl/install
+Подробнее про [WSL](https://learn.microsoft.com/en-us/windows/wsl/install).
 
 ## Remote option
 
-Connect to remote server
+### Connect to a remote server
 
 edit `~/.ssh/config`
 
-```python
+```sshconfig
 Host remote_dev
-    HostName 168.119.168.170    
-    User root    
+    HostName 168.119.168.170
+    User root
     Port 22
     IdentityFile ~/.ssh/id_rsa
 ```
@@ -104,69 +108,75 @@ Connect in VSCode
 
 - Click the green icon in the bottom-left corner
 - Select "Connect to Host..."
-- Choose "myserver" from the list
+- Choose "remote_dev" from the list
 
 Install [SFTP extension](https://marketplace.visualstudio.com/items?itemName=Natizyskunk.sftp)
 
-Install https://code.visualstudio.com/docs/devcontainers/create-dev-container
+### Dev Container configuration
 
-Configure with .devcontainr/devcontainer.json
+Install [Dev Containers](https://code.visualstudio.com/docs/devcontainers/create-dev-container).
 
-```jsx
+Configure with `.devcontainer/devcontainer.json`
+
+```json
 {
-    "image": "python3.12",
+    "image": "python:3.13",
     "runArgs": [
-        "--network=host",
-    ],    
-    "customizations":{
+        "--network=host"
+    ],
+    "customizations": {
         "vscode": {
-            "extensions":[
+            "extensions": [
                 "ms-python.python",
                 "ms-python.vscode-pylance"
             ],
             "settings": {
-                "python.defaultInterpreterPath": "/srv/bin/python3"
+                "python.defaultInterpreterPath": "/usr/local/bin/python"
             }
         }
     }
 }
 ```
 
+The image and interpreter path refer to the [official Python image](https://hub.docker.com/_/python). Install the project dependencies inside the container as well.
+
 To search for extensions, press `Ctrl`+`Shift`+`P`
 
-Интересная опция с Cloud.ru https://cloud.ru/ - есть возможность  Удаленно подключиться к убунте и настроить докер по инструкции для убунты
+[Cloud.ru](https://cloud.ru/) — возможность удалённо подключиться к Ubuntu и настроить Docker.
 
-Интересная ссылка: [Google collab remote](https://www.linkedin.com/posts/jeremy-arancio_struggling-with-running-llms-for-your-experimentations-activity-7376201218483863552-XIQw)
+Интересная ссылка: [Google Colab remote](https://www.linkedin.com/posts/jeremy-arancio_struggling-with-running-llms-for-your-experimentations-activity-7376201218483863552-XIQw)
 
 [Add ssh key to remote machine](https://community.hetzner.com/tutorials/add-ssh-key-to-your-hetzner-cloud)
-
 
 ## Keys generation
 
 key generation
+
 ```shell
 ssh-keygen -o  -t ed25519 -f ~/.ssh/meaningful_key_name -C "your_terminal_name"
 ```
 
 Access restrictions
+
 ```shell
 chmod 600 ~/.ssh/meaningful_key_name
 ```
 
 Downloading repo if restricted
+
 ```shell
 GIT_SSH_COMMAND="ssh -i ~/.ssh/meaningful_key_name" git clone ssh://git@gitlab.com/ORG/repo.git
 ```
 
 OR modify ssh config `nano ~/.ssh/config`
 
-```shell
+```sshconfig
 Host gitlab.YOURCOMPANY.com
     HostName gitlab.YOURCOMPANY.com
     User git
     IdentityFile ~/.ssh/your_key_name
     IdentitiesOnly yes
-    
+
 Host github-personal
     HostName github.com
     User git
@@ -174,12 +184,13 @@ Host github-personal
     IdentitiesOnly yes
 ```
 
+## VSCode settings
 
-# VSCode settings
+Дополнительные материалы по Git, редактору и организации кода:
 
 - [GitHub's git cheatsheet](https://education.github.com/git-cheat-sheet-education.pdf)
 - [GitLab's git cheatsheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf)
-- [learnggitbranching.js.org](learnggitbranching.js.org)
+- [Learn Git Branching](https://learngitbranching.js.org/)
 - [14-vs-code-extensions-every-data-engineer-should-swear-by-for-maximum-productivity](https://medium.com/@manojkumar.vadivel/14-vs-code-extensions-every-data-engineer-should-swear-by-for-maximum-productivity-9fcc2e1b3c4f)
 - [clickhouse-support](https://marketplace.visualstudio.com/items?itemName=LinJun.clickhouse-support)
 - [python-software-development-course](https://github.com/phitoduck/python-software-development-course)
@@ -189,15 +200,15 @@ Host github-personal
 - [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md#oh-my-zsh)
 - [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/INSTALL.md)
 - [ohmyz.sh](https://ohmyz.sh/#install)
-- [Taking Python to Production: A Professional Onboarding Guide](https://www.notion.so/Taking-Python-to-Production-A-Professional-Onboarding-Guide-799409731bf14c78a531ac779f1bd76d?pvs=21) 
+- [Taking Python to Production: A Professional Onboarding Guide](https://www.notion.so/Taking-Python-to-Production-A-Professional-Onboarding-Guide-799409731bf14c78a531ac779f1bd76d?pvs=21)
 - [keyboard-shortcuts-macos](https://code.visualstudio.com/shortcuts/keyboard-shortcuts-macos.pdf)
 - [keyboard-shortcuts-linux](https://code.visualstudio.com/shortcuts/keyboard-shortcuts-linux.pdf)
 
-# Bonus: setting up remote server for multi users
+## Bonus: setting up remote server for multiple users
 
-# SSH & User Management on Alibaba Cloud (Ubuntu)
+Пример: SSH и управление пользователями на Alibaba Cloud (Ubuntu).
 
-## 1. Add SSH Public Key to Remote Machine
+### 1. Add SSH Public Key to Remote Machine
 
 Three methods to allow key-based login:
 
@@ -209,24 +220,27 @@ Key permissions: `~/.ssh` must be `700`, `authorized_keys` must be `600`.
 
 ---
 
-## 2. Create User `trova` with Password Login
+### 2. Create User `trova` with Password Login
 
 ```bash
 sudo adduser trova          # creates user + home dir, prompts for password
 ```
 
 Enable password authentication in `/etc/ssh/sshd_config`:
-```
+
+```sshconfig
 PasswordAuthentication yes
 PermitEmptyPasswords no
 ```
 
 Restart SSH:
+
 ```bash
 sudo systemctl restart sshd
 ```
 
 Connect from local:
+
 ```bash
 ssh trova@your-server-ip
 ```
@@ -235,18 +249,7 @@ Optional — grant sudo: `sudo usermod -aG sudo trova`
 
 ---
 
-## 3. Generated Passwords
-
-| # | Password |
-|---|---|
-| 1 | `Kx9#mP2$vL4nQw7!` |
-| 2 | `Rj5@tN8&hY3bZe6*` |
-
-> Store in a password manager, not plain text.
-
----
-
-## 4. Remove User or Disable Login
+### 3. Remove User or Disable Login
 
 | Goal | Command |
 |---|---|

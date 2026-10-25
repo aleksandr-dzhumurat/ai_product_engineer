@@ -1,4 +1,11 @@
-# Machine Learning & Statistics: 29 Essential Questions
+# Machine Learning & Statistics: 39 Questions and Practical Cases
+
+Этот файл — банк вопросов для самопроверки и обсуждения. **Q1–Q29** покрывают основные темы, **Q30–Q39** проверяют решения в практических ситуациях, в конце — две расчётные задачи.
+
+Как готовиться: сначала дайте ответ за 30–60 секунд без подсказок, затем назовите необходимые предположения и разберите контрпример. Длинные пояснения ниже — опорные ответы, а не текст для заучивания.
+
+* [Q30–Q39: практические ситуации](#practical-cases)
+* [Расчётные задачи](#bonus-tasks)
 
 ## Q1 Probability distributions
 
@@ -27,7 +34,9 @@ The **Poisson distribution** is a probability distribution that models the numbe
 
 #### 1. Poisson Distribution Formula
 
-$$P(X = k) = \frac{e^{-\lambda} \lambda^k}{k!}$$
+$$
+P(X = k) = \frac{e^{-\lambda} \lambda^k}{k!}
+$$
 
 Where:
 
@@ -63,7 +72,9 @@ The **Binomial distribution** models the number of successes in a fixed number o
 
 #### 1. Binomial Distribution Formula
 
-$$P(X = k) = \binom{n}{k} p^k (1-p)^{n-k}$$
+$$
+P(X = k) = \binom{n}{k} p^k (1-p)^{n-k}
+$$
 
 Where:
 
@@ -86,85 +97,56 @@ Where:
 - ✅ **Independent Events:** One trial's outcome does not affect another.
 
 
+
 ## Q2 — Law of Large Numbers vs Central Limit Theorem
 
-Quick Answer
+**Question:** What does each theorem say about a sample mean, and what assumptions are needed?
 
-**LLN** tells us WHERE the sample mean goes (→ population mean).  
-**CLT** tells us HOW it gets there (→ Normal distribution).
+**Short answer:** LLN describes convergence of the sample mean to a constant. CLT describes the limiting distribution of the **centered and scaled** sample mean. Neither theorem says the original observations become normally distributed.
 
 ### Law of Large Numbers (LLN)
 
-**What it states:** Sample mean converges to expected value as $n \to \infty$
+A standard sufficient setting is i.i.d. observations with finite absolute expectation:
 
-$$\bar{X}_n \to \mathbb{E}[X] \quad \text{when } n \to \infty$$
+$$
+\bar X_n\xrightarrow{P}\mu,\qquad E[|X|]<\infty.
+$$
 
-**Required Conditions:**
-- Independence
-- Identically distributed
-- Finite expected value
-
-**Intuition:** Flip a coin 1,000,000 times → proportion of heads ≈ 0.5
-
-**Key point:** LLN says the mean **stabilizes** but doesn't describe its distribution.
+For example, the observed fraction of heads stabilizes around the probability of heads. LLN alone does not specify a convergence rate or prove convergence of a model-training algorithm.
 
 ### Central Limit Theorem (CLT)
 
-**What it states:** Sum (or scaled mean) of i.i.d. random variables → Normal distribution
+For i.i.d. observations with finite, nonzero variance:
 
-$$\frac{\sum X_i - n\mathbb{E}[X]}{\sqrt{n\text{Var}(X)}} \xrightarrow{d} N(0,1)$$
+$$
+\frac{\sqrt n(\bar X_n-\mu)}{\sigma}\xrightarrow{d}N(0,1),
+\qquad 0<\sigma^2<\infty.
+$$
 
-**Intuition:** Even if X is skewed/discrete, sum of many X's looks like bell curve.
+There is **no universal sample-size cutoff of 30**. Approximation quality depends on tails, skewness and, for rare events, the effective number of observed events. Dependence between observations requires other conditions or a different analysis.
 
-**Requirements:**
-- Independent observations
-- Identically distributed
-- **Finite variance** (excludes Cauchy distribution)
-- $n \ge 30$ (rule of thumb)
+| Question | LLN | CLT |
+| --- | --- | --- |
+| What converges? | Sample mean | Centered and scaled sample mean |
+| To what? | Constant μ | A standard normal distribution |
+| Finite variance needed in this standard statement? | No; finite absolute expectation suffices | Yes, and variance is positive |
+| Typical use | Consistency of averages | Approximate uncertainty of averages |
 
-Key Differences
+### Practical applications and limits
 
+At a **fixed** parameter vector, an average of independently sampled, integrable stochastic gradients can approach the expected gradient as batch size grows. Convergence of SGD iterates additionally depends on the objective, sampling, step sizes and other assumptions. It does not follow from LLN alone.
 
-| Aspect | LLN | CLT |
-|--------|-----|-----|
-| **About** | Convergence of mean | Shape of distribution |
-| **Converges to** | Constant ($\mu$) | Normal distribution $N(0,1)$ |
-| **Requires variance** | No (weak law) | Yes |
-| **Application** | Frequencies, probability estimation | p-values, confidence intervals |
+Asymptotic normality of suitably averaged SGD iterates is an advanced result under additional assumptions, not a general consequence of the elementary CLT for arbitrary neural-network training.
 
+For an i.i.d. sample with suitable moments, an approximate two-sided interval for a mean is:
 
+$$
+\bar X\pm z_{1-\alpha/2}\frac{s}{\sqrt n}.
+$$
 
-### Practical Applications in ML
+This is not valid for every distribution at every large n. Repeated measurements, clusters and heavy tails can invalidate the usual standard-error calculation. Bootstrap also needs a resampling scheme appropriate to the data and statistic; resampling individual rows is not universally valid.
 
-**SGD Convergence (LLN)**
-
-Mini-batch gradients converge to true gradient:
-
-$$\frac{1}{B}\sum_{i=1}^{B} \nabla L(x_i, \theta) \xrightarrow{P} E[\nabla L(X, \theta)]$$
-
-This justifies why SGD finds (local) minima despite noisy estimates.
-
-**SGD Distribution (CLT)**
-
-Explains that SGD iterates follow Gaussian distribution around optimum:
-
-$$\sqrt{n}(\bar{\theta}_n - \theta^*) \xrightarrow{d} N(0, \Sigma_\infty)$$
-
-**Bootstrap Methods**
-
-- LLN: Empirical distribution converges to true distribution
-- CLT: Justifies confidence interval construction
-
-**Confidence Intervals**
-CLT enables:
-
-$$\bar{X} \pm z_{\alpha/2} \cdot \frac{s}{\sqrt{n}}$$
-
-Valid regardless of population distribution (for large n).
-
-**References:**
-- [Law of Large Numbers - Wikipedia](https://en.wikipedia.org/wiki/Law_of_large_numbers)
-- [Central Limit Theorem - Wikipedia](https://en.wikipedia.org/wiki/Central_limit_theorem)
+**Follow-up:** A million events come from only 100 users. Can the standard error always be divided by the square root of a million? No: within-user dependence may make the effective information much smaller; consider user-level analysis or cluster resampling.
 
 ---
 
@@ -187,17 +169,21 @@ Valid regardless of population distribution (for large n).
 
 If all values multiplied by k:
 
-$$\text{Var}(kX) = k^2 \cdot \text{Var}(X)$$
+$$
+\text{Var}(kX) = k^2 \cdot \text{Var}(X)
+$$
 
 Example: Multiply by 2 → variance increases by 4×
 
 ### Comparing Two Datasets
 
 **Statistical Tests:**
-- **t-test:** Compare means (if normally distributed)
-- **Mann-Whitney U:** Non-parametric alternative
-- **KS test (Kolmogorov-Smirnov):** Compare entire distributions
-- **Chi-square:** For categorical data
+- **Welch t-test:** Compare independent-group means; exact small-sample assumptions and large-sample approximation must be checked. Normality of all raw observations is not a universal prerequisite for every large-sample use.
+- **Mann–Whitney U:** Compare relative ordering / distributions. It is not automatically a test of equality of medians; that interpretation needs additional shape assumptions.
+- **KS test:** Compare empirical distributions; the standard continuous-distribution version needs care with ties and discrete data.
+- **Chi-square:** Test categorical counts with appropriate expected counts and independence assumptions.
+
+Choose the test for the estimand and sampling design. Statistical significance alone does not establish a practically meaningful difference.
 
 **Visual Comparison:**
 - Overlaid histograms
@@ -230,7 +216,9 @@ If Dataset Contains Only 0s and 1s (CTR - Click-Through Rate) - this is Binary/B
 
 Use when both variables numerical, relationship is linear
 
-$$r = \frac{\sum(x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum(x_i - \bar{x})^2 \sum(y_i - \bar{y})^2}}$$
+$$
+r = \frac{\sum(x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum(x_i - \bar{x})^2 \sum(y_i - \bar{y})^2}}
+$$
 
 **Range:** [-1, 1]
 - 1 = perfect positive linear relationship
@@ -241,7 +229,9 @@ $$r = \frac{\sum(x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum(x_i - \bar{x})^2 \sum
 
 ### Cramér's V (Categorical ↔ Categorical)
 
-$$V = \sqrt{\frac{\chi^2}{n \cdot \min(k-1, r-1)}}$$
+$$
+V = \sqrt{\frac{\chi^2}{n \cdot \min(k-1, r-1)}}
+$$
 
 **TO DO**: add chi-squared formula
 
@@ -280,7 +270,9 @@ Hard to predict → High uncertainty → High entropy
 
 For discrete random variable X:
 
-$$H(X) = -\sum_{x \in \mathcal{X}} p(x) \log p(x) = E[-\log p(X)]$$
+$$
+H(X) = -\sum_{x \in \mathcal{X}} p(x) \log p(x) = E[-\log p(X)]
+$$
 
 **Convention:** $0 \log 0 = 0$
 
@@ -322,7 +314,9 @@ Node Entropy: $H(t) = -\sum p_c \log_2 p_c$
 
 Information Gain:
 
-$$IG(S, A) = H(S) - \sum_{v \in Values(A)} \frac{|S_v|}{|S|} H(S_v)$$
+$$
+IG(S, A) = H(S) - \sum_{v \in Values(A)} \frac{|S_v|}{|S|} H(S_v)
+$$
 
 Select attribute maximizing IG for each split - Greedy algorithm builds tree
 
@@ -332,7 +326,9 @@ Select attribute maximizing IG for each split - Greedy algorithm builds tree
 
 **LLMs (Cross-Entropy Loss)**
 
-$$H(p, q) = -\sum_x p(x) \log q(x)$$
+$$
+H(p, q) = -\sum_x p(x) \log q(x)
+$$
 
 Where:
 - $p$ = true distribution (one-hot encoded token)
@@ -340,11 +336,15 @@ Where:
 
 Minimizing cross-entropy = Minimizing KL divergence:
 
-$$D_{KL}(P \| Q) = \sum_x P(x) \log \frac{P(x)}{Q(x)}$$
+$$
+D_{KL}(P \| Q) = \sum_x P(x) \log \frac{P(x)}{Q(x)}
+$$
 
 Fundamental Relationship:
 
-$$H(p, q) = H(p) + D_{KL}(p \| q)$$
+$$
+H(p, q) = H(p) + D_{KL}(p \| q)
+$$
 
 Since $H(p)$ is constant (true labels), minimizing H(p,q) = minimizing KL divergence
 
@@ -415,7 +415,9 @@ How to decrease both:
 
 Cost-Sensitive Learning: set threshold to minimize total cost.
 
-$$\text{Cost} = C_{FP} \cdot FP + C_{FN} \cdot FN$$
+$$
+\text{Cost} = C_{FP} \cdot FP + C_{FN} \cdot FN
+$$
 
 ---
 
@@ -423,9 +425,11 @@ $$\text{Cost} = C_{FP} \cdot FP + C_{FN} \cdot FN$$
 
 Model in Matrix Form
 
-$$\mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\epsilon}$$
+$$
+\mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\epsilon}
+$$
 
-Assumptions (LINE)
+Assumptions for classical inference (LINE)
 
 | Assumption | Description | Diagnostic |
 |------------|-------------|------------|
@@ -433,6 +437,8 @@ Assumptions (LINE)
 | **I**ndependence | Independent observations | Durbin-Watson test |
 | **N**ormality | Normal errors | Q-Q plot |
 | **E**qual variance | Homoscedasticity | Breusch-Pagan test |
+
+These assumptions serve different purposes. Computing an OLS fit does not require normal errors. Classical standard errors and tests need additional assumptions; Durbin–Watson diagnoses a specific form of residual autocorrelation, not all possible dependence.
 
 Coefficient Interpretation
 
@@ -443,21 +449,27 @@ Coefficient Interpretation
 
 #### OLS (Closed-Form)
 
-$$\hat{\boldsymbol{\beta}} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}$$
+$$
+\hat{\boldsymbol{\beta}} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}
+$$
 
 Complexity: O(np² + p³)
 
-Use when: n < 10,000, p < 1,000
+The inverse formula requires full column rank. Use stable least-squares solvers such as QR/SVD rather than manually forming the inverse. There is no universal n/p cutoff: consider sparsity, conditioning, memory and solver cost.
 
 #### Gradient Descent
 
 Use when: Very large datasets. Variants: Batch GD, Stochastic GD, Mini-batch GD
 
-$$\boldsymbol{\beta}^{(t+1)} = \boldsymbol{\beta}^{(t)} - \eta \nabla_{\boldsymbol{\beta}} J$$
+$$
+\boldsymbol{\beta}^{(t+1)} = \boldsymbol{\beta}^{(t)} - \eta \nabla_{\boldsymbol{\beta}} J
+$$
 
 where $J = \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2$ (Sum of Squared Errors):
 
-$$\nabla_{\boldsymbol{\beta}} J = -2\mathbf{X}^T(\mathbf{y} - \mathbf{X}\boldsymbol{\beta})$$
+$$
+\nabla_{\boldsymbol{\beta}} J = -2\mathbf{X}^T(\mathbf{y} - \mathbf{X}\boldsymbol{\beta})
+$$
 
 *(Note: In practice, libraries often optimize Mean Squared Error $J = \frac{1}{n}\|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2$ so the learning rate $\eta$ does not need scaling by $n$, which introduces a $\frac{1}{n}$ factor to the gradient.)*
 
@@ -477,11 +489,15 @@ Why Regularization - **without regularization, models can:**
 
 Loss Function:
 
-$$\min \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2 + \lambda\|\boldsymbol{\beta}\|_1 \quad \text{or} \quad \text{Loss} + \lambda \sum_j |\beta_j|$$
+$$
+\min \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2 + \lambda\|\boldsymbol{\beta}\|_1 \quad \text{or} \quad \text{Loss} + \lambda \sum_j |\beta_j|
+$$
 
 Gradient Penalty:
 
-$$\frac{\partial}{\partial \beta_j} = \lambda \cdot \text{sign}(\beta_j)$$
+$$
+\frac{\partial}{\partial \beta_j} = \lambda \cdot \text{sign}(\beta_j)
+$$
 
 Constant gradient (magnitude $\lambda$) regardless of weight size.
 
@@ -495,17 +511,23 @@ Effect:
 
 Loss Function:
 
-$$\min \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2 + \lambda\|\boldsymbol{\beta}\|_2^2 \quad \text{or} \quad \text{Loss} + \lambda \sum_j \beta_j^2$$
+$$
+\min \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2 + \lambda\|\boldsymbol{\beta}\|_2^2 \quad \text{or} \quad \text{Loss} + \lambda \sum_j \beta_j^2
+$$
 
 Gradient Penalty:
 
-$$\frac{\partial}{\partial \beta_j} = 2\lambda \beta_j$$
+$$
+\frac{\partial}{\partial \beta_j} = 2\lambda \beta_j
+$$
 
 Proportional gradient (decreases as $\beta_j \to 0$).
 
 Closed-form solution:
 
-$$\hat{\boldsymbol{\beta}}_{ridge} = (\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I})^{-1}\mathbf{X}^T\mathbf{y}$$
+$$
+\hat{\boldsymbol{\beta}}_{ridge} = (\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I})^{-1}\mathbf{X}^T\mathbf{y}
+$$
 
 Effect:
 - Shrinks coefficients toward zero
@@ -517,7 +539,9 @@ Effect:
 
 Loss Function:
 
-$$\min \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2 + \lambda_1\|\boldsymbol{\beta}\|_1 + \lambda_2\|\boldsymbol{\beta}\|_2^2$$
+$$
+\min \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2 + \lambda_1\|\boldsymbol{\beta}\|_1 + \lambda_2\|\boldsymbol{\beta}\|_2^2
+$$
 
 Best of both worlds - combines:
 - Feature selection (L1)
@@ -577,17 +601,25 @@ Use ElasticNet when:
 - [Regularization in Machine Learning - Wikipedia](https://en.wikipedia.org/wiki/Regularization_(mathematics))
 - [Lasso vs Ridge - Towards Data Science](https://towardsdatascience.com/ridge-and-lasso-regression-a-complete-guide-with-python-scikit-learn-e20e34bcbf0b)
 
+### Follow-up: change the units of one feature
+
+**Case:** Price is changed from rubles to thousands of rubles. What changes for OLS and Ridge?
+
+For unregularized OLS, rescaling a feature can be compensated by its coefficient, preserving fitted predictions under equivalent model assumptions. With a fixed Ridge penalty on unscaled coefficients, units affect the penalty and can change predictions. Fit the scaler only on train; standardization does not make coefficients causal effects.
+
 ---
 
 ## Q9 — Linear Regression Metrics
 
-For deeper understanding: [cracking_linear_regression](cracking_linear_regression.md)
+For deeper understanding: [linear regression: models, metrics and validation](lecture_02_vol_01_linear_regression.md)
 
 ### Mean Absolute Error (MAE)
 
 When outliers should not dominate, want interpretable metric
 
-$$\text{MAE} = \frac{1}{n}\sum_{i=1}^{n}|y_i - \hat{y}_i|$$
+$$
+\text{MAE} = \frac{1}{n}\sum_{i=1}^{n}|y_i - \hat{y}_i|
+$$
 
 Advantages:
 - Easy to interpret (same units as target)
@@ -603,7 +635,9 @@ Disadvantages:
 
 Mean Squared Error (MSE)
 
-$$\text{MSE} = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2$$
+$$
+\text{MSE} = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2
+$$
 
 Advantages:
 - Differentiable everywhere
@@ -617,7 +651,9 @@ Disadvantages:
 
 ***Root Mean Squared Error (RMSE)*** - Most common regression metric
 
-$$\text{RMSE} = \sqrt{\text{MSE}}$$
+$$
+\text{RMSE} = \sqrt{\text{MSE}}
+$$
 
 Advantages: Same units as target (interpretable)
 
@@ -625,7 +661,9 @@ Advantages: Same units as target (interpretable)
 
 When relative error matters more than absolute
 
-$$\text{MAPE} = \frac{100\%}{n}\sum_{i=1}^{n}\left|\frac{y_i - \hat{y}_i}{y_i}\right|$$
+$$
+\text{MAPE} = \frac{100\%}{n}\sum_{i=1}^{n}\left|\frac{y_i - \hat{y}_i}{y_i}\right|
+$$
 
 Advantages:
 - Scale-independent (can compare across datasets)
@@ -633,15 +671,18 @@ Advantages:
 
 Disadvantages:
 - Undefined when $y=0$
-- Asymmetric: Penalizes over-predictions more than under-predictions
-- Biased toward under-predictions
+- At a fixed positive actual y, predictions y − d and y + d have equal absolute percentage error.
+- Swapping actual and prediction changes the denominator; observations with small actual values receive greater weight.
+- Optimizing MAPE can favor lower predictions than MAE/MSE; this is not a universal unequal penalty for equal ±d deviations.
 
 ### Huber Loss (Robust Alternative)
 
-$$L_\delta(y, \hat{y}) = \begin{cases}
+$$
+L_\delta(y, \hat{y}) = \begin{cases}
 \frac{1}{2}(y - \hat{y})^2 & \text{if } |y - \hat{y}| \leq \delta \\
 \delta(|y - \hat{y}| - \frac{1}{2}\delta) & \text{otherwise}
-\end{cases}$$
+\end{cases}
+$$
 
 Behavior:
 - Quadratic for small errors (like MSE)
@@ -650,14 +691,16 @@ Behavior:
 
 ### Metric Selection Guide
 
-| Scenario | Recommended Metric |
-|----------|-------------------|
-| Outliers present | MAE, Huber |
-| No outliers, want differentiability | MSE, RMSE |
-| Need scale-independence | MAPE (if no zeros), R² |
-| Large errors very costly | MSE, RMSE |
-| Model comparison | R², Adjusted R² |
-| Want variance explained | R², Adjusted R² |
+| Decision / objective | Candidate measure | Caveat |
+| --- | --- | --- |
+| Typical error in target units | MAE | Its population optimum is a conditional median, within model-capacity limits |
+| Large errors deserve extra weight; need conditional mean | MSE / RMSE | Sensitive to large residuals; monetary costs are not automatically quadratic |
+| Reduce influence of large target residuals relative to MSE | Huber | Threshold matters; not immunity to all feature outliers |
+| Compare relative errors across objects | MAPE, with explicitly defined handling of zeros | Small actual values dominate; may exceed 100% |
+| Assess error relative to a mean predictor | R² | Can be negative; not a replacement for a deployment-relevant baseline |
+| Asymmetric under-/overprediction cost | Quantile or explicit cost loss | Specify the cost ratio and decision policy |
+
+Choose the metric before comparing candidates on the final test. Adjusted R² is an in-sample complexity correction, not a substitute for out-of-sample validation.
 
 **References:**
 - [Regression Validation Metrics - scikit-learn](https://scikit-learn.org/stable/modules/model_evaluation.html#regression-metrics)
@@ -685,27 +728,30 @@ Algorithm Comparison
 
 Advantages:
 - Highly interpretable (coefficients = log-odds)
-- Well-calibrated probabilities
+- Probability estimates whose calibration must be checked on held-out data
 - Robust with regularization (L1/L2)
-- Fast training and prediction O(n)
-- Well-calibrated probability outputs
+- Efficient for many tabular/sparse settings; a prediction costs O(p) for p features, while training cost depends on samples, features, solver and iterations
 
 Models probability using sigmoid function:
 
-$$P(y=1|x) = \frac{1}{1 + e^{-(\beta_0 + \beta_1x_1 + ... + \beta_nx_n)}}$$
+$$
+P(y=1|x) = \frac{1}{1 + e^{-(\beta_0 + \beta_1x_1 + ... + \beta_nx_n)}}
+$$
 
 Loss Function (Log-Loss):
 
-$$J(\beta) = -\frac{1}{n}\sum_{i=1}^{n}\left[y_i \log(p_i) + (1-y_i)\log(1-p_i)\right]$$
+$$
+J(\beta) = -\frac{1}{n}\sum_{i=1}^{n}\left[y_i \log(p_i) + (1-y_i)\log(1-p_i)\right]
+$$
 
 Regularized Versions:
 - L2 (Ridge): $J(\beta) + \lambda\|\beta\|_2^2$ - shrinks coefficients, handles multicollinearity
 - L1 (Lasso): $J(\beta) + \lambda\|\beta\|_1$ - produces sparse solutions, feature selection
 - ElasticNet: $J(\beta) + \lambda_1\|\beta\|_1 + \lambda_2\|\beta\|_2^2$ - combines both
-*Disadvantages:
-- Cannot capture non-linear relationships
+Disadvantages:
+- Linear log-odds in the supplied features; nonlinear feature transformations can extend the model
 - Sensitive to outliers without regularization
-- Requires feature scaling
+- Scaling is often useful for optimization and consistent regularization; learn it only from train
 
 Best For binary classification with interpretability requirements, high-dimensional sparse data
 
@@ -807,7 +853,7 @@ Advantages:
 
 Disadvantages:
 - Slow training O(n² to n³)
-- Requires feature scaling
+- Scaling is often useful for optimization and consistent regularization; learn it only from train
 - Kernel selection is tricky
 - Not well-calibrated probabilities
 
@@ -815,165 +861,90 @@ Disadvantages:
 
 ---
 
-## Q11 — Classification Metrics & ROC-AUC vs F1
 
-### Core Metrics
+## Q11 — Classification Metrics, Calibration and Thresholds
 
-Confusion Matrix
+**Question:** Which quantities evaluate ranking, probabilities and decisions at a fixed threshold?
 
-|  | Predicted Positive | Predicted Negative |
-|--|-------------------|-------------------|
-| **Actual Positive** | True Positive (TP) | False Negative (FN) |
-| **Actual Negative** | False Positive (FP) | True Negative (TN) |
+### Decisions at a fixed threshold
 
+Define the positive class and decision rule first. Rows are actual classes, columns are predictions:
 
-**Accuracy:**
+| Actual / predicted | 0 | 1 |
+| --- | --- | --- |
+| 0 | TN | FP |
+| 1 | FN | TP |
 
-$$\text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}$$
+$$
+\mathrm{Precision}=\frac{TP}{TP+FP},\qquad
+\mathrm{Recall}=\frac{TP}{TP+FN},\qquad
+\mathrm{FPR}=\frac{FP}{FP+TN}.
+$$
 
-Limitation: Misleading on imbalanced data—95% accuracy means nothing if 95% of data is one class
+Precision asks how many flagged objects are truly positive; recall asks how many actual positives were found. Specificity is 1 − FPR. Neither optimizing precision alone nor optimizing recall alone encodes the full business cost.
 
+$$
+\mathrm{Accuracy}=\frac{TP+TN}{TP+TN+FP+FN},\qquad
+F_1=\frac{2TP}{2TP+FP+FN}.
+$$
 
-**Precision:**
+With 99% negatives, predicting all negatives gets 99% accuracy but zero positive recall. This is a baseline, not evidence of successful detection. Precision is undefined if there are no positive predictions; define and report the software convention for zero denominators.
 
-$$\text{Precision} = \frac{TP}{TP + FP}$$
+$$
+F_\beta=(1+\beta^2)\frac{PR}{\beta^2P+R},
+\qquad P=\mathrm{Precision},\ R=\mathrm{Recall}.
+$$
 
-Intuition: "When model predicts positive, how often is it correct?"
+β > 1 emphasizes recall, β < 1 emphasizes precision. F1 ignores TN and does not express a monetary FP/FN cost ratio. Class imbalance alone is not a sufficient reason to optimize F1.
 
-Use when: False positives are costly (spam filter, drug approval)
+### Ranking versus probability quality
 
+ROC plots TPR against FPR. ROC-AUC is the probability that a random positive receives a larger score than a random negative, plus half the probability of a tie. It is not a uniform average over numerical thresholds and does not measure calibration.
 
-**Recall (Sensitivity):** "Of all actual positives, how many did we catch?"
+PR plots precision against recall. **Average Precision (AP)** aggregates precision weighted by recall increments; it differs from trapezoidal PR-AUC. Report which definition is used. PR/AP depend on positive prevalence, so a change in AP across populations can have a different interpretation from a model improvement on the same population.
 
-$$\text{Recall} = \frac{TP}{TP + FN}$$
+| Question | Measure / diagnostic |
+| --- | --- |
+| Rank positives above negatives | ROC-AUC; relevant low-FPR region if needed |
+| Precision at the recall required by operations | PR curve and a specified working point |
+| Quality of probability estimates | LogLoss / Brier score together with calibration analysis |
+| Decisions under resource constraints | FP/FN counts, precision/recall, number of alerts, cost |
 
-Use when: False negatives are costly (cancer screening, fraud detection)
+ROC remains meaningful under imbalance; it may not summarize the working region you care about. PR is also valid for balanced data. There is no universal “positive < 10%” rule or “AUC > 0.9 is excellent” cutoff.
 
-**Specificity**
+### Multiclass averaging
 
-$$\text{Specificity} = \frac{TN}{TN + FP}$$
+- **Macro:** compute the metric per class, then average with equal class weights.
+- **Weighted:** average per-class metrics with weights equal to class support.
+- **Micro:** sum TP/FP/FN across the included classes before computing the metric.
 
-Use when: Correctly identifying negatives matters (confirming absence of disease)
+For ordinary single-label multiclass prediction evaluated over all classes, micro precision, micro recall and micro F1 equal accuracy. This equivalence need not hold for multilabel data or a restricted class subset.
 
-**F1-Score:**: Harmonic mean (penalizes extreme values)
+### Choosing a threshold
 
-$$F_\beta = (1 + \beta^2) \times \frac{\text{Precision} \times \text{Recall}}{(\beta^2 \times \text{Precision}) + \text{Recall}}$$
+Choose on validation by cost or a constraint, such as maximizing recall while checking at most 100 alerts a day. Evaluate the frozen policy on test. Changing the threshold changes labels and costs, not ROC-AUC/AP for fixed scores and data.
 
-- β < 1: More weight to precision
-- β > 1: More weight to recall
+**Trap:** A model with higher AUC need not have better precision at the available alert budget or better-calibrated probabilities.
 
-
-*Why F-beta(F1) is Needed*:
-- Precision and recall have inverse relationship
-- Single balanced score for model comparison
-- Essential for imbalanced datasets
-
-
-### Advanced metrics
-
-#### ROC-AUC
-
-ROC Curve: Plots TPR (y-axis) vs FPR (x-axis) across all thresholds
-
-Probabilistic interpretation: Probability that random positive ranks higher than random negative
-
-AUC (Area Under Curve): $AUC = 1.0$: Perfect classifier, $AUC = 0.5$: Random guessing, $AUC \ge 0.9$ : Excellent.
-
-#### PR-AUC vs ROC-AUC
-
-Key Difference:
-- ROC uses TN in FPR calculation
-- PR-AUC ignores TN entirely
-
-When PR-AUC is Better:
-- Highly imbalanced datasets (positive class < 10%)
-- When true negatives aren't meaningful
-- Fraud detection, anomaly detection
-
-#### ROC-AUC vs F1
-
-| Aspect | ROC-AUC | F1-Score |
-|--------|---------|----------|
-| **Threshold** | Threshold-independent | Threshold-dependent |
-| **Imbalanced data** | Can be misleading | Better for imbalanced |
-| **What it measures** | Ranking ability | Precision-recall balance |
-| **Uses TN** | Yes (in FPR) | No |
-| **Best for** | Model comparison, ranking | Specific threshold, imbalanced data |
-
-When to Use What: decision Guide
-
-| Scenario | Recommended Metric |
-|----------|-------------------|
-| Balanced classes, equal costs | Accuracy, ROC-AUC |
-| Imbalanced, positive class matters | PR-AUC, F1 |
-| FP costly (spam filter) | Precision, F0.5 |
-| FN costly (cancer screening) | Recall, F2 |
-| Model comparison, ranking ability | ROC-AUC |
-| Threshold-specific performance | F1 at threshold |
+Подробнее: [лекция по классификации](lecture_02_vol_02_classification.md), [калибровка](https://scikit-learn.org/stable/modules/calibration.html), [настройка порога](https://scikit-learn.org/stable/modules/classification_threshold.html).
 
 ---
 
-Drawbacks of ROC-AUC: it does not account for the costs of Type I and Type II errors. Instead, one should use cost-sensitive precision or cost-sensitive recall.
-
-* Accuracy: Balanced classes, equal costs
-* Precision Minimize false positives (spam filter, drug approval)
-* Recall: Minimize false negatives (cancer screening, fraud detection)
-* F1: Balance precision and recall, imbalanced data
-* Macro F1: Multi-class, treat all classes equally
-* Micro F1: Multi-class, weight by class frequency
-
-**ROC-AUC:** 
-- Model comparison
-- When you care about ranking/probability
-- Balanced datasets
-
-**PR-AUC (Precision-Recall AUC):**
-- Highly imbalanced datasets (positive < 10%)
-- When true negatives are not meaningful
 
 ## Q12 — Handling Class Imbalance
 
-Methods:
-1. Resampling:
-   - SMOTE (oversampling minority)
-   - Random undersampling majority
+**Question:** A rare-event model has poor useful recall. What should you check before oversampling?
 
-2. Class Weights:
-   - Penalize minority class errors more
-   - Most sklearn classifiers support `class_weight='balanced'`
+1. Verify label quality, prevalence, observation window, delayed outcomes and the split. Compare with constant and simple operational baselines.
+2. Inspect per-class errors, probability scores and the current threshold. A threshold of 0.5 is not automatically appropriate or inappropriate just because the class is rare.
+3. Specify FP/FN costs, review capacity and the required quality. Tune the decision rule on validation.
+4. Compare class weights, suitable losses and sampling strategies if they solve the diagnosed problem. Changing weights is an intervention in training, not the same operation as changing the decision threshold.
+5. If resampling is used, apply it **only inside each training fold**, never before splitting and never to alter the final test prevalence.
+6. Recheck calibration and decision costs under the real deployment distribution: reweighting/resampling can change the interpretation of the scores.
 
-3. Threshold Adjustment:
-   - Lower threshold to increase recall
-   - Optimize threshold using validation set
+SMOTE and undersampling are tools, not defaults. SMOTE can interpolate across unsuitable neighborhoods or categories; a randomly undersampled majority can discard valuable information. No particular F1 improvement follows from a fixed recipe.
 
-4. Ensemble Methods:
-   - Balanced Random Forest
-   - EasyEnsemble, BalancedBagging
-
-5. Use Appropriate Metrics:
-   - F1-score instead of accuracy
-   - PR-AUC instead of ROC-AUC
-
-Your imbalanced dataset probably doesn't need SMOTE.
-
-Assume a fraud detection model. 99.2% non-fraud. The team had spent two weeks tuning SMOTE variants. Best F1: 0.34.
-
-Ask, "What's your business cost ratio for false positives vs false negatives?"
-
-Here's the playbook before you touch synthetic samples:
-
-→ Set the right loss function — class weights in XGBoost, focal loss for deep models
-→ Tune the threshold; 0.5 is almost never optimal for rare events
-→ Pick a metric that matches the business. PR-AUC beats ROC-AUC for imbalanced problems
-→ Look at per-class precision and recall, not a single number
-
-Same model. Same data. F1 jumped to 0.61. No SMOTE. No new features.
-
-Resampling is a tool, not a default. Most "imbalance problems" are actually loss-function and threshold problems wearing a costume.
-
-**References:**
-- [Confusion Matrix - Wikipedia](https://en.wikipedia.org/wiki/Confusion_matrix)
-- [Receiver Operating Characteristic - Wikipedia](https://en.wikipedia.org/wiki/Receiver_operating_characteristic)
+**Follow-up:** Class weights increased recall at 0.5, but the same unweighted model can reach similar recall by changing its threshold. Compare both across working points and probability quality rather than treating a single threshold as the whole model.
 
 ---
 
@@ -1000,8 +971,8 @@ encoder = OneHotEncoder(handle_unknown='ignore')
 ```
 
 Behavior: Unknown category → all zeros vector
-- Effectively treats as "neutral"
-- Model uses only other features
+- The feature group becomes zero; this is a chosen representation, not inherently “neutral”.
+- With a dropped reference category, an unknown may be indistinguishable from that reference encoding. Check the downstream model and unknown-category rates.
 
 ### 2. Fallback to Most Frequent Category
 
@@ -1059,6 +1030,14 @@ Fallback to parent category if specific subcategory unknown
 - [OneHotEncoder Documentation - sklearn](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html)
 - [Entity Embeddings of Categorical Variables](https://arxiv.org/abs/1604.06737)
 
+### Follow-up: does smoothing prevent target leakage?
+
+**Case:** Compute a category's mean target on the full dataset and smooth it toward the global mean. Is cross-validation now valid?
+
+No. Smoothing reduces variance but does not remove access to held-out labels. Compute the encoding within each training fold; use out-of-fold / cross-fitted encodings for training rows and train-only statistics for validation/test. Time-aware tasks must additionally respect feature availability. The global fallback mean must also come from the applicable training data.
+
+An unknown category has no learned entity embedding just because known categories have them. Use a trained unknown vector, side information, hashing or a defined fallback; a nearest known embedding is not available without a representation for the new entity.
+
 ---
 
 ## Q14 — Gradient Boosting
@@ -1067,7 +1046,9 @@ Fallback to parent category if specific subcategory unknown
 
 The gradient descent update rule is:
 
-$$\theta_{new} = \theta_{old} - \eta \cdot \nabla L(\theta)$$
+$$
+\theta_{new} = \theta_{old} - \eta \cdot \nabla L(\theta)
+$$
 
 Where:
 - $\theta_{new}$ is the updated parameter value
@@ -1078,7 +1059,9 @@ Where:
 Если функция потерь зависит от нескольких параметров $L(\theta_1, \ldots, \theta_n)$ то градиент - это вектор
 
 
-$$\nabla L = \left(\frac{\partial L}{\partial \theta_1}, \frac{\partial L}{\partial \theta_2}, \ldots, \frac{\partial L}{\partial \theta_n}\right)$$
+$$
+\nabla L = \left(\frac{\partial L}{\partial \theta_1}, \frac{\partial L}{\partial \theta_2}, \ldots, \frac{\partial L}{\partial \theta_n}\right)
+$$
 
 Каждая компонента показывает, насколько чувствительна ошибка к изменению конкретного параметра
 
@@ -1086,7 +1069,9 @@ The **gradient** is a mathematical concept that indicates the direction and rate
 
 Now about boosting: core principle - **Sequentially add weak learners**, each correcting errors of previous ensemble, Additive Model Principle
 
-$$F_m(x) = F_{m-1}(x) + \eta \cdot h_m(x)$$
+$$
+F_m(x) = F_{m-1}(x) + \eta \cdot h_m(x)
+$$
 
 Where:
 - $F_m$ = ensemble after m trees
@@ -1099,16 +1084,23 @@ Algorithm
 
 For MSE:
 
-$$F_0(x) = \mathbb{E}[y]$$
+$$
+F_0(x) = \mathbb{E}[y]
+$$
 
 For log-loss:
 
-$$F_0(x) = \log\left(\frac{p}{1 - p}\right), \quad \text{where } p = \mathbb{E}[y]$$
+$$
+F_0(x) = \log\left(\frac{p}{1 - p}\right), \quad \text{where } p = \mathbb{E}[y]
+$$
 
 **2. For m = 1 to M:**
    - **Compute pseudo-residuals:** 
 
-$$r_{im} = -\frac{\partial L(y_i, F(x_i))}{\partial F(x_i)}\bigg|_{F=F_{m-1}}$$
+$$
+r_{im} = -\frac{\partial L(y_i, F(x_i))}{\partial F(x_i)}\bigg|_{F=F_{m-1}}
+$$
+
    
    - Fit tree $h_m$ to residuals $r_{im}$
    - Update: $F_m = F_{m-1} + \eta \cdot h_m$
@@ -1135,11 +1127,13 @@ Pseudo-residual: $r = y - \sigma(F_{m-1}(x))$
 
 #### 1. Learning Rate (Shrinkage)
 
-$$F_m = F_{m-1} + \eta \cdot h_m, \quad 0 < \eta \leq 1$$
+$$
+F_m = F_{m-1} + \eta \cdot h_m, \quad 0 < \eta \leq 1
+$$
 
 Smaller $\eta$:
 - Need more trees
-- Better generalization
+- May improve generalization when paired with a suitable number of trees; not guaranteed
 - **Typical:** 0.01 - 0.3
 
 #### 2. Tree Constraints
@@ -1157,7 +1151,9 @@ Smaller $\eta$:
 
 #### 4. XGBoost Regularization
 
-$$\Omega(h) = \gamma T + \frac{1}{2}\lambda \sum_{j=1}^{T} w_j^2$$
+$$
+\Omega(h) = \gamma T + \frac{1}{2}\lambda \sum_{j=1}^{T} w_j^2
+$$
 
 Where:
 - $T$ = number of leaves, penalizes tree size
@@ -1169,12 +1165,12 @@ Where:
 
 | Aspect | GB | RF |
 |--------|----|----|
-| **Training** | Sequential | Parallel |
-| **Reduces** | Bias | Variance |
+| **Training** | Sequential trees; work within a tree may be parallel | Trees can train separately and in parallel |
+| **Typical mechanism** | Adds flexibility through sequential corrections | Stabilizes unstable trees through averaging |
 | **Base learners** | Shallow trees (3-8) | Deep trees |
 | **Overfitting risk** | Higher | Lower |
-| **Accuracy** | Often better | Good |
-| **Speed** | Slower training | Faster training |
+| **Accuracy** | Must be compared on the task | Must be compared on the task |
+| **Speed** | Depends on data, implementation, hardware and settings | Depends on data, implementation, hardware and settings |
 
 * When to use GB: Maximum accuracy, willing to tune  
 * When to use RF: Quick baseline, less tuning needed
@@ -1193,7 +1189,7 @@ LightGBM:
 - EFB (Exclusive Feature Bundling)
 
 CatBoost:
-- Ordered boosting (prevents leakage)
+- Ordered methods address specific prediction-shift / categorical-statistic issues; they do not prevent arbitrary leakage in the dataset or pipeline
 - Native categorical handling
 - Symmetric trees
 
@@ -1206,11 +1202,15 @@ CatBoost:
 
 **Mathematical Decomposition:**
 
-$$\text{Expected Error} = \text{Bias}^2 + \text{Variance} + \text{Irreducible Error}$$
+$$
+\text{Expected Error} = \text{Bias}^2 + \text{Variance} + \text{Irreducible Error}
+$$
 
 For squared error loss, the expected prediction error decomposes as:
 
-$$\text{EPE}(x) = \underbrace{(f(x) - E[\hat{f}(x)])^2}_{\text{Bias}^2} + \underbrace{E[(\hat{f}(x) - E[\hat{f}(x)])^2]}_{\text{Variance}} + \underbrace{\sigma^2}_{\text{Irreducible}}$$
+$$
+\text{EPE}(x) = \underbrace{(f(x) - E[\hat{f}(x)])^2}_{\text{Bias}^2} + \underbrace{E[(\hat{f}(x) - E[\hat{f}(x)])^2]}_{\text{Variance}} + \underbrace{\sigma^2}_{\text{Irreducible}}
+$$
 
 Where:
 - **Bias²:** Error from **wrong assumptions** (how far average prediction is from the true function).
@@ -1234,7 +1234,7 @@ Where:
 | Simple model     | High | Low      |
 | Complex model    | Low  | High     |
 
-The goal is to find the sweet spot where expected error is minimized. 
+The goal is to minimize expected error. This table is a common heuristic, not a universal monotone law of model complexity; one train/test run does not identify the full bias–variance decomposition.
 
 ### Managing Tradeoff
 
@@ -1254,21 +1254,25 @@ The goal is to find the sweet spot where expected error is minimized.
 
 Train multiple models on bootstrap samples, average predictions
 
-$$\hat{f}_{bag}(x) = \frac{1}{B}\sum_{b=1}^{B} \hat{f}_b(x)$$
+$$
+\hat{f}_{bag}(x) = \frac{1}{B}\sum_{b=1}^{B} \hat{f}_b(x)
+$$
 
 Variance Reduction:
 
-$$\text{Var}(\hat{f}_{bag}) = \rho\sigma^2 + \frac{1-\rho}{B}\sigma^2$$
+$$
+\text{Var}(\hat{f}_{bag}) = \rho\sigma^2 + \frac{1-\rho}{B}\sigma^2
+$$
 
 
-Key Insight: Averaging reduces variance without increasing bias. Works best with high-variance base learners (deep trees).
+Key insight: Averaging can reduce variance when base-model errors are not perfectly correlated. Bootstrap changes the training procedure, so bias is not guaranteed unchanged. Deep, unstable trees are a common use case.
 
 **Random Forest** enhancement:
 - Feature subsampling at each split reduces correlation ρ between trees
-- Typically use √p features for classification, p/3 for regression
-- Further variance reduction compared to plain bagging
+- Tune `max_features`; textbook heuristics are not universal defaults for every library/version
+- May further reduce variance by changing the strength/correlation balance; verify on held-out data
 
-Out-of-Bag (OOB) Error: Each tree is trained on ~63% of data, can validate on remaining ~37% without separate validation set.
+Out-of-bag (OOB): A size-n bootstrap sample contains about 63.2% unique objects for large n. Evaluate each object using only trees that did not include it. Ordinary row-level OOB does not substitute for a future-period or group-held-out test when observations are dependent.
 
 
 #### Boosting (Reduces Bias)
@@ -1286,8 +1290,8 @@ Bias Reduction Mechanism:
 
 
 Key Difference from Bagging:
-- Bagging: Independent models, reduces variance
-- Boosting: Dependent models, reduces bias
+- Bagging: Separately trained models whose errors can remain correlated; averaging often reduces variance.
+- Boosting: Sequentially dependent corrections; both bias and variance depend on capacity, regularization and data.
 
 
 #### Stacking
@@ -1298,12 +1302,14 @@ Architecture:
 - Level-0: Train multiple diverse base models h₁(x), ..., h_K(x)
 - Level-1: Train meta-learner g on Level-0 predictions
 
-$$\hat{y}_{stack} = g(h_1(x), h_2(x), ..., h_K(x))$$
+$$
+\hat{y}_{stack} = g(h_1(x), h_2(x), ..., h_K(x))
+$$
 
 Avoiding Overfitting:
 Use K-Fold cross-validation to generate out-of-fold predictions for meta-learner training.
 
-**Critical:** Never train meta-learner on same predictions used to train base models.
+**Critical:** A training row’s meta-features must be generated by base models that did not fit that row’s target. Respect time/group boundaries and fit preprocessing inside the folds.
 
 Process:
 1. Split training data into K folds
@@ -1311,7 +1317,7 @@ Process:
    - Train on K-1 folds, predict on holdout fold
    - Repeat K times to get out-of-fold predictions for entire training set
 3. Train meta-learner on concatenated out-of-fold predictions
-4. For test data: Average predictions from K base models trained on different folds
+4. At inference, generate base-model features using a defined strategy (fold-model averaging or refitted base models), then pass them to the trained meta-learner. Averaging fold predictions alone is not the final stacking prediction.
 
 Base Model Selection:
 Diverse models (different algorithms, hyperparameters) work best. Common combinations:
@@ -1328,28 +1334,11 @@ Usually simple model (Logistic Regression, Ridge) to avoid overfitting.
 | High-variance base models (deep trees) | Bagging / Random Forest | Variance reduction |
 | High-bias base models (linear, shallow trees) | Boosting | Bias reduction |
 | Diverse model types available | Stacking | Combines different strengths |
-| Maximum accuracy, competition | Gradient Boosting + Stacking | State-of-the-art |
-| Quick baseline, robust | Random Forest | Works out-of-box |
-| Need fast training | Random Forest | Parallelizable |
+| Strong tabular candidate with tuning budget | Gradient Boosting, optionally stacking | Compare against simpler models and serving constraints |
+| First nonlinear tabular baseline | Random Forest | Often useful with modest tuning; still needs validation |
+| Need parallel tree training | Random Forest / bagging | Trees train separately; actual speed depends on workload and implementation |
 
 
-
-### High Bias vs High Variance
-
-**High Bias, Low Variance (Underfitting):**
-- Linear regression on non-linear data
-- Shallow decision trees
-- Strongly regularized models (high λ)
-- Symptom: High train AND test error
-- Solution: Increase model complexity, reduce regularization
-
-**Low Bias, High Variance (Overfitting):**
-- Deep unpruned decision trees
-- KNN with k=1
-- High-degree polynomial regression
-- Neural networks without regularization
-- Symptom: Low train error, high test error
-- Solution: Regularization, more data, reduce complexity
 
 ---
 
@@ -1394,9 +1383,9 @@ Content-Based
 Method: Cosine similarity between item feature vectors
 
 Advantages:
-- No cold start for new users (recommend based on current interaction)
+- Can use the current item or stated preferences, but a completely new user without context still needs a fallback
 - Transparent explanations
-- Stable over time
+- Does not require a user-item interaction history for a new item if useful metadata exist; quality still depends on data and preference changes
 
 Disadvantages:
 - Limited diversity (filter bubble)
@@ -1416,7 +1405,7 @@ $$
 \text{rank} = \frac{p + \frac{z^2}{2n}} {1 + \frac{z^2}{n}} - \frac{z}{1 + \frac{z^2}{n}} \sqrt{\frac{p(1-p)}{n} + \frac{z^2}{4n^2}}
 $$
 
-Simplified form (with $z = 2.32$ for 99% confidence):
+Example form with $z = 2.32$ (approximately a 99% one-sided lower bound):
 
 $$
 \text{rank} = \frac{p + \frac{2.32^2}{2n_{\text{views}}} - 2.32\sqrt{\frac{p(1-p)}{n_{\text{views}}} + \frac{2.32^2}{4n_{\text{views}}^2}}}{1 + \frac{2.32^2}{n_{\text{views}}}}
@@ -1425,7 +1414,7 @@ $$
 Where:
 - **p** — observed action rate (conversions / views)
 - **n_views** — number of views (sample size)
-- **z** — z-score for confidence level (2.32 ≈ 99%)
+- **z** — chosen normal quantile: about 2.326 for a one-sided 99% lower bound; a two-sided 99% interval uses about 2.576
 
 > **Note**: For a small number of views, this is better than ranking by raw CR (conversion rate), as it accounts for uncertainty.
 
@@ -1441,7 +1430,9 @@ Cons: Doesn't scale, sensitive to sparsity
 
 #### Matrix Factorization
 
-$$\hat{r}_{ui} = \mu + b_u + b_i + \mathbf{p}_u^T \mathbf{q}_i$$
+$$
+\hat{r}_{ui} = \mu + b_u + b_i + \mathbf{p}_u^T \mathbf{q}_i
+$$
 
 Where:
 - μ = global mean
@@ -1449,7 +1440,10 @@ Where:
 - p_u, q_i = latent factors
 
 Loss:
-$$\min \sum_{(u,i) \in observed} (r_{ui} - \hat{r}_{ui})^2 + \lambda(||p_u||^2 + ||q_i||^2)$$
+
+$$
+\min \sum_{(u,i) \in observed} (r_{ui} - \hat{r}_{ui})^2 + \lambda(||p_u||^2 + ||q_i||^2)
+$$
 
 #### ALS (Alternating Least Squares)
 
@@ -1504,7 +1498,9 @@ Where:
 
 Objective: Maximize pairwise ranking
 
-$$\max \sum_{(u,i,j)} \log \sigma(\hat{r}_{ui} - \hat{r}_{uj})$$
+$$
+\max \sum_{(u,i,j)} \log \sigma(\hat{r}_{ui} - \hat{r}_{uj})
+$$
 
 Where:
 - i = positive item (observed)
@@ -1514,7 +1510,7 @@ Better for implicit feedback (clicks, views)
 
 BPR (Bayesian Personalized Ranking)
 
-Ranking optimization that involves **pairs of items**. Optimizes **ROC AUC**.
+Ranking optimization over **pairs of items** using a pairwise log-sigmoid surrogate. It is related to pairwise ranking / AUC, but does not directly optimize the nondifferentiable empirical AUC; sampling and regularization matter.
 
 
 Training Dataset
@@ -1603,34 +1599,41 @@ Advantages:
 
 **Precision@K**, interpretation: Of K recommendations, what fraction user liked?
 
-$$\text{Precision@K} = \frac{|\text{Relevant items in top K}|}{K}$$
+$$
+\text{Precision@K} = \frac{|\text{Relevant items in top K}|}{K}
+$$
 
 **Recall@K**, Interpretation: Of all items user would like, what fraction did we recommend?
 
-$$\text{Recall@K} = \frac{|\text{Relevant items in top K}|}{|\text{All relevant items}|}$$
+$$
+\text{Recall@K} = \frac{|\text{Relevant items in top K}|}{|\text{All relevant items}|}
+$$
 
 **MAP (Mean Average Precision)**, Interpretation: Rewards placing relevant items higher in ranking
-$$\text{MAP@K} = \frac{1}{|U|}\sum_{u=1}^{|U|} \frac{1}{\min(m_u, K)} \sum_{k=1}^{K} P(k) \cdot \text{rel}(k)$$
+
+$$
+\text{MAP@K} = \frac{1}{|U|}\sum_{u=1}^{|U|} \frac{1}{\min(m_u, K)} \sum_{k=1}^{K} P(k) \cdot \text{rel}(k)
+$$
 
 Where $P(k)$ = precision at position k, rel(k) = 1 if item k is relevant
 
 **NDCG (Normalized Discounted Cumulative Gain)**, Normalized to [0, 1], Penalizes relevant items appearing lower
-$$\text{DCG@K} = \sum_{i=1}^{K} \frac{2^{rel_i} - 1}{\log_2(i+1)}$$
 
-$$\text{NDCG@K} = \frac{DCG@K}{IDCG@K}$$
+$$
+\text{DCG@K} = \sum_{i=1}^{K} \frac{2^{rel_i} - 1}{\log_2(i+1)}
+$$
+
+$$
+\text{NDCG@K} = \frac{DCG@K}{IDCG@K}
+$$
 
 Where IDCG = ideal DCG (perfect ranking)
 
-### Cold Start Problem
+### Follow-up: what is a negative?
 
-New User:
-- Popularity-based recommendations
-- Ask for initial preferences
-- Use demographic info
+No interaction is not a confirmed dislike: the user may never have seen the item. Distinguish shown-but-skipped, explicit dislike and unobserved pairs. Negative sampling defines a training comparison distribution and can substantially alter offline ranking metrics.
 
-New Item:
-- Content-based features
-- Expert curation
+**Case:** The same model improves NDCG when evaluated with 100 random negatives instead of the full catalog. Does this prove a better recommender? No: the candidate set and task difficulty changed. Keep evaluation protocols comparable and discuss exposure/selection bias.
 
 ---
 
@@ -1696,17 +1699,23 @@ Document as word frequency vector
 
 ### TF-IDF
 
-$$\text{TF-IDF}(t, d, D) = \text{TF}(t, d) \times \text{IDF}(t, D)$$
+$$
+\text{TF-IDF}(t, d, D) = \text{TF}(t, d) \times \text{IDF}(t, D)
+$$
 
 Term Frequency:
 
-$$\text{TF}(t, d) = \frac{f_{t,d}}{\sum_{t'} f_{t',d}}$$
+$$
+\text{TF}(t, d) = \frac{f_{t,d}}{\sum_{t'} f_{t',d}}
+$$
 
 Or: $\text{TF} = \log(1 + f_{t,d})$ (sublinear)
 
 Inverse Document Frequency:
 
-$$\text{IDF}(t) = \log\frac{N}{|\{d : t \in d\}|}$$
+$$
+\text{IDF}(t) = \log\frac{N}{|\{d : t \in d\}|}
+$$
 
 Intuition: High TF-IDF = term frequent in doc, rare in corpus
 
@@ -1714,7 +1723,9 @@ Intuition: High TF-IDF = term frequent in doc, rare in corpus
 
 Formula:
 
-$$\text{score}(D, Q) = \sum_{i=1}^{n} \text{IDF}(q_i) \cdot \frac{f(q_i, D) \cdot (k_1 + 1)}{f(q_i, D) + k_1 \cdot (1 - b + b \cdot \frac{|D|}{\text{avgdl}})}$$
+$$
+\text{score}(D, Q) = \sum_{i=1}^{n} \text{IDF}(q_i) \cdot \frac{f(q_i, D) \cdot (k_1 + 1)}{f(q_i, D) + k_1 \cdot (1 - b + b \cdot \frac{|D|}{\text{avgdl}})}
+$$
 
 Where:
 - $q_i$: Query terms
@@ -1726,7 +1737,9 @@ Where:
 
 **IDF Component:**
 
-$$\text{IDF}(q_i) = \log \frac{N - n(q_i) + 0.5}{n(q_i) + 0.5}$$
+$$
+\text{IDF}(q_i) = \log \frac{N - n(q_i) + 0.5}{n(q_i) + 0.5}
+$$
 
 Where N = total documents, $n(q_i)$ = documents containing $q_i$
 
@@ -1772,8 +1785,8 @@ Optimizations:
 - Caching: Frequently queried terms
 
 **Complexity:**  
-- Without index: $\( O(N \times M) \)$, where $\( N \)$ = number of documents and $\( M \)$ = average document length  
-- With index: $\( O(K \times L) \)$, where $\( K \)$ = number of query terms and $\( L \)$ = average posting list length
+- Without index: $O(N \times M)$, where $N$ = number of documents and $M$ = average document length
+- With index: $O(K \times L)$, where $K$ = number of query terms and $L$ = average posting list length
 
 ---
 
@@ -1817,7 +1830,7 @@ Training Tricks:
 | Method | Pros | Cons |
 |---|---|---|
 | **Word2vec** (e.g. CBOW, Skip-gram) | Very simple, yet powerful; Intuitive embeddings | Word order does not count; Embeddings not context aware |
-| **Recurrent Neural Networks** (e.g. traditional RNN, LSTM) | Word order matters; State-of-the-art results | Vanishing gradient problem; Slow computations |
+| **Recurrent Neural Networks** (e.g. RNN, LSTM) | Sequence order matters; useful for some sequence tasks | Sequential computation; optimization depends on architecture |
 
 ---
 
@@ -1830,7 +1843,7 @@ Map text/images/other data to dense vectors that capture semantic similarity
 Text Embeddings:
 - Sentence-BERT (SBERT): Siamese architecture, fine-tuned BERT for sentence similarity
 - OpenAI embeddings: text-embedding-ada-002, text-embedding-3-small/large
-- BGE (BAAI General Embedding): State-of-the-art open-source
+- BGE (BAAI General Embedding): an example family of open embedding models; compare the specific checkpoint on the task
 - E5: Multilingual, instruction-tuned
 - Cohere embed-v3: Supports task-specific compression
 
@@ -1845,7 +1858,9 @@ Contrastive Learning: Loss encourages similar pairs close, dissimilar pairs far
 
 Triplet Loss:
 
-$$L = \max(0, d(a, p) - d(a, n) + \text{margin})$$
+$$
+L = \max(0, d(a, p) - d(a, n) + \text{margin})
+$$
 
 Where a=anchor, p=positive, n=negative
 
@@ -1853,74 +1868,39 @@ Hard Negative Mining: Select challenging negatives (high similarity but irreleva
 
 Domain Adaptation: Fine-tune on domain-specific data (medical, legal, scientific)
 
-### Distance Metrics
+### Distance metrics and high-dimensional geometry
 
-#### Low dimensions
+Euclidean distance:
 
-Euclidean Distance
+$$
+d_2(a,b)=\sqrt{\sum_j(a_j-b_j)^2}.
+$$
 
-$$d_2(\mathbf{A}, \mathbf{B}) = ||\mathbf{A} - \mathbf{B}||_2 = \sqrt{\sum_{i=1}^{n}(A_i - B_i)^2}$$
+Cosine similarity for nonzero vectors:
 
-Use when:
-- Magnitude is meaningful
-- Low-dimensional data (images)
-- Clustering (K-means uses Euclidean)
+$$
+\operatorname{cos}(a,b)=\frac{a^\top b}{\|a\|_2\|b\|_2}.
+$$
 
-Manhattan Distance (L1)
+Cosine lies in [−1, 1]; nonnegative values are not guaranteed for arbitrary semantic embeddings. Inner product equals cosine only after appropriate normalization. Magnitude may carry a useful signal for models trained for maximum inner product, so normalizing is a modeling choice, not always a harmless optimization.
 
-For the grid-like spaces, robust to outliers
+For unit vectors:
 
-$$d_1(\mathbf{A}, \mathbf{B}) = \sum_{i=1}^{n} |A_i - B_i|$$
+$$
+\|a-b\|_2^2=2-2a^\top b=2-2\operatorname{cos}(a,b).
+$$
 
+Thus cosine, inner product and negative squared L2 give the same ranking on unit vectors, apart from numerical effects and ties. ANN implementations may still differ in approximation behavior.
 
-#### Cosine Similarity
+Distance concentration can occur for particular high-dimensional distributions, sample sizes and noise structures. It is not a theorem that every 100-dimensional embedding becomes useless or that cosine automatically fixes the problem. Learned structure, intrinsic dimensionality, normalization and the retrieval objective matter.
 
-$$\text{sim}(i, j) = \frac{\mathbf{v}_i \cdot \mathbf{v}_j}{||\mathbf{v}_i|| \cdot ||\mathbf{v}_j||}$$
+PCA can remove low-variance directions, including possibly useful signals; UMAP/t-SNE visualizations are not evidence that neighborhoods remain suitable for production retrieval. Measure task relevance and exact-search / ANN quality rather than choosing by a 2D picture.
 
-Range: [-1, 1] (typically [0, 1] for semantic embeddings)
+### Follow-up: replace the query encoder only?
 
-Cosine Distance: $d = 1 - \text{cosine similarity}$
+**Case:** Deploy a new embedding model for queries but retain the old document index. Both produce 768-dimensional vectors. Is this compatible?
 
-Use when:
-- Direction matters more than magnitude
-- Text similarity (embeddings usually normalized)
-
-Dot Product - same but without norms. Use when fast computation needed, vectors are normalized
-
-$$\mathbf{A} \cdot \mathbf{B} = \sum_{i=1}^{n} A_i B_i$$
-
-#### Curse of Dimensionality
-
-In high dimensions, geometry breaks down. The main effect, distances converge, the max and min distances become nearly equal. The Nearest Neighbor in 100D Almost as Far as the Farthest Neighbor.
-
-$$\lim_{d \to \infty} \frac{d_{\max} - d_{\min}}{d_{\min}} \to 0$$
-
-Intuition: in a 1000-dimensional space, all points are roughly the same distance from each other. L2 distances stop being informative.
-
-This phenomenon occurs due to data sparsity in high-dimensional space, which makes all distances converge (i.e., the difference between the closest and farthest neighbors becomes negligible). In low dimensions (e.g., 2D or 3D), points are **relatively close together**, and the nearest neighbor is **much closer** than the farthest. However, in **high-dimensional space (100D+), data spreads out exponentially**, causing all distances to become similar.
-
-Key reason:
-- As dimensions increase, data points occupy a larger volume.
-- The average distance between points increases.
-- The difference between the closest and farthest points becomes **negligibly small** relative to the total distance range.
-
-
-Why cosine handles high dimensionality better:
-
-- Cosine measures the **angle**, not the absolute distance:
-- Angular differences between vectors are preserved even in high dimensions (curse of dimensionality)
-- L2 suffers more because as $d$ grows, noise accumulates across all dimensions:
-
-$$\|\mathbf{a} - \mathbf{b}\|_2 = \sqrt{\sum_{i=1}^{d}(a_i - b_i)^2}$$
-
-Each additional dimension adds another $(a_i - b_i)^2$ term — mostly noise — pushing all pairwise distances together.
-
-Practical implications:
-
-- More data is needed as the number of features grows — the volume of the space scales as $O(r^d)$, so the data needed to fill it grows exponentially
-- KNN becomes ineffective in high $d$ since the nearest and farthest neighbors are almost equidistant
-- PCA, UMAP, t-SNE are dimensionality reduction tools designed specifically to fight this
-
+Not necessarily. Equal dimension does not imply a shared space. Unless the model pair was explicitly trained to be compatible, re-embed documents, version encoders/preprocessing/index together and evaluate before switching. See also Q37 for isolating ANN approximation from embedding relevance.
 
 ### Vector Databases
 
@@ -2046,15 +2026,15 @@ Guidelines:
 #### 1. Dimensionality Reduction
 
 * PCA (Principal Component Analysis): Project to top-k principal components
-* UMAP/t-SNE: Non-linear reduction, preserves local structure. Use case: Reduce 1536d to 384d with <5% quality loss
+* UMAP/t-SNE: primarily exploratory neighborhood visualizations; out-of-sample behavior and retrieval quality require separate validation. No universal percentage of preserved quality follows from the target dimension.
 
 
 #### 2. Quantization
 
 Scalar quantization: INT8/INT4 instead of FP32:
 - 2-8× size reduction
-- Faster computation (INT ops)
-- Minimal quality loss (<1% typically)
+- Computation may be faster with appropriate kernels; dequantization and unsupported operations can offset gains.
+- Quality change depends on vectors, calibration, index and retrieval task; measure rather than assuming <1%.
 
 Process:
 1. Find min/max of each dimension
@@ -2063,13 +2043,13 @@ Process:
 
 Compression: 4× smaller  
 Speed: Faster dot products (int8 SIMD)  
-Quality: Minimal degradation (<1% recall drop)
+Quality: Evaluate against the uncompressed baseline; there is no universal bound on recall degradation.
 
 Methods:
 - Post-training quantization (PTQ)
 - Quantization-aware training (QAT)
 
-Tools: GPTQ, GGUF, bitsandbytes
+Separate embedding-index compression (for example, Faiss scalar/PQ encodings) from LLM-weight quantization tooling such as GPTQ or bitsandbytes. GGUF is a file format, not a quantization algorithm.
 
 **Product Quantization (PQ):**
 1. Split d-dimensional vector into m subvectors
@@ -2077,7 +2057,7 @@ Tools: GPTQ, GGUF, bitsandbytes
 3. Store centroid IDs (1 byte each)
 
 Compression: d × 4 bytes → m bytes (often 32× or 64×)  
-Quality: Moderate degradation (2-5% recall drop)
+Quality: depends on codebooks, number of subquantizers, data and search settings; measure recall/relevance at the chosen memory budget.
 
 **Binary Quantization:**
 Convert to binary: x_i → sign(x_i)
@@ -2131,10 +2111,13 @@ Is your model based on a standard architecture like LLaMA, or is it a custom arc
 
 ## Q20 — Transformers
 
-[transformer deep dive](cracking_llm_basics.md)
+[transformer deep dive](cracking_llm/cracking_llm_basics.md)
 
 Recurrent Neural Networks:
-$$h_t = f(W_{hh} h_{t-1} + W_{xh} x_t)$$
+
+$$
+h_t = f(W_{hh} h_{t-1} + W_{xh} x_t)
+$$
 
 Problems:
 
@@ -2164,9 +2147,11 @@ Key Innovation: Replace recurrence with self-attention
 
 - Parallel processing (all positions at once)
 - Direct connections (attention)
-- No gradient vanishing
+- Residual connections and normalization can help optimization; vanishing/exploding gradients are not categorically impossible
 - Longer context (1000s of tokens)
-- Training time O(1) per layer (O(log T) total with depth)
+- Training positions within a layer can be processed in parallel; this is not O(1) total compute.
+- Standard dense self-attention costs roughly $O(T^2d)$ arithmetic, plus projections / feed-forward work often of order $O(Td^2)$. A naive implementation stores an attention matrix quadratic in T; memory-efficient kernels change memory traffic without turning the computation into constant time.
+- Autoregressive generation remains sequential across output tokens; distinguish training, prefill and decode.
 
 ---
 
@@ -2174,7 +2159,9 @@ Key Innovation: Replace recurrence with self-attention
 
 Temperature Formula
 
-$$P(x_i) = \frac{e^{z_i/\tau}}{\sum_j e^{z_j/\tau}}$$
+$$
+P(x_i) = \frac{e^{z_i/\tau}}{\sum_j e^{z_j/\tau}}
+$$
 
 Where:
 - z_i = logits from model
@@ -2196,7 +2183,7 @@ Effect of Temperature
 - More creative
 
 τ → 0:
-- Greedy decoding (always pick highest probability)
+- Mass concentrates on maximum-logit tokens; a unique maximum gives the greedy limit. Exact τ = 0 is not valid in the division formula: serving APIs that accept it typically implement a special greedy mode.
 
 ### Practical Guidelines
 
@@ -2210,8 +2197,6 @@ Effect of Temperature
 ### Other Sampling Methods
 
 Top-k: Keep only k most probable tokens
-
-Keep only k most probable tokens, redistribute probability
 
 Algorithm:
 1. Sort tokens by probability
@@ -2227,8 +2212,6 @@ Typical k: 40-50
 Top-p (Nucleus): Keep smallest set with cumulative probability ≥ p
 - Adaptive to model confidence
 - Typical p = 0.9-0.95
-
-Keep smallest set of tokens with cumulative probability ≥ p
 
 Algorithm:
 1. Sort tokens by probability
@@ -2276,7 +2259,9 @@ Evolution
 
 Encode position by rotating Q/K (query/key) vectors
 
-$$f_q(x_m, m) = (W_q x_m) e^{im\theta}$$
+$$
+f_q(x_m, m) = (W_q x_m) e^{im\theta}
+$$
 
 Where θ is frequency parameter
 
@@ -2326,7 +2311,9 @@ YaRN (Yet another RoPE extensioN method):
 
 Add linear bias to attention scores based on distance
 
-$$\text{softmax}(QK^T + m \cdot [-1, -2, -3, ..., -n])$$
+$$
+\text{softmax}(QK^T + m \cdot [-1, -2, -3, ..., -n])
+$$
 
 Benefits:
 - No positional embeddings needed
@@ -2363,7 +2350,7 @@ Final vocab: ["low", "er", " ", "wide", "st"]
 Advantages:
 - Balances vocab size and sequence length
 - Handles rare words (breaks into subwords)
-- No unknown tokens (can always fall back to characters)
+- Unknown-token behavior depends on the base vocabulary, normalization and byte/character fallback; not every BPE implementation covers every possible input.
 
 Used by: GPT-2, GPT-3, RoBERTa
 
@@ -2381,7 +2368,7 @@ Algorithms: BPE or Unigram LM
 
 Benefits:
 - Works for languages without spaces (Chinese, Japanese)
-- Reversible
+- Reconstruction depends on tokenizer normalization and whitespace settings; do not assume arbitrary preprocessing is reversible.
 
 Used by: T5, XLNet, multilingual models
 
@@ -2398,11 +2385,15 @@ Architecture: Decoder-only with causal (masked) attention
 
 Attention: Can only attend to previous tokens
 
-$$\text{Mask}_{ij} = \begin{cases} 0 & \text{if } i \geq j \\ -\infty & \text{if } i < j \end{cases}$$
+$$
+\text{Mask}_{ij} = \begin{cases} 0 & \text{if } i \geq j \\ -\infty & \text{if } i < j \end{cases}
+$$
 
 Training Objective:
 
-$$\mathcal{L} = -\sum_{t=1}^{T} \log P(x_t | x_1, ..., x_{t-1})$$
+$$
+\mathcal{L} = -\sum_{t=1}^{T} \log P(x_t | x_1, ..., x_{t-1})
+$$
 
 Next token prediction (left-to-right language modeling)
 
@@ -2430,7 +2421,9 @@ Training Objectives:
    - Randomly mask 15% of tokens
    - Predict masked tokens using context
 
-$$\mathcal{L}_{MLM} = -\sum_{i \in \text{masked}} \log P(x_i | x_{\backslash i})$$
+$$
+\mathcal{L}_{MLM} = -\sum_{i \in \text{masked}} \log P(x_i | x_{\backslash i})
+$$
 
 2. NSP (Next Sentence Prediction):
    - Given [CLS] Sent_A [SEP] Sent_B [SEP]
@@ -2488,7 +2481,9 @@ Data:
 
 Loss: Next-token prediction
 
-$$\mathcal{L} = -\sum_{t=1}^{T} \log P_\theta(x_t \mid x_{< t})$$
+$$
+\mathcal{L} = -\sum_{t=1}^{T} \log P_\theta(x_t \mid x_{< t})
+$$
 
 Result: Base model with strong language understanding but:
 - Doesn't follow instructions
@@ -2513,7 +2508,9 @@ Data Format: (instruction, output) pairs
 
 Training: Standard supervised learning
 
-$$\mathcal{L}_{SFT} = -\sum_i \log P_\theta(y_i | x_i)$$
+$$
+\mathcal{L}_{SFT} = -\sum_i \log P_\theta(y_i | x_i)
+$$
 
 Dataset Size: 10K - 100K high-quality examples
 
@@ -2556,11 +2553,15 @@ Data Collection:
 
 Model: Classifier predicting human preference
 
-$$r_\theta(x, y) \in \mathbb{R}$$
+$$
+r_\theta(x, y) \in \mathbb{R}
+$$
 
 Loss (Bradley-Terry Model):
 
-$$\mathcal{L}_r = -E \left[\log \sigma(r_\theta(x, y_w) - r_\theta(x, y_l))\right]$$
+$$
+\mathcal{L}_r = -E \left[\log \sigma(r_\theta(x, y_w) - r_\theta(x, y_l))\right]
+$$
 
 Where y_w = preferred (winner), y_l = less preferred (loser)
 
@@ -2570,7 +2571,9 @@ Intuition: Reward model scores how "good" a response is
 
 Objective:
 
-$$\mathcal{J}(\theta) = E_{x \sim D, y \sim \pi_\theta}[r_\theta(x, y)] - \beta \cdot D_{KL}(\pi_\theta || \pi_{ref})$$
+$$
+\mathcal{J}(\theta) = E_{x \sim D, y \sim \pi_\theta}[r_\theta(x, y)] - \beta \cdot D_{KL}(\pi_\theta || \pi_{ref})
+$$
 
 Components:
 - Reward: r_θ(x, y) from reward model
@@ -2596,14 +2599,22 @@ Key Insight: Bypass reward model, optimize policy directly from preferences
 
 Mathematical Foundation:
 The optimal policy for RLHF satisfies:
-$$\pi^*(y|x) \propto \pi_{ref}(y|x) \exp\left(\frac{r(x,y)}{\beta}\right)$$
+
+$$
+\pi^*(y|x) \propto \pi_{ref}(y|x) \exp\left(\frac{r(x,y)}{\beta}\right)
+$$
 
 Rearranging:
-$$r(x,y) = \beta \log \frac{\pi^*(y|x)}{\pi_{ref}(y|x)} + \beta \log Z(x)$$
+
+$$
+r(x,y) = \beta \log \frac{\pi^*(y|x)}{\pi_{ref}(y|x)} + \beta \log Z(x)
+$$
 
 DPO Loss:
 
-$$\mathcal{L}_{DPO} = -E\left[\log \sigma\left(\beta \log \frac{\pi_\theta(y_w|x)}{\pi_{ref}(y_w|x)} - \beta \log \frac{\pi_\theta(y_l|x)}{\pi_{ref}(y_l|x)}\right)\right]$$
+$$
+\mathcal{L}_{DPO} = -E\left[\log \sigma\left(\beta \log \frac{\pi_\theta(y_w|x)}{\pi_{ref}(y_w|x)} - \beta \log \frac{\pi_\theta(y_l|x)}{\pi_{ref}(y_l|x)}\right)\right]
+$$
 
 Intuition:
 - Increase probability of preferred response y_w
@@ -2649,17 +2660,17 @@ References:
 
 ## Q26 — LLM Inference Optimization
 
-[deep dive to llm ops](cracking_llm_ops.md)
+[deep dive into LLM operations](cracking_llm/cracking_llm_ops.md)
 
-#### Pruning
+### Pruning
 
 Remove low-magnitude weights:
 - Structured pruning (entire layers/channels)
 - Unstructured pruning (individual weights)
 
-Result: Smaller, faster model
+Potential result: fewer effective parameters; speedups require hardware and kernels that can exploit the resulting structure/sparsity.
 
-#### 4. Batching
+### Batching
 
 Process multiple requests simultaneously:
 - Amortize fixed costs
@@ -2667,18 +2678,18 @@ Process multiple requests simultaneously:
 
 Dynamic batching: Group requests on-the-fly
 
-#### 5. KV-Cache
+### KV-Cache
 
 Cache key/value tensors for autoregressive models:
 - Avoid recomputing for already-generated tokens
 - Essential for efficient generation
 - Memory vs computation
 
-#### 6. Flash Attention
+### Flash Attention
 
 Optimized CUDA kernels:
 - Memory-efficient exact attention
-- 2-4× speedup
+- Speedup depends on sequence lengths, dtype, hardware and baseline
 - No approximation
 
 Sparse Attention: Attend to subset of tokens  
@@ -2686,13 +2697,13 @@ Sliding Window: Local + global attention
 Landmark Tokens: Special tokens summarize context
 
 
-#### 7. Speculative Decoding
+### Speculative Decoding
 
 Use small model to propose, large model to verify:
 - Generate multiple tokens in parallel
-- 2-3× speedup for autoregressive generation
+- Benefit depends on draft acceptance, verification cost and serving load; benchmark rather than assuming a fixed multiplier
 
-#### 8. Hardware Optimization
+### Hardware Optimization
 
 Specialized accelerators:
 - TensorRT (NVIDIA)
@@ -2702,7 +2713,7 @@ Specialized accelerators:
 
 ### Models optimization
 
-Model Formats for Local Inference: GGUF, Ollama, vLLM)
+Distinguish artifacts from runtimes: GGUF is a model-file format; Ollama and vLLM are software for running/serving models. Check the artifact format and quantization supported by the selected runtime.
 
 Optimization Stack: **Model → Quantization → Compilation → Hardware**
 
@@ -2713,7 +2724,7 @@ Optimization Stack: **Model → Quantization → Compilation → Hardware**
 4. Use dynamic batching
 5. Enable KV-cache
 
-Result: 10-100× speedup vs naive implementation
+Measure the result against a defined baseline at equal quality, input/output lengths and concurrency. These techniques do not provide a universal 10–100× speedup.
 
 **References:**
 - [Flash Attention Paper](https://arxiv.org/abs/2205.14135)
@@ -2752,7 +2763,7 @@ Common Pitfalls:
 Best Practices:
 - Document data sources, collection methods, and timestamps
 - Implement data versioning (DVC, MLflow)
-- Ensure balanced class representation for classification tasks
+- Preserve or explicitly account for the deployment prevalence; do not rebalance validation/test merely to make classes equal
 
 EDA is the process of analyzing datasets to summarize main characteristics, detect anomalies, discover patterns, and form hypotheses using statistical and visual methods.
 
@@ -2930,7 +2941,9 @@ Sentence Window
 
 Retrieve top-20 to top-100. Methods: Dense (Semantic), Sparse (BM25 for exact keyword matching) or hybrid: Combine both with weighted sum
 
-$$\text{score}_{hybrid} = \alpha \cdot \text{score}_{dense} + (1-\alpha) \cdot \text{score}_{sparse}$$
+$$
+\text{score}_{hybrid} = \alpha \cdot \text{score}_{dense} + (1-\alpha) \cdot \text{score}_{sparse}
+$$
 
 **Pre-generation filtering:**
 - Remove low-relevance documents (score threshold)
@@ -2971,14 +2984,14 @@ Answer based on context. If not in context, say "I don't know."
 - Require model to cite sources
 - Verify citations support claims
 
-2. Confidence Scores:
-- Ask for confidence (0-10)
-- If low, abstain or flag for human review
+2. Evidence and abstention:
+- Validate source support, answerability and uncertainty signals on labeled examples.
+- A self-reported confidence of 0–10 is not a calibrated probability and is insufficient as the sole abstention rule.
 
 3. Self-Consistency:
 - Generate multiple responses (different temperature/sampling)
 - Check agreement
-If responses differ significantly, flag uncertainty
+If responses differ significantly, investigate uncertainty. Agreement can still repeat the same hallucination; it is not proof of factuality.
 
 4. Entailment Checking:
 - Use NLI model to verify claims
@@ -3013,21 +3026,29 @@ Example:
   - "Apple revenue 2020-2023"
   - "Microsoft revenue 2020-2023"
 
+### Follow-up: retrieval succeeded, answer failed
+
+**Case:** The correct document appears in the retrieved top-K, but the final answer is wrong. What next?
+
+Check whether reranking retained the relevant passage, whether truncation removed it, whether the prompt preserved its meaning, whether the document is current and whether the answer’s claims are supported. Retrieval success is not equivalent to generation success; evaluate stages separately.
+
+---
+
 ## Q29 — Agents, Tool Calling, ReAct
 
 ### What Are Agents?
 
-[complex agents intro](slides/lecture_08_ai_agents.md)
+[agents: architecture, tools and execution](lecture_08_vol_02_ai_agents.md)
 
 **Definition:** Autonomous systems that can:
 1. **Perceive:** Understand environment/task
 2. **Reason:** Plan and decide actions
 3. **Act:** Execute using tools/APIs
-4. **Learn:** Adapt from feedback
+4. **Observe:** Use tool outcomes to choose subsequent actions; online weight updates or learning from feedback are optional, not definitional
 
 **Contrast with Standard LLMs:**
-- LLM: Stateless, single-turn, passive
-- Agent: Stateful, multi-turn, proactive
+- A language model generates outputs from its supplied context; an application may keep conversation state.
+- An agent system adds an execution/control loop around model and tool calls. Multi-turn interaction alone does not establish autonomy or learning.
 
 ### Agentic RAG vs Regular RAG
 
@@ -3050,6 +3071,8 @@ Retrieved context → Evaluate quality
 **Actor:** Generates retrieval queries  
 **Critic:** Evaluates retrieved document quality
 
+Here these names describe a retrieval-and-evaluation workflow, not necessarily an actor–critic reinforcement-learning algorithm.
+
 Iterative refinement:
 1. Actor retrieves documents
 2. Critic scores relevance
@@ -3060,14 +3083,14 @@ Key difference from basic RAG:
 - Decides WHEN to retrieve (dynamic pipeline)
 - Uses MULTIPLE tools (search, calculate, API calls)
 - ITERATIVE refinement (self-correcting)
-- EXPLICIT reasoning traces (chain-of-thought)
+- Explicit control flow and observable tool results; publishing a model’s private reasoning trace is not a requirement
 
 | Aspect | Regular RAG | Agentic RAG |
 |--------|-------------|-------------|
 | **Pipeline** | Fixed (retrieve → generate) | Dynamic (decides when to retrieve) |
 | **Retrieval** | Single-shot | Multi-step, iterative |
-| **Tools** | None | Multiple tools (search, calculate, API calls) |
-| **Reasoning** | Implicit | Explicit (chain-of-thought) |
+| **Tools** | Retrieval calls are scheduled by a fixed pipeline | A controller can select tools and subsequent steps |
+| **Control flow** | Predefined steps | Dynamically chosen steps with observable actions/results |
 | **Adaptation** | None | Self-corrects based on results |
 
 Example:
@@ -3154,7 +3177,7 @@ Answer: The capital is Paris, which is also where the 2024 Olympics were held.
 - **Transparent:** Can trace reasoning
 - **Debuggable:** See where agent fails
 - **Self-correcting:** Can revise plan based on observations
-- **Works out-of-box:** No fine-tuning needed for strong models
+- May work without weight fine-tuning, but tool correctness, prompts, permissions and task success still require evaluation
 
 **Implementation:** Prompt engineering—provide examples in few-shot format
 
@@ -3330,6 +3353,219 @@ crew = Crew(agents=[researcher, writer], process="sequential")
 
 ---
 
+<a id="practical-cases"></a>
+
+## Q30 — Validation Gap: Is It Leakage?
+
+**Ситуация:** прогнозируем повторную покупку. При случайном разделении ROC-AUC = 0.92, при временном — 0.68. Это обязательно утечка? Как проверить?
+
+**Короткий ответ:** нет. Изменились условия оценки: возможны утечка, повторные объекты, сдвиг данных или более трудная задача прогноза будущего. Разница метрик не устанавливает причину.
+
+**Порядок проверки:**
+
+1. Уточнить применение: будущие покупки известных клиентов или покупки совершенно новых клиентов? Для этих вопросов могут понадобиться разные временные и групповые ограничения.
+2. Проверить момент доступности признаков. «Продажи за месяц» не должны включать дни после момента прогноза; учитывать задержки обновления источников.
+3. Проверить одинаковые события, дубликаты и связанные объекты по разные стороны split. Само наличие одного клиента в прошлом train и будущем test не всегда является утечкой, если так устроено применение.
+4. Обучить все преобразования внутри train: scaler, target encoding, отбор признаков. Сравнить один baseline на обоих протоколах.
+5. Исследовать изменения продуктов, аудитории, доли положительного класса, горизонта и зрелости меток. Повторить оценку на нескольких будущих окнах.
+
+**Ловушка:** объявить случайный split всегда неправильным или удалить идентификаторы, считая, что это автоматически устраняет утечку.
+
+**Углубление:** как получить feature value «как он был известен на дату прогноза», если таблица содержит только последнее обновлённое значение? Нужны история и point-in-time корректное соединение.
+
+Подробнее: [утечки и преобразования](https://scikit-learn.org/stable/common_pitfalls.html), [процесс ML-проекта](lecture_01_ML_project_flow.md).
+
+---
+
+## Q31 — Same Ranking, Different Probabilities
+
+**Ситуация:** вероятности бинарного классификатора возвели в квадрат. Какие метрики и решения изменятся?
+
+**Короткий ответ:** на [0, 1] квадрат строго возрастает, поэтому в точной арифметике сохраняются порядок и ничьи. ROC-AUC и AP на тех же объектах не меняются. LogLoss, Brier score, калибровка и метки при прежнем пороге могут измениться.
+
+При p = 0.7 и пороге 0.5 исходная метка — 1, но после преобразования p² = 0.49 и метка — 0. Для сохранения исходных меток преобразуем также порог: t → t², используя то же правило сравнения.
+
+**Что проверить:**
+
+1. Какая характеристика нужна бизнесу: порядок, вероятности или действия при пороге?
+2. Были ли исходные вероятности откалиброваны? По одной AUC это неизвестно.
+3. Как меняются затраты и число действий после преобразования?
+
+**Ловушка:** считать, что одинаковая AUC означает одинаковое качество вероятностей. Произвольный квадрат не обязан ухудшить LogLoss на любой конечной выборке: эффект зависит от исходных оценок и данных.
+
+Подробнее: [классификация: вероятность, метрика и действие](lecture_02_vol_02_classification.md).
+
+---
+
+## Q32 — A/B Testing and Optional Stopping
+
+**Ситуация:** команда ежедневно смотрела p-value и остановила A/B-тест в первый день, когда получила 0.04. Можно ли объявить победу при уровне значимости 5%?
+
+**Короткий ответ:** номинальный уровень фиксированного теста обычно не сохраняется при таком правиле остановки. Это не доказательство отсутствия эффекта, но результат нельзя интерпретировать как заранее запланированный однократный тест.
+
+**Что обсудить:**
+
+- Заранее определить основную метрику, практически значимый эффект, единицу рандомизации, объём/длительность и правило остановки.
+- При необходимости промежуточных решений использовать подходящую последовательную процедуру, например с контролем расходования α, а не ежедневно повторять обычный тест без поправок.
+- Учесть множество метрик, сегментов и вариантов, по которым искали значимость.
+- Проверить корректность разбиения трафика, зависимость событий одного пользователя, сезонность и созревание конверсий.
+- Сообщить оценку эффекта и интервал, корректные для выбранного дизайна; p-value не равна вероятности истинности нулевой гипотезы.
+
+**Ловушка:** продолжать тест только при неудобном результате и остановить при удобном, а затем сообщить только последнюю проверку.
+
+**Углубление:** статистически значимые +0.01% конверсии могут не покрывать стоимость новой системы. Как определить минимально полезный эффект до запуска?
+
+Подробнее: [A/B-тесты и статистика](ml_projects/ab_tests.md).
+
+---
+
+## Q33 — Drift Before Labels Arrive
+
+**Ситуация:** распределение признаков изменилось, метки приходят через месяц. Нужно ли немедленно переобучать модель?
+
+**Короткий ответ:** drift — сигнал для диагностики, а не доказательство падения качества и не готовое указание на переобучение.
+
+**Порядок проверки:**
+
+1. Проверить схему и свежесть данных, единицы измерения, пропуски, дубликаты, категории и версии преобразований. Смена рублей на копейки — проблема данных, которую переобучение может замаскировать.
+2. Сравнить подходящие базовый и текущий периоды, объём выборок, состав аудитории и сезонные сегменты.
+3. Посмотреть распределение scores, долю решений, нагрузку на операции, ошибки API и доступные ранние бизнес-сигналы. Сохранить predictions и версии для последующего сопоставления с метками.
+4. По мере созревания исходов оценить качество на сопоставимых когортах. Отличать изменение P(X), P(Y) и P(Y|X); один тест распределения признака не различает все эти случаи.
+5. Выбрать действие по установленным критериям: починить источник, ограничить проблемный сегмент, откатить версию, скорректировать политику или обучить кандидата и проверить его.
+
+**Ловушка:** автоматически переобучить модель на ещё не созревших метках или считать отсутствие feature drift гарантией неизменного качества.
+
+**Углубление:** как отличить отрицательную метку от исхода, который пока не успел наступить?
+
+Подробнее: [MLOps и мониторинг](lecture_09_mlops_intro.md).
+
+---
+
+## Q34 — Selective Labels and the Feedback Loop
+
+**Ситуация:** fraud-модель обучается и оценивается только на транзакциях, проверенных аналитиками. Что не так с такой оценкой?
+
+**Короткий ответ:** данные отобраны прежней политикой проверок. Качество на этой выборке не обязательно переносится на весь поток, а непроверенные транзакции нельзя автоматически считать легитимными.
+
+**Что проверить:**
+
+- Почему объект получил метку: старый score, ручное правило, жалоба или независимый источник? Различать «не проверен» и подтверждённый отрицательный исход.
+- Есть ли группы, которые почти никогда не проверяются? По ним может не быть информации для оценки новой политики.
+- Можно ли организовать ограниченную контрольную разметку, независимый аудит или разрешённое исследование в рамках допустимого риска?
+- Записываются ли причина отбора, время решения, версия политики и вероятность отбора?
+
+Поправки на вероятность отбора применимы только при необходимых предположениях и достаточном покрытии. Если для некоторой области вероятность наблюдения исхода равна нулю, простое взвешивание не создаст отсутствующие данные. Задержки и ошибки самой разметки также остаются.
+
+**Ловушка:** «Мы обучаемся на новых данных каждый день, значит смещение само исчезнет». Новые данные могут каждый день воспроизводить прежнюю политику отбора.
+
+**Углубление:** сравните эту проблему с рекомендателем, который получает клики только по уже показанным товарам.
+
+---
+
+## Q35 — NDCG Up, Purchases Down
+
+**Ситуация:** offline NDCG рекомендателя выросла, но в A/B снизились покупки. Как локализовать причину?
+
+**Короткий ответ:** offline-метрика оценивает конкретные метки и протокол, а покупки — результат всей системы. Противоречия может не быть.
+
+**Порядок проверки:**
+
+1. Проверить A/B: разбиение аудитории, экспозицию, зрелость покупок, размер эффекта, ошибки логирования и guardrail-метрики.
+2. Сопоставить цели: релевантность в offline — клик, просмотр или покупка? Не выросла ли метрика за счёт популярных объектов или прежнего position bias?
+3. Проверить одинаковость каталога, candidate set, фильтров, доступности товаров и правил исключения просмотренного. Сравнение со случайными sampled negatives может не отражать реальную выдачу.
+4. Проверить serving: версии модели/признаков, latency, таймауты, fallback, дедупликацию и итоговый порядок после бизнес-правил.
+5. Посмотреть сегменты, разнообразие, повторяемость и усталость пользователя. Проверять гипотезы на независимых данных, не подбирая объяснение только под агрегированный результат.
+
+**Ловушка:** сразу заменить NDCG на другую метрику и переобучить модель, не убедившись, что пользователям вообще показывали проверенную offline-версию.
+
+Подробнее: [рекомендательные системы и практика](lecture_05_recommender_system.md).
+
+---
+
+## Q36 — Likes, Exposure and Multi-Armed Bandits
+
+**Ситуация:** у тега A есть 100 лайков, у B — 20. Достаточно ли этого, чтобы всегда выбирать A?
+
+**Короткий ответ:** нет. Нужны числа показов, условия отбора и неопределённость. Если A показали 10 000 раз, а B — 25, сырые количества лайков дают совсем другую картину, чем доли отклика. Даже доли могут быть несопоставимы из-за разной аудитории и контекста.
+
+**Что обсудить:**
+
+- Определить руку/действие, награду и момент её наблюдения. Пропуск или задержанный ответ не обязательно равен награде 0.
+- Разделить exploration и exploitation. В классическом ε-greedy случайная ветка исследует, а другая выбирает действие с максимальной текущей оценкой ожидаемой награды.
+- Сохранять показы, ответы и вероятности выбора действий. Количество положительных событий без знаменателя не является оценкой вероятности отклика.
+- Учитывать изменение вкусов, повторные показы, ограничения каталога и обратную связь политики с данными.
+
+**Связь с кодом:** [`sample_content`](../src/recsys/content_api.py#L108) смешивает случайный тег с выбором записи из истории лайков. Это упрощённая эвристика по принципу бандитов: здесь нет оценки награды на показ и выбора её максимума. Параметр `eps=0.3` не гарантирует ровно три исследующих показа из каждых десяти.
+
+**Ловушка:** считать тег с наибольшим числом лайков лучшим, хотя сама система показывала его намного чаще остальных.
+
+Подробнее: [сэмплинг ArtSwipe](lecture_05_recommender_system.md#следующая-карточка-сэмплинг-и-многорукие-бандиты).
+
+---
+
+## Q37 — ANN Search Got Faster, RAG Got Worse
+
+**Ситуация:** после замены точного поиска на ANN ответы RAG ухудшились. Как понять, виноват ли индекс?
+
+**Короткий ответ:** сравнить ANN с exact search при одинаковых embeddings, запросах, метрике, фильтрах и каталоге, затем отдельно оценить релевантность и генерацию.
+
+**Порядок проверки:**
+
+1. Проверить версии query/document encoder, нормализацию, размерность, distance metric и обновление индекса. Одинаковое число координат не гарантирует совместимость моделей.
+2. На тестовом наборе запросов построить exact top-K. Измерить долю этих соседей, найденных ANN, вместе с latency и памятью; явно определить обработку ничьих и размер candidate set.
+3. Отдельно измерить релевантность по размеченным запросам. Высокая ANN recall относительно exact не доказывает, что сами embeddings находят нужные документы.
+4. Проверить фильтрацию до/после поиска, overfetch, reranker, дубликаты и обрезку контекста перед LLM.
+5. Менять параметры индекса по одному; сравнивать компромисс latency–качество при одинаковой нагрузке.
+
+**Ловушка:** улучшать prompt, когда нужные документы перестали доходить до генерации, или считать exact top-K истинной разметкой релевантности.
+
+Подробнее: [метрики и индексы Faiss](https://github.com/facebookresearch/faiss/wiki/MetricType-and-distances), [лекция о RAG](lecture_08_vol_01_rag.md).
+
+---
+
+## Q38 — Throughput Up, User Latency Worse
+
+**Ситуация:** после увеличения batch size throughput LLM вырос, но пользователи жалуются на задержку. Почему?
+
+**Короткий ответ:** система может эффективнее обрабатывать общий поток, но дольше ждать формирования batch или свободного места в очереди. Throughput и latency одного запроса — разные цели.
+
+**Что измерить:**
+
+- **TTFT:** время до первого токена, включая оговорённые границы измерения и очередь.
+- **ITL / TPOT:** задержки между выходами и среднее время на выходной токен; это не обязательно одинаковые способы агрегации.
+- Полное время ответа, длины входа/выхода, concurrency, очередь, отмены, таймауты, загрузку памяти и KV-cache.
+- p50/p95/p99 по сопоставимым длинам и типам запросов. Общая средняя может скрыть деградацию длинных запросов или одного сегмента.
+
+Разделить prefill и decode: длинные входы и длинная генерация создают разную нагрузку. Сравнивать настройки при одинаковом качестве, лимитах и распределении запросов; искать допустимый компромисс, а не максимальный tokens/sec любой ценой.
+
+**Ловушка:** показать только throughput завершённых запросов, исключив таймауты, и объявить ускорение сервиса.
+
+Подробнее: [LLM operations](cracking_llm/cracking_llm_ops.md), [определения метрик vLLM](https://docs.vllm.ai/en/stable/usage/metrics/).
+
+---
+
+## Q39 — Tool Timeout and Duplicate Side Effects
+
+**Ситуация:** агент вызвал инструмент создания заказа, получил timeout и повторил вызов. Как избежать двух заказов?
+
+**Короткий ответ:** timeout не означает, что первая операция не выполнилась. Повтор с новым идентификатором может создать второй заказ; нужна поддержка идемпотентности и проверка состояния на стороне сервиса.
+
+**Порядок действий:**
+
+1. До отправки создать устойчивый idempotency key для одного логического намерения и сохранить его вместе с параметрами.
+2. Повторять ту же операцию с тем же ключом. Сервер должен атомарно распознавать повторы, проверять совпадение параметров и возвращать результат первой операции.
+3. После неопределённого ответа запрашивать статус по ключу/идентификатору, а не считать заказ отсутствующим.
+4. Если получатель не поддерживает такую семантику, использовать доступную сверку/очередь и остановить автоматические повторы до выяснения результата. Одного совета в prompt «не повторять» недостаточно.
+5. Разделять инструменты чтения и записи; задать лимиты повторов, права, подтверждения по значимости действия и аудит. Backoff полезен для нагрузки, но сам по себе не устраняет дубликаты.
+
+**Ловушка:** безусловно повторять все HTTP-запросы после timeout или обещать exactly-once только благодаря записи локального флага.
+
+**Углубление:** чем различаются идемпотентный результат операции и отсутствие повторной оплаты, отправки письма или другого побочного эффекта внутри неё?
+
+Подробнее: [агенты и выполнение инструментов](lecture_08_vol_02_ai_agents.md).
+
+---
+
 ## Bonus Tasks
 
 ### Task 1: Fair Coin Predictions
@@ -3349,11 +3585,15 @@ Expected outcomes:
 
 Precision:
 
-$$\text{Precision} = \frac{TP}{TP + FP} = \frac{45}{45 + 455} = \frac{45}{500} = 0.09 = 9\%$$
+$$
+\text{Precision} = \frac{TP}{TP + FP} = \frac{45}{45 + 455} = \frac{45}{500} = 0.09 = 9\%
+$$
 
 Recall:
 
-$$\text{Recall} = \frac{TP}{TP + FN} = \frac{45}{45 + 45} = \frac{45}{90} = 0.5 = 50\%$$
+$$
+\text{Recall} = \frac{TP}{TP + FN} = \frac{45}{45 + 45} = \frac{45}{90} = 0.5 = 50\%
+$$
 
 Answer:
 - Precision = 9% (same as base rate!)
@@ -3366,7 +3606,8 @@ Answer:
 
 Setup:
 - 10 drivers
-- Each driver: 50% conversion (accepts order)
+- Each driver: 50% marginal probability of accepting
+- For the calculation below, decisions are independent
 - Order "burns" if NOBODY accepts
 
 Question: P(order burns)?
@@ -3377,12 +3618,18 @@ P(driver declines) = 0.5
 
 P(all 10 decline) = (0.5)^10
 
-$$P(\text{burn}) = 0.5^{10} = \frac{1}{1024} \approx 0.000977 = 0.0977\%$$
+$$
+P(\text{burn}) = 0.5^{10} = \frac{1}{1024} \approx 0.000977 = 0.0977\%
+$$
 
 **Answer: ~0.1%** (very low probability)
 
+**Follow-up:** If decisions are dependent, the marginals alone do not determine this probability. Under perfect positive dependence, all accept or all decline together, so the burn probability is 50%. With the same 50% marginals, other dependence structures can even make it zero. Ask about shared conditions and the dispatch policy before multiplying probabilities.
+
 **Alternatively:**
 
-$$P(\text{at least one accepts}) = 1 - 0.5^{10} = 1 - \frac{1}{1024} = \frac{1023}{1024} \approx 99.9\%$$
+$$
+P(\text{at least one accepts}) = 1 - 0.5^{10} = 1 - \frac{1}{1024} = \frac{1023}{1024} \approx 99.9\%
+$$
 
 ---

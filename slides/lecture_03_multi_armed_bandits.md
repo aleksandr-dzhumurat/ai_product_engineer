@@ -1,6 +1,6 @@
 # Multi-armed bandits
 
-[![RL into. Multi-armed bandits](http://img.youtube.com/vi/3jurSlIe2Q8/0.jpg)](http://www.youtube.com/watch?v=3jurSlIe2Q8 "RL into. Multi-armed bandits")
+[![RL intro. Multi-armed bandits](https://img.youtube.com/vi/3jurSlIe2Q8/0.jpg)](https://www.youtube.com/watch?v=3jurSlIe2Q8 "RL intro. Multi-armed bandits")
 
 
 [slides](https://docs.google.com/presentation/d/1GS2_QXwMtLdmgfZPF4rzYWYUjdEh_gRZK9hwyCMpHKg/edit?usp=sharing)

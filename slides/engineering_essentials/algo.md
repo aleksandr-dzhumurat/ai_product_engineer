@@ -26,16 +26,25 @@ For hashing, the key trade-offs are: (a) collision resolution strategy — separ
 
 At each step, the array is divided by 2. After **k** steps, from an initial array of size **n**, there remains:
 
-$$\frac{n}{2^k}$$
+$$
+\frac{n}{2^k}
+$$
 
 The algorithm terminates when only **1 element** remains:
 
-$$\frac{n}{2^k} = 1$$
+$$
+\frac{n}{2^k} = 1
+$$
 
 Solving the equation:
 
-$$n = 2^k$$
-$$k = \log_2 n$$
+$$
+n = 2^k
+$$
+
+$$
+k = \log_2 n
+$$
 
 The number of steps is equal to $\log_2(n)$ — which is the time complexity.
 

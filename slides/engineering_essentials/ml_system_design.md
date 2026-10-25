@@ -6,7 +6,7 @@ ML system design task: design churn prediction system
 
 Input: Sales table
 
-| dt | CustomerID | NetSales, $ |
+| dt | CustomerID | NetSales, \$ |
 | --- | --- | --- |
 | 2025-09-01 | 123 | 90 |
 |  |  |  |

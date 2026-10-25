@@ -82,6 +82,10 @@
             function enc(s) {
               return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
             }
+            // ```math fenced blocks (GitHub-compatible) — same protection as $$ blocks
+            content = content.replace(/```math\s*\n([\s\S]*?)\n```/g, function (_, math) {
+              return '<div class="math-block" data-math="' + enc(math) + '"></div>';
+            });
             content = content.replace(/\$\$([\s\S]*?)\$\$/g, function (_, math) {
               return '<div class="math-block" data-math="' + enc(math) + '"></div>';
             });
