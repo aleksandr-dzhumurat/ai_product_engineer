@@ -1,4 +1,14 @@
+"""Nebius LLM client (OpenAI-compatible) for notebooks and src scripts.
+
+Structured after src/scraping/llm_client.py. All chat completions go through
+the Nebius API with NEBIUS_API_KEY; the base URL and default model can be
+overridden via LLM_BASE_URL / LLM_MODEL (or NEBIUS_BASE_URL / NEBIUS_MODEL)
+in .env.
+"""
+from __future__ import annotations
+
 import hashlib
+import logging
 import os
 import time
 from dataclasses import dataclass
@@ -7,34 +17,46 @@ from pathlib import Path
 import backoff
 import openai
 from dotenv import load_dotenv
-from google.genai import Client, types
 from openai import OpenAI
 
-GEMINI_API_KEY = os.environ['GEMINI_API_KEY']
-g_client = None
+log = logging.getLogger(__name__)
 
-def get_openai_client(openai_key = None):
-    if openai_key is None:
-       openai_key = os.environ["OPENAI_API_KEY"]
-    client = OpenAI(
-        api_key=openai_key
+# Anchored to this file's own location (src/llm.py -> repo root) so it always
+# loads the project .env regardless of CWD. Doesn't override vars already
+# exported in the shell.
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+
+
+class Config:
+    NEBIUS_API_KEY: str = os.environ.get("NEBIUS_API_KEY", "")
+    NEBIUS_BASE_URL: str = (
+        os.environ.get("LLM_BASE_URL")
+        or os.environ.get("NEBIUS_BASE_URL", "https://api.tokenfactory.nebius.com/v1/")
     )
-    return client
+    NEBIUS_MODEL: str = (
+        os.environ.get("LLM_MODEL")
+        or os.environ.get("NEBIUS_MODEL", "google/gemma-3-27b-it")
+    )
 
-def get_gemini_client(env_path: str | Path):
-    global g_client
 
-    print(f'ENV loaded from {env_path}: {load_dotenv(env_path)}')
-    if g_client is None:
-        g_client = Client(api_key=os.environ["GEMINI_API_KEY"])
-    return g_client
+config = Config()
+if not config.NEBIUS_API_KEY:
+    log.warning("NEBIUS_API_KEY is not set - generate() calls will fail")
+
+
+class RetryableAPIError(Exception):
+    """Raised for transient API errors that can be retried (timeout, rate limit, etc)"""
+
+class BlockedContentError(Exception):
+    """Raised when content is blocked - should NOT be retried"""
+
 
 @dataclass
 class GenAIResponse:
     text: str
-    total_tokens: str
-    model: str
-    generation_id: str = None
+    total_tokens: int | None = None
+    model: str | None = None
+    generation_id: str | None = None
 
 
 def generate_id(seed=None, limit=None):
@@ -49,9 +71,101 @@ def generate_id(seed=None, limit=None):
         res = res[:limit]
     return res
 
-def promt_generation(candidates):
-  # TODO: use jinja2
-  promt = f"""
+
+g_client = None
+
+
+def get_nebius_client() -> OpenAI:
+    global g_client
+    if g_client is None:
+        g_client = OpenAI(
+            base_url=config.NEBIUS_BASE_URL,
+            api_key=config.NEBIUS_API_KEY,
+        )
+    return g_client
+
+
+def validate_credentials() -> None:
+    """Make one minimal Nebius call at startup so a bad/expired
+    NEBIUS_API_KEY aborts immediately with a clear error, instead of only
+    surfacing later inside a generate() call."""
+    try:
+        generate(get_nebius_client(), "ping", system_prompt="Reply with just: pong")
+    except Exception as e:
+        if _is_invalid_key_error(e):
+            raise RuntimeError(f"NEBIUS_API_KEY rejected by Nebius ({config.NEBIUS_MODEL}): {e}") from e
+        log.warning(
+            "⚠️  Nebius credential check failed with a non-auth error (%s: %s) - continuing, this may be transient",
+            type(e).__name__, e,
+        )
+
+
+def _is_invalid_key_error(exc) -> bool:
+    return isinstance(exc, openai.AuthenticationError)
+
+
+def _log_giveup(details):
+    exc = details["exception"]
+    if _is_invalid_key_error(exc):
+        log.error("🔑 NEBIUS_API_KEY is invalid or rejected by Nebius — check the key in .env. Details: %s", exc)
+    else:
+        log.error("❌ All %d Nebius attempts failed: %s", details["tries"], exc)
+
+
+@backoff.on_exception(
+    backoff.expo,
+    (RetryableAPIError, openai.APIError),
+    max_tries=5,
+    max_time=60,
+    giveup=lambda e: isinstance(e, openai.APIError) and not isinstance(e, (openai.RateLimitError, openai.APIConnectionError, openai.InternalServerError)),
+    on_giveup=_log_giveup,
+)
+def generate(api_client, user_prompt, system_prompt="You are a helpful assistant for business analytics", model=None):
+    model = model or config.NEBIUS_MODEL
+    response = api_client.chat.completions.create(
+        model=model,
+        temperature=0.3,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+    )
+
+    if response is None:
+        log.error("❌ API returned None response. Input text (first 300 chars): %s", user_prompt[:300])
+        raise RetryableAPIError("API returned None response")
+
+    choice = response.choices[0] if response.choices else None
+    response_text = choice.message.content if choice is not None else None
+    if response_text is None:
+        finish_reason = getattr(choice, "finish_reason", "unknown") if choice is not None else "unknown"
+        if finish_reason == "content_filter":
+            log.warning(
+                "⚠️  CONTENT BLOCKED by Nebius API. Input text (first 300 chars): %s",
+                user_prompt[:300],
+            )
+            # Don't retry blocked content - it's permanent
+            raise BlockedContentError(f"Content blocked: {finish_reason}")
+        else:
+            log.error("❌ No text in response, finish_reason=%s. Input text (first 300 chars): %s", finish_reason, user_prompt[:300])
+            raise RetryableAPIError("API returned response without text")
+
+    if response.usage:
+        log.info(
+            "🔢 tokens (model=%s): prompt=%d completion=%d total=%d",
+            model, response.usage.prompt_tokens, response.usage.completion_tokens, response.usage.total_tokens,
+        )
+
+    return GenAIResponse(
+        text=response_text,
+        total_tokens=response.usage.total_tokens if response.usage else None,
+        model=model,
+        generation_id=generate_id(user_prompt),
+    )
+
+
+def prompt_generation(candidates):
+    prompt = f"""
       Next rows below is an item_id reviews.
       {candidates}
       Utilize reviews to determine the best item_id.
@@ -60,67 +174,10 @@ def promt_generation(candidates):
       Keep the recommendation under 50 words. Avoid starting with "Based on reviews"; opt for a more creative approach!
       Recommendation:
   """
-  return promt
+    return prompt
 
-@backoff.on_exception(backoff.expo, openai.APIError)
-@backoff.on_exception(backoff.expo, openai.RateLimitError)
-@backoff.on_exception(backoff.expo,openai.Timeout)
-@backoff.on_exception(backoff.expo, RuntimeError)
-def generate(client, user_prompt, system_prompt = "You are a helpful assistant for business analytics", model="gpt-3.5-turbo"):
-    gpt_params = {
-        "model": model,
-        "max_tokens": 500,
-        "temperature": 0.7,
-        "top_p": 0.5,
-        "frequency_penalty": 0.5,
-    }
-    messages = [
-        {
-            "role": "system",
-            "content": system_prompt,
-        },
-        {
-            "role": "user",
-            "content": user_prompt,
-        },
-    ]
-    gpt_params.update({"messages": messages})
-
-    response = client.chat.completions.create(**gpt_params)
-    response = GenAIResponse(
-        text=response.choices[0].message.content,
-        total_tokens=response.usage.total_tokens,
-        model=model,
-        generation_id=generate_id(user_prompt)
-    )
-
-    return response
-
-@backoff.on_exception(backoff.expo, RuntimeError)
-def generate_gemini(api_client, user_prompt, system_prompt, model='gemini-2.5-flash-lite'):
-    """model: gemini-1.5-flash, gemini-2.0-flash-001"""
-    user_input = [
-        types.Part(text=user_prompt),
-    ]
-    dialog_contents = [
-        types.Content(
-            role="user",
-            parts=user_input
-        )
-    ]
-    response = api_client.models.generate_content(
-        model=model,
-        contents=dialog_contents,
-        config=types.GenerateContentConfig(
-            system_instruction=system_prompt,
-            temperature=0.3,
-        ),
-    )
-    response = GenAIResponse(text=response.text, total_tokens=response.usage_metadata.total_token_count, model=model)
-    return response
 
 def recs_generation(candidates):
     candidates = '\n'.join(["item_id: %s; review: %s" % (i['asin'], i['content']) for i in candidates])
-    prompt = promt_generation(candidates)
-    generated_result = generate(user_prompt=prompt)
-    return generated_result['recs']
+    prompt = prompt_generation(candidates)
+    return generate(get_nebius_client(), user_prompt=prompt)

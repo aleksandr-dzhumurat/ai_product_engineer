@@ -36,12 +36,16 @@ gensim
 implicit
 google-genai
 catalyst
+pytorch-lightning
 chromadb
+weaviate-client
 langchain
+langchain-core>=1
 langchain-text-splitters
 langchain_huggingface
 tiktoken
 google-cloud-storage
 gcsfs
 mindbase-layer @ git+https://github.com/aleksandr-dzhumurat/automation_toolkit.git
-langfuse
+pydantic-ai-slim>=1.87,<2
+langfuse>=5

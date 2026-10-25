@@ -9,17 +9,21 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
+import uuid
 from pathlib import Path
 from typing import Any
 
-from agent.config import (
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from rag.agent.config import (
     COLLECTION_NAME,
     LANGFUSE_HOST,
     LANGFUSE_PUBLIC_KEY,
     LANGFUSE_SECRET_KEY,
     LLM_MODEL,
 )
-from agent.graph import AgentState, _get_db_client, graph
+from rag.agent.graph import AgentState, _get_db_client, graph
 
 NEBIUS_MODELS_JSON = Path(__file__).resolve().parent.parent / "nebius_batch_llm_inference" / "nebius_models.json"
 
@@ -99,8 +103,12 @@ def main() -> None:
         print("Langfuse tracing enabled")
     print("Type your question (or 'quit' to exit):\n")
 
+    # One Langfuse session per CLI run so all traces of this conversation are
+    # grouped and filterable in Langfuse (v4 observations-first data model).
+    session_id = f"rag-chat-{uuid.uuid4()}"
     config: dict[str, Any] = {
         "callbacks": [_lf_handler] if _lf_handler else [],
+        "metadata": {"langfuse_session_id": session_id},
     }
 
     while True:

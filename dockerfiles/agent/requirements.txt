@@ -1,7 +1,7 @@
 
-git+https://github.com/google/adk-python.git@main
 openai
-langfuse
+pydantic-ai>=1.87,<2
+langfuse>=5
 
 # FastAPI for backend API
 fastapi

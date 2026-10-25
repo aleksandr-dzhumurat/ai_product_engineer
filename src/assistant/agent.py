@@ -5,9 +5,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-import shutil
-
 from langfuse import get_client
+from mindbase_layer.retrieve_md import DocumentIndex, DocumentNode
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.agent import InstrumentationSettings
 from pydantic_ai.models.openai import OpenAIChatModel
@@ -18,7 +17,6 @@ from prompts import (
     RETRIEVAL_AGENT_INSTRUCTIONS,
     home_dir_prompt,
 )
-from mindbase_layer.retrieve_md import DocumentIndex, DocumentNode
 
 Agent.instrument_all(InstrumentationSettings(include_content=True, version=1))
 langfuse = get_client()

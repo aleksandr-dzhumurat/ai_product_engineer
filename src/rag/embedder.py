@@ -4,10 +4,12 @@ Provides a common interface for different embedding backends (Ollama, Gemini, et
 """
 from __future__ import annotations
 
+import os
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import List, Optional, Sequence
 
+import numpy as np
 import requests
 
 
@@ -117,3 +119,52 @@ class GeminiEmbedder(Embedder):
             ),
         )
         return [list(e.values) for e in response.embeddings]
+
+
+def train_embeds(
+    corpus_texts: Sequence[str],
+    embedder,
+    sentence_embedding_path: str,
+    overwrite: bool = False,
+) -> np.ndarray:
+    """Embed corpus texts, caching the result as a .npy file at sentence_embedding_path.
+
+    embedder can be any object with embed_documents() (langchain-style) or
+    embed() (rag.embedder.Embedder-style).
+    """
+    if os.path.exists(sentence_embedding_path) and not overwrite:
+        print(f"corpus loading from {sentence_embedding_path}")
+        passage_embeddings = np.load(sentence_embedding_path)
+    else:
+        print(f"num rows {len(corpus_texts)}")
+        if hasattr(embedder, "embed_documents"):
+            passage_embeddings = embedder.embed_documents(list(corpus_texts))
+        else:
+            passage_embeddings = embedder.embed(list(corpus_texts))
+        passage_embeddings = np.array(passage_embeddings).astype("float32")
+        with open(sentence_embedding_path, "wb") as f:
+            np.save(f, passage_embeddings)
+        print(f"corpus saved to {sentence_embedding_path}")
+    print(f"Num embeddings {passage_embeddings.shape[0]}")
+    return passage_embeddings
+
+
+class VectorIndex:
+    """Brute-force cosine-similarity search over precomputed corpus embeddings."""
+
+    def __init__(self, embedder_model, corpus, corpus_embeddings):
+        self.vectorizer = embedder_model
+        self.vector_index = corpus_embeddings
+        self.items = np.array([i["doc_id"] for i in corpus])
+        print("Index built successfully. ✅")
+
+    def retrieve(self, query_string, threshold=0.1, top_k=10):
+        from sklearn.metrics.pairwise import cosine_similarity
+
+        query_vector = self.vectorizer.embed_documents([query_string])
+        cosine_similarities = cosine_similarity(
+            np.array(query_vector).reshape(1, -1), self.vector_index
+        ).flatten()
+        top_k_indices = cosine_similarities.argsort()[::-1][:top_k]
+        top_k_scores = [round(i, 4) for i in cosine_similarities[top_k_indices]]
+        return [{"idx": i, "score": s} for s, i in zip(top_k_scores, top_k_indices)]
